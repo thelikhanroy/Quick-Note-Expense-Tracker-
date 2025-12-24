@@ -80,26 +80,14 @@
     .sidebar-item:active { background: rgba(0,0,0,0.05); }
     .sidebar-item svg { width: 22px; height: 22px; fill: var(--text-sub); }
     
-    /* GOOGLE AUTH STYLES (Added) */
-    .auth-container { padding: 10px 20px; border-bottom: 1px solid var(--border-color); margin-bottom: 10px; }
-    .google-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-main); font-weight: 600; font-size: 14px; cursor: pointer; margin-bottom: 5px; }
-    .google-btn svg { width: 18px; height: 18px; }
-    .user-profile { display: none; flex-direction: column; gap: 5px; }
-    .user-info { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-    .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: #ddd; object-fit: cover; }
-    .user-name { font-size: 14px; font-weight: 600; color: var(--text-main); }
-    .user-email { font-size: 11px; color: var(--text-sub); }
-    .cloud-status { font-size: 11px; color: var(--primary-color); display: flex; align-items: center; gap: 4px; margin-bottom: 8px;}
-    .action-row { display: flex; gap: 5px; }
-    .mini-btn { flex: 1; padding: 6px; font-size: 11px; border-radius: 4px; border: 1px solid var(--border-color); background: transparent; color: var(--text-main); cursor: pointer; text-align: center; }
-
     /* Theme Options: Hidden by default, nested */
     .theme-options-container { display: none; flex-direction: column; background: rgba(0,0,0,0.02); }
+    /* CHANGED: justify-content space-between to push radio to right, text to left */
     .theme-opt { 
         padding: 12px 20px 12px 55px; 
         display: flex; 
         align-items: center; 
-        justify-content: space-between; 
+        justify-content: space-between; /* This pushes items apart */
         gap: 10px; 
         font-size: 14px; 
         color: var(--text-main); 
@@ -153,14 +141,16 @@
     .modal { background: var(--modal-bg); width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; transition: background 0.3s; }
     @media (min-width: 600px) { .modal { width: 90%; height: 90%; border-radius: 20px; } }
     
+    /* CHANGED: Header for Modals - Removed border, invisible background */
     .modal-header { 
       padding: 0 15px; 
+      /* border-bottom: 1px solid var(--border-color); */ /* REMOVED BORDER */
       border-bottom: none; 
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
       flex-shrink: 0; 
-      background: var(--modal-bg); 
+      background: var(--modal-bg); /* Matches page background */
       height: 60px; 
       z-index: 10;
       opacity: 1;
@@ -180,10 +170,12 @@
 
     .modal-body { padding: 20px; overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; background: var(--modal-bg); }
 
+    /* --- REQUESTED CHANGE: Hide Header in Entry & Drawing for "Full Page" look --- */
     #entryModal .modal-header,
     #drawingModal .modal-header {
       display: none !important;
     }
+    /* Add padding since header is gone */
     #entryModal .modal-body,
     #drawingModal .modal-body {
       padding-top: 40px; 
@@ -212,6 +204,7 @@
 
     /* Security Modal */
     #securityModal .modal { height: auto; max-width: 350px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin: auto; background: var(--modal-bg); }
+    /* No blur on security setup modal overlay either */
     #securityModal { align-items: center; background: rgba(0,0,0,0.6); }
     
     .enable-btn { background: #4CAF50; color: white; width: 100%; padding: 12px; border:none; border-radius:10px; font-weight:600; margin-bottom: 10px; cursor: pointer; }
@@ -294,36 +287,6 @@
       <div class="sidebar-title">Quick Note ET</div>
     </div>
     <div class="sidebar-menu">
-      
-      <!-- GOOGLE BACKUP & RESTORE SECTION -->
-      <div class="sidebar-section-title">Cloud Backup</div>
-      <div class="auth-container">
-          <!-- Sign In Button -->
-          <button id="googleSignInBtn" class="google-btn">
-              <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 4.61c1.61 0 3.09.56 4.23 1.64l3.18-3.18C17.46 1.18 14.97 0 12 0 7.7 0 3.99 2.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-              Sign in with Google
-          </button>
-          
-          <!-- Profile & Sync Options (Hidden by default) -->
-          <div id="userProfile" class="user-profile">
-              <div class="user-info">
-                  <img id="userAvatar" class="user-avatar" src="" alt="User">
-                  <div style="flex:1; overflow:hidden;">
-                      <div id="userName" class="user-name">User</div>
-                      <div id="userEmail" class="user-email">email@gmail.com</div>
-                  </div>
-              </div>
-              <div class="cloud-status">
-                 <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/></svg>
-                 <span id="syncStatus">Auto-Sync Active</span>
-              </div>
-              <div class="action-row">
-                  <button class="mini-btn" onclick="startManualRestore()">Restore Data</button>
-                  <button class="mini-btn" style="color:#d32f2f; border-color:#ffcdd2;" onclick="signOutGoogle()">Sign Out</button>
-              </div>
-          </div>
-      </div>
-
       <div class="sidebar-section-title">Settings & Privacy</div>
       
       <div class="sidebar-item" id="openSecurityBtn">
@@ -338,6 +301,7 @@
         <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
       </div>
       
+      <!-- CHANGED: Items now text-left, circle-right -->
       <div class="theme-options-container" id="themeOptionsList">
          <label class="theme-opt">
             Light
@@ -524,125 +488,6 @@
   </div>
 
   <div class="toast" id="toast">Entry Saved!</div>
-
-  <!-- FIREBASE SCRIPTS -->
-  <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    // YOUR FIREBASE CONFIGURATION
-    const firebaseConfig = {
-      apiKey: "AIzaSyBhcW5PBSNj_J8rz3DkvE0YDbnsMvCjVwM",
-      authDomain: "quick-note-et.firebaseapp.com",
-      projectId: "quick-note-et",
-      storageBucket: "quick-note-et.firebasestorage.app",
-      messagingSenderId: "339810351240",
-      appId: "1:339810351240:web:5dcd7301bba79a6892c73d",
-      measurementId: "G-1XJ72013CG"
-    };
-
-    // Initialize Firebase
-    let app, auth, db, userGlobal = null;
-    
-    try {
-        app = initializeApp(firebaseConfig);
-        auth = getAuth(app);
-        db = getFirestore(app);
-    } catch(e) {
-        console.log("Firebase not configured properly yet.");
-    }
-
-    const googleBtn = document.getElementById('googleSignInBtn');
-    const userProfile = document.getElementById('userProfile');
-    const userAvatar = document.getElementById('userAvatar');
-    const userName = document.getElementById('userName');
-    const userEmail = document.getElementById('userEmail');
-    const syncStatus = document.getElementById('syncStatus');
-
-    // Make functions available globally
-    window.signInGoogle = () => {
-        if(!auth) return alert("Firebase Config Missing!");
-        const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider).then((result) => {
-             // Successful login
-        }).catch((error) => {
-             alert("Login Failed: " + error.message);
-        });
-    };
-
-    window.signOutGoogle = () => {
-        if(auth) signOut(auth);
-    };
-
-    window.startManualRestore = async () => {
-        if(!userGlobal || !db) return;
-        if(confirm("Restore will overwrite current notes with backup from Google. Continue?")) {
-            syncStatus.innerText = "Restoring...";
-            try {
-                const docRef = doc(db, "users", userGlobal.uid);
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    if(data.entries) {
-                        localStorage.setItem('quickNoteExpenses', JSON.stringify(data.entries));
-                        location.reload(); // Reload to show new data
-                    }
-                } else {
-                    alert("No backup found!");
-                    syncStatus.innerText = "Auto-Sync Active";
-                }
-            } catch(e) {
-                alert("Restore Error: " + e.message);
-                syncStatus.innerText = "Error";
-            }
-        }
-    };
-
-    if(auth) {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                userGlobal = user;
-                googleBtn.style.display = 'none';
-                userProfile.style.display = 'flex';
-                userName.innerText = user.displayName;
-                userEmail.innerText = user.email;
-                userAvatar.src = user.photoURL;
-                
-                // On Login: Check if we should restore (if local is empty and cloud has data)
-                // For now, we just enable the sync capability
-                window.isLoggedIn = true;
-            } else {
-                userGlobal = null;
-                googleBtn.style.display = 'flex';
-                userProfile.style.display = 'none';
-                window.isLoggedIn = false;
-            }
-        });
-    }
-    
-    // Attach click handler
-    if(googleBtn) googleBtn.onclick = window.signInGoogle;
-
-    // --- Global Save to Cloud Function ---
-    window.saveToCloud = async (entriesData) => {
-        if(userGlobal && db) {
-            syncStatus.innerText = "Syncing...";
-            try {
-                await setDoc(doc(db, "users", userGlobal.uid), {
-                    entries: entriesData,
-                    lastUpdated: new Date().getTime()
-                });
-                syncStatus.innerText = "Synced Just Now";
-            } catch(e) {
-                console.error("Sync failed", e);
-                syncStatus.innerText = "Sync Failed";
-            }
-        }
-    };
-
-  </script>
 
   <script>
     // --- SECURITY LOGIC ---
@@ -854,12 +699,7 @@
       mediaViewerVideo: document.getElementById('mediaViewerVideo')
     };
 
-    function saveToStorage() { 
-        localStorage.setItem('quickNoteExpenses', JSON.stringify(entries)); 
-        // Auto Backup Trigger
-        if(window.saveToCloud) window.saveToCloud(entries);
-    }
-
+    function saveToStorage() { localStorage.setItem('quickNoteExpenses', JSON.stringify(entries)); }
     function showToast(msg) { dom.toast.textContent = msg; dom.toast.classList.add('show'); setTimeout(() => dom.toast.classList.remove('show'), 3000); }
     function formatDate(ts) {
       const d = new Date(ts);
