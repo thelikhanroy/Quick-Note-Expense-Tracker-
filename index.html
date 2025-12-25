@@ -143,15 +143,11 @@
 
     /* Note Input */  
     .note-title-input { font-size: 22px; font-weight: 700; border: none; outline: none; width: 100%; margin-bottom: 5px; background: transparent; color: var(--text-main); }  
-    
-    /* UPDATED: Added white-space: pre-wrap and overflow-x: hidden to prevent scrolling */
+
     .note-body-input { flex: 1; height: 100%; font-size: 16px; line-height: 1.6; border: none; outline: none; width: 100%; resize: none; background: transparent; font-family: inherit; margin-top: 0; color: var(--text-main); white-space: pre-wrap; word-wrap: break-word; overflow-x: hidden; }  
-    
-    /* Flex containers for Full Page writing */
+
     #noteFields { display: flex; flex-direction: column; flex: 1; height: 100%; }
-    /* UPDATED: Expense Fields also full height */
     #expenseFields { display: none; flex-direction: column; flex: 1; height: 100%; }
-    /* UPDATED: Expense Reason textarea fills space and wraps */
     #expReason { flex: 1; resize: none; white-space: pre-wrap; word-wrap: break-word; overflow-x: hidden; }
 
     input, textarea, select { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; font-family: inherit; font-size: 15px; margin-top: 5px; margin-bottom: 15px; background: var(--input-bg); color: var(--text-main); }  
@@ -166,6 +162,11 @@
     .drawing-tools { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: #fff; padding: 10px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; gap: 10px; align-items: center; }  
     .color-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }  
     .color-btn.active { border-color: #333; transform: scale(1.1); }  
+
+    /* NEW: Rainbow/Custom Color Picker Style - Icon like color wheel */
+    .color-picker-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red); }
+    .color-picker-btn.active { border-color: #333; transform: scale(1.1); }
+
     .tool-btn { background: #eee; border: none; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }  
     .tool-btn.active { background: var(--primary-color); color: white; }  
     .tool-btn svg { width: 18px; height: 18px; fill: currentColor; }  
@@ -212,13 +213,13 @@
   </style>  
 </head>  
 <body>  
-  
+
 <!-- Auth Screen -->  
 <div id="authOverlay">  
     <div class="auth-box">  
       <div class="auth-title" id="authTitle">Locked</div>  
       <div class="auth-sub" id="authSub">Enter to access notes</div>  
-      
+
       <div id="pinModeUI" style="display:none; width:100%;">  
         <div class="input-wrapper">  
            <input type="password" id="authPinInput" class="auth-input" placeholder="Enter PIN" inputmode="numeric" pattern="[0-9]*">  
@@ -373,26 +374,26 @@
         </div>  
 
         <div id="expenseFields" style="display: none;">  
-          <label>Amount (Limit 10 digits)</label>  
-          <input type="number" id="expAmount" placeholder="0.00" maxlength="10"/>  
-          <div style="display: flex; gap: 10px; margin-bottom: 15px;">  
-             <select id="expCurrency" style="flex: 1; margin:0;">  
-                <option value="USD">USD ($)</option><option value="INR">INR (₹)</option><option value="EUR">EUR (€)</option>  
-                <option value="GBP">GBP (£)</option><option value="JPY">JPY (¥)</option><option value="CAD">CAD (CA$)</option>  
-                <option value="AUD">AUD (A$)</option><option value="CNY">CNY (¥)</option><option value="CHF">CHF (Fr)</option>  
-                <option value="SEK">SEK (kr)</option><option value="NZD">NZD (NZ$)</option><option value="KRW">KRW (₩)</option>  
-                <option value="SGD">SGD (S$)</option><option value="HKD">HKD (HK$)</option><option value="NOK">NOK (kr)</option>  
-                <option value="DKK">DKK (kr)</option><option value="RUB">RUB (₽)</option><option value="BRL">BRL (R$)</option>  
-                <option value="ZAR">ZAR (R)</option><option value="MXN">MXN (Mex$)</option><option value="IDR">IDR (Rp)</option>  
-                <option value="MYR">MYR (RM)</option><option value="PHP">PHP (₱)</option><option value="TWD">TWD (NT$)</option>  
-                <option value="THB">THB (฿)</option><option value="VND">VND (₫)</option><option value="BDT">BDT (৳)</option>  
-             </select>  
-             <select id="expType" style="flex: 1; margin:0;">  
-               <option value="debited">Debit (Red)</option> <option value="credited">Credit (Green)</option>  
-             </select>  
-          </div>  
-          <label>Reason</label>  
-          <textarea id="expReason" placeholder="Where did you spend?"></textarea>  
+            <label>Amount (Limit 10 digits)</label>  
+            <input type="number" id="expAmount" placeholder="0.00" maxlength="10"/>  
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">  
+               <select id="expCurrency" style="flex: 1; margin:0;">  
+                  <option value="USD">USD ($)</option><option value="INR">INR (₹)</option><option value="EUR">EUR (€)</option>  
+                  <option value="GBP">GBP (£)</option><option value="JPY">JPY (¥)</option><option value="CAD">CAD (CA$)</option>  
+                  <option value="AUD">AUD (A$)</option><option value="CNY">CNY (¥)</option><option value="CHF">CHF (Fr)</option>  
+                  <option value="SEK">SEK (kr)</option><option value="NZD">NZD (NZ$)</option><option value="KRW">KRW (₩)</option>  
+                  <option value="SGD">SGD (S$)</option><option value="HKD">HKD (HK$)</option><option value="NOK">NOK (kr)</option>  
+                  <option value="DKK">DKK (kr)</option><option value="RUB">RUB (₽)</option><option value="BRL">BRL (R$)</option>  
+                  <option value="ZAR">ZAR (R)</option><option value="MXN">MXN (Mex$)</option><option value="IDR">IDR (Rp)</option>  
+                  <option value="MYR">MYR (RM)</option><option value="PHP">PHP (₱)</option><option value="TWD">TWD (NT$)</option>  
+                  <option value="THB">THB (฿)</option><option value="VND">VND (₫)</option><option value="BDT">BDT (৳)</option>  
+               </select>  
+               <select id="expType" style="flex: 1; margin:0;">  
+                 <option value="debited">Debit (Red)</option> <option value="credited">Credit (Green)</option>  
+               </select>  
+            </div>  
+            <label>Reason</label>  
+            <textarea id="expReason" placeholder="Where did you spend?"></textarea>  
         </div>  
 
         <input type="file" id="mediaInput" accept="image/*, video/*" style="display:none;">  
@@ -415,6 +416,12 @@
           <button class="color-btn" data-tool="color" data-color="#e74c3c" style="background:#e74c3c"></button>  
           <button class="color-btn" data-tool="color" data-color="#4CAF50" style="background:#4CAF50"></button>  
           <button class="color-btn" data-tool="color" data-color="#2196F3" style="background:#2196F3"></button>  
+
+          <!-- NEW: Rainbow/Custom Color Picker -->
+          <button class="color-picker-btn" id="customColorBtn"></button>
+          <!-- FIXED: Added default value red to ensure sliders are 100% visible on open -->
+          <input type="color" id="nativeColorPicker" style="display:none" value="#ff0000">
+
           <button class="tool-btn" id="eraserBtn" data-tool="eraser" title="Eraser">  
              <svg viewBox="0 0 24 24"><path d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 0 1-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.91-10.91c.79-.78 2.05-.78 2.84 0zM4.22 15.58l3.54 3.53c.78.79 2.04.79 2.83 0l8.48-8.48-4.95-4.95-8.48 8.48c-.78.79-.78 2.04 0 2.83z"/></svg>  
           </button>  
@@ -914,6 +921,9 @@
        ctx.strokeStyle = '#000'; ctx.lineWidth = penSize; ctx.lineCap = 'round';  
        document.querySelectorAll('.color-btn').forEach(btn => enableSizeGesture(btn, 'color'));  
        enableSizeGesture(document.getElementById('eraserBtn'), 'eraser');  
+       
+       // Reset Rainbow button style
+       document.getElementById('customColorBtn').style.background = 'conic-gradient(red, yellow, lime, aqua, blue, magenta, red)';
     }  
       
     function saveAndCloseDrawing() {  
@@ -952,9 +962,32 @@
     function setEraser() { ctx.globalCompositeOperation = 'destination-out'; ctx.lineWidth = eraserSize; highlightTool(document.getElementById('eraserBtn')); }  
       
     function highlightTool(btn) {   
-       document.querySelectorAll('.color-btn, .tool-btn').forEach(b => b.classList.remove('active'));  
+       document.querySelectorAll('.color-btn, .tool-btn, .color-picker-btn').forEach(b => b.classList.remove('active'));  
        if(btn) btn.classList.add('active');  
     }  
+
+    // New Color Picker Logic
+    const colorInput = document.getElementById('nativeColorPicker');
+    const customBtn = document.getElementById('customColorBtn');
+
+    customBtn.addEventListener('click', () => {
+         // Fix: If color is black, force red so sliders appear at 100%
+         if(colorInput.value === '#000000'){
+             colorInput.value = '#ff0000';
+         }
+         colorInput.click();
+    });
+
+    colorInput.addEventListener('input', (e) => {
+        const color = e.target.value;
+        ctx.strokeStyle = color;
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.lineWidth = penSize;
+        
+        // Update button UI
+        customBtn.style.background = color;
+        highlightTool(customBtn);
+    });
   
     function enableSizeGesture(btn, type) {  
        let startX = 0; let startSize = type === 'eraser' ? eraserSize : penSize; let isSliding = false;  
@@ -1120,5 +1153,6 @@
         }  
     });  
 </script>  
+
 </body>  
 </html>
