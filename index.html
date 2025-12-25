@@ -1,1105 +1,1124 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Quick Note ET</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600&family=Source+Code+Pro:wght@400;600&family=Nunito:wght@400;600&family=Luckiest+Guy&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      /* Default (Light) Theme Variables */
-      --primary-color: #4CAF50;
-      --bg-color: #f4f7f6;
-      --card-bg: #ffffff;
-      --text-main: #333333;
-      --text-sub: #666666;
-      --border-color: #dddddd;
-      --input-bg: #ffffff;
-      --modal-bg: #ffffff;
-      --sheet-bg: #f2f2f7;
-      --highlight-bg: #00e676;
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>  
+  <title>Quick Note ET</title>  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600&family=Source+Code+Pro:wght@400;600&family=Nunito:wght@400;600&family=Luckiest+Guy&display=swap" rel="stylesheet">  
+  <style>  
+    :root {  
+      /* Default (Light) Theme Variables */  
+      --primary-color: #4CAF50;  
+      --bg-color: #f4f7f6;  
+      --card-bg: #ffffff;  
+      --text-main: #333333;  
+      --text-sub: #666666;  
+      --border-color: #dddddd;  
+      --input-bg: #ffffff;  
+      --modal-bg: #ffffff;  
+      --sheet-bg: #f2f2f7;  
+      --highlight-bg: #00e676;  
+    }  
+    /* Dark Theme Variables */  
+    body.dark-mode {  
+      --primary-color: #66bb6a;  
+      --bg-color: #121212;  
+      --card-bg: #1e1e1e;  
+      --text-main: #e0e0e0;  
+      --text-sub: #aaaaaa;  
+      --border-color: #333333;  
+      --input-bg: #2c2c2c;  
+      --modal-bg: #1e1e1e;  
+      --sheet-bg: #1c1c1e;  
+      --highlight-bg: #00703c;  
+    }  
+
+    * { margin:0; padding:0; box-sizing:border-box; outline: none; -webkit-tap-highlight-color: transparent; }  
+    body { font-family: 'Poppins', sans-serif; background: var(--bg-color); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: background 0.3s, color 0.3s; }  
+
+    /* --- AUTH STYLES --- */  
+    #authOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--modal-bg); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }  
+    .auth-box { text-align: center; width: 100%; max-width: 320px; }  
+    .auth-title { font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 10px; }  
+    .auth-sub { font-size: 14px; color: var(--text-sub); margin-bottom: 25px; }  
+    .input-wrapper { position: relative; width: 100%; margin-bottom: 15px; }  
+    .auth-input { width: 100%; padding: 15px; border: 2px solid var(--border-color); border-radius: 12px; font-size: 20px; text-align: center; letter-spacing: 2px; font-weight: 600; background: var(--input-bg); color: var(--text-main); }  
+    .auth-input:focus { border-color: var(--primary-color); }  
+    .auth-btn { width: 100%; padding: 12px; background: var(--primary-color); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 16px; margin-top: 5px;}  
+    .recovery-section { width: 100%; display: none; animation: fadeIn 0.3s; }  
+    .recovery-link { color: #888; font-size: 13px; text-decoration: underline; cursor: pointer; margin-top: 25px; display: block; }  
+    .reveal-box { position: relative; width: 100%; margin-top: 15px; display: none; }  
+    .reveal-input { width: 100%; padding: 12px 45px 12px 15px; border: 2px solid var(--primary-color); background: #e8f5e9; border-radius: 10px; font-size: 18px; font-weight: 700; text-align: center; color: #333; }  
+    .copy-btn-inside { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 5px; }  
+    .copy-btn-inside svg { width: 20px; height: 20px; fill: var(--primary-color); }  
+
+    /* Main Header */  
+    header { background: var(--modal-bg); padding: 10px 20px; height: 70px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 100; display: flex; align-items: center; justify-content: space-between; position: relative; transition: background 0.3s; }  
+    .header-default { width: 100%; display: flex; align-items: center; justify-content: space-between; }  
+    .title-group { display: flex; flex-direction: column; }  
+    .app-title { font-size: 20px; font-weight: 700; color: var(--primary-color); }  
+    .sub-title { font-size: 11px; color: var(--text-sub); }  
+    .header-icons { display: flex; gap: 8px; align-items: center; }  
+    .icon-btn { background: transparent; border: none; padding: 8px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }  
+    .icon-btn:active { background: rgba(0,0,0,0.1); }  
+    .icon-btn svg { width: 24px; height: 24px; fill: var(--text-main); }  
+
+    /* Sidebar Styles */  
+    .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 199; display: none; }   
+    .sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: var(--modal-bg); z-index: 200; transform: translateX(-100%); transition: transform 0.3s ease; box-shadow: 2px 0 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; }  
+    .sidebar.open { transform: translateX(0); }  
+    .sidebar-header { padding: 25px 20px; border-bottom: 1px solid var(--border-color); background: var(--primary-color); color: white; }  
+    .sidebar-title { font-size: 20px; font-weight: 700; }  
+    .sidebar-menu { flex: 1; overflow-y: auto; padding: 10px 0; }  
+    .sidebar-section-title { font-size: 12px; font-weight: 600; color: var(--text-sub); padding: 15px 20px 5px; text-transform: uppercase; }  
+    .sidebar-item { padding: 12px 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; color: var(--text-main); font-size: 15px; }  
+    .sidebar-item:active { background: rgba(0,0,0,0.05); }  
+    .sidebar-item svg { width: 22px; height: 22px; fill: var(--text-sub); }  
+
+    /* Theme Options */  
+    .theme-options-container { display: none; flex-direction: column; background: rgba(0,0,0,0.02); }  
+    .theme-opt {   
+        padding: 12px 20px 12px 55px;   
+        display: flex;   
+        align-items: center;   
+        justify-content: space-between;  
+        gap: 10px;   
+        font-size: 14px;   
+        color: var(--text-main);   
+        cursor: pointer;   
+    }  
+    .arrow-icon { width: 16px; height: 16px; margin-left: auto; transition: transform 0.3s; }  
+    .sidebar-item.expanded .arrow-icon { transform: rotate(180deg); }  
+
+    /* Search Header */  
+    .header-search { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--modal-bg); padding: 0 15px; display: none; align-items: center; gap: 10px; z-index: 101; }  
+    .search-input-expanded { flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-size: 15px; }  
+    .highlight-text { background-color: var(--highlight-bg); color: #000; font-weight: 700; border-radius: 2px; padding: 0 1px; }  
+
+    main { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; scroll-behavior: smooth; }  
+    .empty-state { text-align: center; margin-top: 50px; color: var(--text-sub); display: none; }  
+    .empty-state svg { width: 60px; height: 60px; fill: var(--border-color); margin-bottom: 15px; }  
+
+    /* Note Card */  
+    .note-item { background: var(--card-bg); border-radius: 16px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; animation: fadeIn 0.3s ease-out forwards; border: 1px solid var(--border-color); user-select: none; /* Disable default selection to handle Long Press */ }  
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }  
+    .note-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }  
+    .note-title { font-weight: 700; font-size: 16px; color: var(--text-main); width: 85%; line-height: 1.4; }  
+    .menu-btn { background: transparent; border: none; padding: 8px; cursor: pointer; border-radius: 50%; margin-right: -8px; margin-top: -8px; }  
+    .menu-btn svg { width: 22px; height: 22px; fill: var(--text-sub); }  
+    .note-category { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 10px; background: #e3f2fd; color: #1976d2; }  
+    .cat-expense-debited { background: #fce4ec; color: #c2185b; }  
+    .cat-expense-credited { background: #e8f5e9; color: #388e3c; }  
+    .note-body { font-size: 14px; color: var(--text-sub); line-height: 1.6; white-space: pre-wrap; word-wrap: break-word; }  
+    .note-body-truncated { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }  
+    .see-more-link { color: var(--primary-color); font-size: 13px; font-weight: 600; cursor: pointer; display: inline-block; margin-top: 4px; }  
+    .note-footer { margin-top: 15px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px; }  
+    .note-timestamp { font-size: 11px; color: #999; }  
+    .media-container { margin-top: 10px; border-radius: 12px; overflow: hidden; max-height: 200px; background: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; }  
+    .media-container img, .media-container video { max-width: 100%; max-height: 200px; object-fit: contain; }  
+    .amount-display { font-size: 20px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 5px; }  
+
+    /* FAB */  
+    .fab-container { position: fixed; bottom: 30px; right: 25px; z-index: 90; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; }  
+    .fab { width: 60px; height: 60px; background: var(--primary-color); border-radius: 50%; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s; }  
+    .fab:active { transform: scale(0.9); }  
+    .fab svg { width: 28px; height: 28px; fill: white; transition: 0.3s; }  
+    .fab.rotate svg { transform: rotate(45deg); }  
+    .fab-options { display: none; flex-direction: column; align-items: flex-end; gap: 12px; animation: slideUpFab 0.2s; }  
+    @keyframes slideUpFab { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }  
+    .fab-opt-btn { display: flex; align-items: center; gap: 10px; background: var(--modal-bg); padding: 10px 15px; border-radius: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text-main); border: none; }  
+    .fab-opt-btn svg { width: 20px; height: 20px; fill: var(--primary-color); }  
+
+    /* Modal Structure */  
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; flex-direction: column; animation: fadeIn 0.2s; align-items: center; justify-content: center;}  
+    .modal { background: var(--modal-bg); width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; transition: background 0.3s; }  
+    @media (min-width: 600px) { .modal { width: 90%; height: 90%; border-radius: 20px; } }  
+    .modal-header { padding: 0 15px; border-bottom: none; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; background: var(--modal-bg); height: 60px; z-index: 10; opacity: 1; }  
+    .close-modal { background: transparent; border: none; font-size: 28px; color: var(--text-main); cursor: pointer; display: flex; align-items: center; height: 100%; padding: 0 10px; }  
+    .modal-body { padding: 20px; overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; background: var(--modal-bg); }  
+
+    /* Hide Header in Entry & Drawing for "Full Page" look */  
+    #entryModal .modal-header, #drawingModal .modal-header { display: none !important; }  
+    #entryModal .modal-body, #drawingModal .modal-body { padding-top: 40px; }  
+
+    /* Note Input */  
+    .note-title-input { font-size: 22px; font-weight: 700; border: none; outline: none; width: 100%; margin-bottom: 5px; background: transparent; color: var(--text-main); }  
+    
+    /* UPDATED: Added white-space: pre-wrap and overflow-x: hidden to prevent scrolling */
+    .note-body-input { flex: 1; height: 100%; font-size: 16px; line-height: 1.6; border: none; outline: none; width: 100%; resize: none; background: transparent; font-family: inherit; margin-top: 0; color: var(--text-main); white-space: pre-wrap; word-wrap: break-word; overflow-x: hidden; }  
+    
+    /* Flex containers for Full Page writing */
+    #noteFields { display: flex; flex-direction: column; flex: 1; height: 100%; }
+    /* UPDATED: Expense Fields also full height */
+    #expenseFields { display: none; flex-direction: column; flex: 1; height: 100%; }
+    /* UPDATED: Expense Reason textarea fills space and wraps */
+    #expReason { flex: 1; resize: none; white-space: pre-wrap; word-wrap: break-word; overflow-x: hidden; }
+
+    input, textarea, select { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; font-family: inherit; font-size: 15px; margin-top: 5px; margin-bottom: 15px; background: var(--input-bg); color: var(--text-main); }  
+    #entryModal input, #entryModal textarea { border-color: transparent; }  
+    label { font-size: 12px; font-weight: 600; color: var(--text-sub); display: block; }  
+    .file-input-wrapper { border: 2px dashed var(--border-color); padding: 20px; text-align: center; border-radius: 12px; cursor: pointer; display: block; margin-bottom: 10px; margin-top: auto; }  
+    .file-preview { width: 100%; height: auto; max-height: 300px; object-fit: contain; display: none; margin-top: 10px; border-radius: 8px; margin-bottom: 15px; }  
+
+    /* Drawing Modal */  
+    #drawingModal .modal-body { padding: 0; position: relative; background: #fff; }  
+    canvas { background: #fff; display: block; width: 100%; height: 100%; touch-action: none; }  
+    .drawing-tools { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: #fff; padding: 10px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; gap: 10px; align-items: center; }  
+    .color-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }  
+    .color-btn.active { border-color: #333; transform: scale(1.1); }  
+    .tool-btn { background: #eee; border: none; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }  
+    .tool-btn.active { background: var(--primary-color); color: white; }  
+    .tool-btn svg { width: 18px; height: 18px; fill: currentColor; }  
+
+    /* Security Modal */  
+    #securityModal .modal { height: auto; max-width: 350px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin: auto; background: var(--modal-bg); }  
+    #securityModal { align-items: center; background: rgba(0,0,0,0.6); }  
+    .enable-btn { background: #4CAF50; color: white; width: 100%; padding: 12px; border:none; border-radius:10px; font-weight:600; margin-bottom: 10px; cursor: pointer; }  
+    .disable-btn { background: #ffebee; color: #c2185b; border: 1px solid #ffcdd2; width: 100%; padding: 12px; border-radius:10px; font-weight:600; cursor: pointer; display: none; }  
+
+    /* Action Sheet */  
+    .action-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 2000; display: none; }  
+    .action-sheet { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--sheet-bg); border-radius: 20px 20px 0 0; padding: 20px; animation: slideUpSheet 0.25s; }  
+    @keyframes slideUpSheet { from { transform: translateY(100%); } to { transform: translateY(0); } }  
+    .sheet-handle { width: 40px; height: 5px; background: #ccc; border-radius: 3px; margin: 0 auto 20px; }  
+    .action-btn-group { background: var(--modal-bg); border-radius: 14px; overflow: hidden; margin-bottom: 15px; }  
+    .action-btn { width: 100%; padding: 18px; text-align: center; background: var(--modal-bg); border: none; font-size: 17px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; border-bottom: 1px solid var(--border-color); color: #007aff; }  
+    .action-btn:last-child { border-bottom: none; }  
+    .action-btn.delete { color: #ff3b30; font-weight: 600; }  
+    .action-btn.cancel { background: var(--modal-bg); border-radius: 14px; color: #007aff; font-weight: 600; border: none; }  
+    .action-btn svg { width: 20px; height: 20px; fill: currentColor; }  
+
+    .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #333; color: white; padding: 12px 24px; border-radius: 50px; font-size: 14px; z-index: 3000; opacity: 0; transition: all 0.4s; }  
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }  
+
+    .radio-group { display: flex; gap: 15px; margin-bottom: 15px; }  
+    .radio-label { display: flex; align-items: center; gap: 5px; font-weight: 500; cursor: pointer; color: var(--text-main); }  
+    .radio-label input { width: auto; margin: 0; }  
+
+    /* Media Viewer Modal */  
+    #mediaViewerOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; align-items: center; justify-content: center; }  
+    #mediaViewerContent { max-width: 100%; max-height: 100%; object-fit: contain; }  
+    .close-viewer { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 30px; background: transparent; border: none; cursor: pointer; z-index: 5001; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
+
+    /* Fix: Details Page Text Wrapping */
+    #fullTextContent {
+       white-space: pre-wrap; /* Preserves new lines */
+       word-wrap: break-word; /* Breaks long words to next line */
+       overflow-wrap: break-word; /* Standard property for breaking words */
+       width: 100%;
+       line-height: 1.6;
+       color: var(--text-main);
     }
-
-    /* Dark Theme Variables */
-    body.dark-mode {
-      --primary-color: #66bb6a;
-      --bg-color: #121212;
-      --card-bg: #1e1e1e;
-      --text-main: #e0e0e0;
-      --text-sub: #aaaaaa;
-      --border-color: #333333;
-      --input-bg: #2c2c2c;
-      --modal-bg: #1e1e1e;
-      --sheet-bg: #1c1c1e;
-      --highlight-bg: #00703c;
-    }
-
-    * { margin:0; padding:0; box-sizing:border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Poppins', sans-serif; background: var(--bg-color); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: background 0.3s, color 0.3s; }
-
-    /* --- AUTH STYLES --- */
-    #authOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--modal-bg); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-    .auth-box { text-align: center; width: 100%; max-width: 320px; }
-    .auth-title { font-size: 24px; font-weight: 700; color: var(--primary-color); margin-bottom: 10px; }
-    .auth-sub { font-size: 14px; color: var(--text-sub); margin-bottom: 25px; }
-    .input-wrapper { position: relative; width: 100%; margin-bottom: 15px; }
-    .auth-input { width: 100%; padding: 15px; border: 2px solid var(--border-color); border-radius: 12px; font-size: 20px; text-align: center; letter-spacing: 2px; font-weight: 600; background: var(--input-bg); color: var(--text-main); }
-    .auth-input:focus { border-color: var(--primary-color); }
-    .auth-btn { width: 100%; padding: 12px; background: var(--primary-color); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 16px; margin-top: 5px;}
-    .recovery-section { width: 100%; display: none; animation: fadeIn 0.3s; }
-    .recovery-link { color: #888; font-size: 13px; text-decoration: underline; cursor: pointer; margin-top: 25px; display: block; }
-    .reveal-box { position: relative; width: 100%; margin-top: 15px; display: none; }
-    .reveal-input { width: 100%; padding: 12px 45px 12px 15px; border: 2px solid var(--primary-color); background: #e8f5e9; border-radius: 10px; font-size: 18px; font-weight: 700; text-align: center; color: #333; }
-    .copy-btn-inside { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 5px; }
-    .copy-btn-inside svg { width: 20px; height: 20px; fill: var(--primary-color); }
-
-    /* Main Header */
-    header { background: var(--modal-bg); padding: 10px 20px; height: 70px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 100; display: flex; align-items: center; justify-content: space-between; position: relative; transition: background 0.3s; }
-    .header-default { width: 100%; display: flex; align-items: center; justify-content: space-between; }
-    .title-group { display: flex; flex-direction: column; }
-    .app-title { font-size: 20px; font-weight: 700; color: var(--primary-color); }
-    .sub-title { font-size: 11px; color: var(--text-sub); }
-    .header-icons { display: flex; gap: 8px; align-items: center; }
-    .icon-btn { background: transparent; border: none; padding: 8px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .icon-btn:active { background: rgba(0,0,0,0.1); }
-    .icon-btn svg { width: 24px; height: 24px; fill: var(--text-main); }
-    
-    /* Sidebar Styles */
-    .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 199; display: none; } 
-    
-    .sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: var(--modal-bg); z-index: 200; transform: translateX(-100%); transition: transform 0.3s ease; box-shadow: 2px 0 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-    .sidebar.open { transform: translateX(0); }
-    
-    .sidebar-header { padding: 25px 20px; border-bottom: 1px solid var(--border-color); background: var(--primary-color); color: white; }
-    .sidebar-title { font-size: 20px; font-weight: 700; }
-    
-    .sidebar-menu { flex: 1; overflow-y: auto; padding: 10px 0; }
-    .sidebar-section-title { font-size: 12px; font-weight: 600; color: var(--text-sub); padding: 15px 20px 5px; text-transform: uppercase; }
-    
-    .sidebar-item { padding: 12px 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; color: var(--text-main); font-size: 15px; }
-    .sidebar-item:active { background: rgba(0,0,0,0.05); }
-    .sidebar-item svg { width: 22px; height: 22px; fill: var(--text-sub); }
-    
-    /* Theme Options: Hidden by default, nested */
-    .theme-options-container { display: none; flex-direction: column; background: rgba(0,0,0,0.02); }
-    /* CHANGED: justify-content space-between to push radio to right, text to left */
-    .theme-opt { 
-        padding: 12px 20px 12px 55px; 
-        display: flex; 
-        align-items: center; 
-        justify-content: space-between; /* This pushes items apart */
-        gap: 10px; 
-        font-size: 14px; 
-        color: var(--text-main); 
-        cursor: pointer; 
-    }
-    .arrow-icon { width: 16px; height: 16px; margin-left: auto; transition: transform 0.3s; }
-    .sidebar-item.expanded .arrow-icon { transform: rotate(180deg); }
-
-    /* Search Header */
-    .header-search { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--modal-bg); padding: 0 15px; display: none; align-items: center; gap: 10px; z-index: 101; }
-    .search-input-expanded { flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-size: 15px; }
-    .highlight-text { background-color: var(--highlight-bg); color: #000; font-weight: 700; border-radius: 2px; padding: 0 1px; }
-
-    main { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; scroll-behavior: smooth; }
-    .empty-state { text-align: center; margin-top: 50px; color: var(--text-sub); display: none; }
-    .empty-state svg { width: 60px; height: 60px; fill: var(--border-color); margin-bottom: 15px; }
-
-    /* Note Card */
-    .note-item { background: var(--card-bg); border-radius: 16px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; animation: fadeIn 0.3s ease-out forwards; border: 1px solid var(--border-color); }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .note-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-    .note-title { font-weight: 700; font-size: 16px; color: var(--text-main); width: 85%; line-height: 1.4; }
-    .menu-btn { background: transparent; border: none; padding: 8px; cursor: pointer; border-radius: 50%; margin-right: -8px; margin-top: -8px; }
-    .menu-btn svg { width: 22px; height: 22px; fill: var(--text-sub); }
-    .note-category { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 10px; background: #e3f2fd; color: #1976d2; }
-    .cat-expense-debited { background: #fce4ec; color: #c2185b; }
-    .cat-expense-credited { background: #e8f5e9; color: #388e3c; }
-    .note-body { font-size: 14px; color: var(--text-sub); line-height: 1.6; white-space: pre-wrap; word-wrap: break-word; }
-    .note-body-truncated { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-    .see-more-link { color: var(--primary-color); font-size: 13px; font-weight: 600; cursor: pointer; display: inline-block; margin-top: 4px; }
-    .note-footer { margin-top: 15px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px; }
-    .note-timestamp { font-size: 11px; color: #999; }
-    .media-container { margin-top: 10px; border-radius: 12px; overflow: hidden; max-height: 200px; background: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-    .media-container img, .media-container video { max-width: 100%; max-height: 200px; object-fit: contain; }
-    .amount-display { font-size: 20px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 5px; }
-
-    /* FAB */
-    .fab-container { position: fixed; bottom: 30px; right: 25px; z-index: 90; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; }
-    .fab { width: 60px; height: 60px; background: var(--primary-color); border-radius: 50%; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s; }
-    .fab:active { transform: scale(0.9); }
-    .fab svg { width: 28px; height: 28px; fill: white; transition: 0.3s; }
-    .fab.rotate svg { transform: rotate(45deg); }
-    .fab-options { display: none; flex-direction: column; align-items: flex-end; gap: 12px; animation: slideUpFab 0.2s; }
-    @keyframes slideUpFab { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .fab-opt-btn { display: flex; align-items: center; gap: 10px; background: var(--modal-bg); padding: 10px 15px; border-radius: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text-main); border: none; }
-    .fab-opt-btn svg { width: 20px; height: 20px; fill: var(--primary-color); }
-
-    /* Modal Structure */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: none; flex-direction: column; animation: fadeIn 0.2s; align-items: center; justify-content: center;}
-    
-    .modal { background: var(--modal-bg); width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; transition: background 0.3s; }
-    @media (min-width: 600px) { .modal { width: 90%; height: 90%; border-radius: 20px; } }
-    
-    /* CHANGED: Header for Modals - Removed border, invisible background */
-    .modal-header { 
-      padding: 0 15px; 
-      /* border-bottom: 1px solid var(--border-color); */ /* REMOVED BORDER */
-      border-bottom: none; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      flex-shrink: 0; 
-      background: var(--modal-bg); /* Matches page background */
-      height: 60px; 
-      z-index: 10;
-      opacity: 1;
-    }
-    
-    .close-modal { 
-      background: transparent; 
-      border: none; 
-      font-size: 28px; 
-      color: var(--text-main); 
-      cursor: pointer; 
-      display: flex; 
-      align-items: center; 
-      height: 100%; 
-      padding: 0 10px;
-    }
-
-    .modal-body { padding: 20px; overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; background: var(--modal-bg); }
-
-    /* --- REQUESTED CHANGE: Hide Header in Entry & Drawing for "Full Page" look --- */
-    #entryModal .modal-header,
-    #drawingModal .modal-header {
-      display: none !important;
-    }
-    /* Add padding since header is gone */
-    #entryModal .modal-body,
-    #drawingModal .modal-body {
-      padding-top: 40px; 
-    }
-
-    /* Note Input */
-    .note-title-input { font-size: 22px; font-weight: 700; border: none; outline: none; width: 100%; margin-bottom: 5px; background: transparent; color: var(--text-main); }
-    .note-body-input { flex: 1; font-size: 16px; line-height: 1.6; border: none; outline: none; width: 100%; resize: none; background: transparent; font-family: inherit; margin-top: 0; color: var(--text-main); }
-    
-    input, textarea, select { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; font-family: inherit; font-size: 15px; margin-top: 5px; margin-bottom: 15px; background: var(--input-bg); color: var(--text-main); }
-    #entryModal input, #entryModal textarea { border-color: transparent; }
-    
-    label { font-size: 12px; font-weight: 600; color: var(--text-sub); display: block; }
-    .file-input-wrapper { border: 2px dashed var(--border-color); padding: 20px; text-align: center; border-radius: 12px; cursor: pointer; display: block; margin-bottom: 10px; margin-top: auto; }
-    .file-preview { width: 100%; height: auto; max-height: 300px; object-fit: contain; display: none; margin-top: 10px; border-radius: 8px; margin-bottom: 15px; }
-
-    /* Drawing Modal */
-    #drawingModal .modal-body { padding: 0; position: relative; background: #fff; } /* Canvas always white */
-    canvas { background: #fff; display: block; width: 100%; height: 100%; touch-action: none; }
-    .drawing-tools { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: #fff; padding: 10px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; gap: 10px; align-items: center; }
-    .color-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-    .color-btn.active { border-color: #333; transform: scale(1.1); }
-    .tool-btn { background: #eee; border: none; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
-    .tool-btn.active { background: var(--primary-color); color: white; }
-    .tool-btn svg { width: 18px; height: 18px; fill: currentColor; }
-
-    /* Security Modal */
-    #securityModal .modal { height: auto; max-width: 350px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin: auto; background: var(--modal-bg); }
-    /* No blur on security setup modal overlay either */
-    #securityModal { align-items: center; background: rgba(0,0,0,0.6); }
-    
-    .enable-btn { background: #4CAF50; color: white; width: 100%; padding: 12px; border:none; border-radius:10px; font-weight:600; margin-bottom: 10px; cursor: pointer; }
-    .disable-btn { background: #ffebee; color: #c2185b; border: 1px solid #ffcdd2; width: 100%; padding: 12px; border-radius:10px; font-weight:600; cursor: pointer; display: none; }
-
-    /* Action Sheet */
-    .action-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 2000; display: none; }
-    .action-sheet { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--sheet-bg); border-radius: 20px 20px 0 0; padding: 20px; animation: slideUpSheet 0.25s; }
-    @keyframes slideUpSheet { from { transform: translateY(100%); } to { transform: translateY(0); } }
-    .sheet-handle { width: 40px; height: 5px; background: #ccc; border-radius: 3px; margin: 0 auto 20px; }
-    .action-btn-group { background: var(--modal-bg); border-radius: 14px; overflow: hidden; margin-bottom: 15px; }
-    .action-btn { width: 100%; padding: 18px; text-align: center; background: var(--modal-bg); border: none; font-size: 17px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; border-bottom: 1px solid var(--border-color); color: #007aff; }
-    .action-btn:last-child { border-bottom: none; }
-    .action-btn.delete { color: #ff3b30; font-weight: 600; }
-    .action-btn.cancel { background: var(--modal-bg); border-radius: 14px; color: #007aff; font-weight: 600; border: none; }
-    .action-btn svg { width: 20px; height: 20px; fill: currentColor; }
-
-    .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #333; color: white; padding: 12px 24px; border-radius: 50px; font-size: 14px; z-index: 3000; opacity: 0; transition: all 0.4s; }
-    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-
-    .radio-group { display: flex; gap: 15px; margin-bottom: 15px; }
-    .radio-label { display: flex; align-items: center; gap: 5px; font-weight: 500; cursor: pointer; color: var(--text-main); }
-    .radio-label input { width: auto; margin: 0; }
-
-    /* Media Viewer Modal */
-    #mediaViewerOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; align-items: center; justify-content: center; }
-    #mediaViewerContent { max-width: 100%; max-height: 100%; object-fit: contain; }
-    
-    .close-viewer { 
-      position: absolute; top: 20px; right: 20px; 
-      color: #fff; font-size: 30px; background: transparent; border: none; cursor: pointer; z-index: 5001; 
-      text-shadow: 0 0 10px rgba(0,0,0,0.8);
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Auth Screen -->
-  <div id="authOverlay">
-    <div class="auth-box">
-      <div class="auth-title" id="authTitle">Locked</div>
-      <div class="auth-sub" id="authSub">Enter to access notes</div>
+  </style>  
+</head>  
+<body>  
+  
+<!-- Auth Screen -->  
+<div id="authOverlay">  
+    <div class="auth-box">  
+      <div class="auth-title" id="authTitle">Locked</div>  
+      <div class="auth-sub" id="authSub">Enter to access notes</div>  
       
-      <div id="pinModeUI" style="display:none; width:100%;">
-        <div class="input-wrapper">
-           <input type="password" id="authPinInput" class="auth-input" placeholder="Enter PIN" inputmode="numeric" pattern="[0-9]*">
-        </div>
-        <button class="auth-btn" onclick="checkPin()">Unlock</button>
-      </div>
+      <div id="pinModeUI" style="display:none; width:100%;">  
+        <div class="input-wrapper">  
+           <input type="password" id="authPinInput" class="auth-input" placeholder="Enter PIN" inputmode="numeric" pattern="[0-9]*">  
+        </div>  
+        <button class="auth-btn" onclick="checkPin()">Unlock</button>  
+      </div>  
 
-      <div id="passModeUI" style="display:none; width:100%;">
-        <div class="input-wrapper">
-           <input type="password" id="authPassInput" class="auth-input" placeholder="Enter Password">
-        </div>
-        <button class="auth-btn" onclick="checkPass()">Unlock</button>
-      </div>
+      <div id="passModeUI" style="display:none; width:100%;">  
+        <div class="input-wrapper">  
+           <input type="password" id="authPassInput" class="auth-input" placeholder="Enter Password">  
+        </div>  
+        <button class="auth-btn" onclick="checkPass()">Unlock</button>  
+      </div>  
 
-      <div id="forgetLink" class="recovery-link" onclick="showRecovery()">Forget PIN or Password?</div>
+      <div id="forgetLink" class="recovery-link" onclick="showRecovery()">Forget PIN or Password?</div>  
+        
+      <div id="recoveryUI" class="recovery-section">  
+        <p style="margin-bottom:10px; font-weight:600; font-size:18px; color:var(--text-main);">Recovery</p>  
+        <p style="font-size:13px; color:var(--text-sub); margin-bottom:15px;">Enter your recovery word to reveal your code.</p>  
+        <input type="text" id="recoveryInput" class="auth-input" placeholder="Enter Recovery Word" style="font-size:16px;">  
+        <button class="auth-btn" style="background:#333" onclick="verifyRecovery()">Verify & Show Code</button>  
+        <div id="revealSection" class="reveal-box">  
+           <input type="text" id="revealedCode" class="reveal-input" readonly>  
+           <button class="copy-btn-inside" onclick="copyCode()">  
+             <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>  
+           </button>  
+        </div>  
+        <button class="auth-btn" style="background:#eee; color:#333; margin-top:15px;" onclick="hideRecovery()">Back to Login</button>  
+      </div>  
+    </div>
+</div>
+
+<!-- Sidebar Overlay & Menu -->  
+<div class="sidebar-overlay" id="sidebarOverlay"></div>  
+<aside class="sidebar" id="sidebar">  
+    <div class="sidebar-header">  
+      <div class="sidebar-title">Quick Note ET</div>  
+    </div>  
+    <div class="sidebar-menu">  
+      <div class="sidebar-section-title">Settings & Privacy</div>  
+      <div class="sidebar-item" id="openSecurityBtn">  
+        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>  
+        Secure App  
+      </div>  
+
+      <!-- App Theme Accordion -->  
+      <div class="sidebar-item" id="themeToggleBtn" onclick="toggleThemeMenu()">  
+        <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>  
+        App Theme  
+        <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>  
+      </div>  
+        
+      <div class="theme-options-container" id="themeOptionsList">  
+         <label class="theme-opt">  
+            Light  
+            <input type="radio" name="appTheme" value="light" onclick="setTheme('light')">  
+         </label>  
+         <label class="theme-opt">  
+            Dark  
+            <input type="radio" name="appTheme" value="dark" onclick="setTheme('dark')">  
+         </label>  
+         <label class="theme-opt">  
+            System Default  
+            <input type="radio" name="appTheme" value="system" onclick="setTheme('system')">  
+         </label>  
+      </div>  
+    </div>
+</aside>
+
+<header>  
+    <div class="header-default" id="headerDefault">  
+      <div class="title-group">  
+        <div class="app-title">Quick Note ET</div>  
+        <div class="sub-title">Simple Note For You</div>  
+      </div>  
+      <div class="header-icons">  
+        <button class="icon-btn" id="openSearchBtn">  
+          <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>  
+        </button>  
+        <button class="icon-btn" id="mainMenuBtn">  
+          <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>  
+        </button>  
+      </div>  
+    </div>  
+    <div class="header-search" id="headerSearch">  
+      <input type="text" id="searchInput" class="search-input-expanded" placeholder="Search...">  
+      <button class="icon-btn" id="closeSearchBtn">  
+        <svg viewBox="0 0 24 24" style="fill: var(--text-sub);"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>  
+      </button>  
+    </div>  
+</header>
+
+<main id="notesList">  
+    <div class="empty-state" id="emptyState">  
+      <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>  
+      <p>No notes yet. Tap + to add one!</p>  
+    </div>  
+</main>
+
+<div class="fab-container">  
+    <div class="fab-options" id="fabOptions">  
+      <button class="fab-opt-btn" onclick="openEntry('note')">Text <svg viewBox="0 0 24 24"><path d="M2.5 4v3h5v12h3V7h5V4h-13zm19 5h-9v3h3v7h3v-7h3V9z"/></svg></button>  
+      <button class="fab-opt-btn" onclick="openEntry('image')">Image <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></button>  
+      <button class="fab-opt-btn" onclick="openDrawing()">Drawing <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>  
+      <button class="fab-opt-btn" onclick="openEntry('expense')">Expense <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></button>  
+    </div>  
+    <div class="fab" id="fabBtn"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>  
+</div>
+
+<div class="modal-overlay" id="securityModal">  
+    <div class="modal">  
+      <div class="modal-header">  
+         <button class="close-modal" id="closeSecurityModal">&times;</button>  
+         <div class="modal-title" style="color:var(--text-main); font-weight:700;">Secure App</div>  
+         <div style="width: 28px;"></div>  
+      </div>  
+      <div class="modal-body">  
+         <p style="color:var(--text-sub); margin-bottom:15px; font-size:13px;">Set a PIN or Password to protect your notes.</p>  
+         <div class="radio-group">  
+            <label class="radio-label"><input type="radio" name="secType" value="pin" checked onchange="toggleSecInputs()"> PIN</label>  
+            <label class="radio-label"><input type="radio" name="secType" value="password" onchange="toggleSecInputs()"> Password</label>  
+         </div>  
+         <div id="setupPinField">  
+            <label>Enter PIN (4-16 digits)</label>  
+            <input type="number" id="setupPinInput" placeholder="xxxx" maxlength="16">  
+         </div>  
+         <div id="setupPassField" style="display:none;">  
+            <label>Enter Password</label>  
+            <input type="text" id="setupPassInput" placeholder="MySecretPass123">  
+         </div>  
+         <label>Recovery Word (Required)</label>  
+         <input type="text" id="setupRecovery" placeholder="e.g. My pet name">  
+         <p style="color:#e74c3c; font-size:11px; margin-bottom:15px;">Use this word to reveal your code if forgotten.</p>  
+         <button class="enable-btn" onclick="saveSecurity()">Enable Security</button>  
+         <button id="disableSecBtn" class="disable-btn" onclick="disableSecurity()">Disable Security</button>  
+      </div>  
+    </div>
+</div>
+
+<div class="modal-overlay" id="entryModal">  
+    <div class="modal-header">  
+       <button class="close-modal" id="closeModal">&#8592;</button>  
+       <div style="width: 24px;"></div>   
+    </div>  
+    <div class="modal-body">  
+      <form id="entryForm" style="display:flex; flex-direction:column; height:100%;">  
+        <div id="noteFields">  
+          <input type="text" id="noteTitle" class="note-title-input" placeholder="Title" />  
+          <textarea id="noteBody" class="note-body-input" placeholder="Note"></textarea>  
+          <img id="previewImg" class="file-preview">  
+          <video id="previewVid" class="file-preview" controls></video>  
+        </div>  
+
+        <div id="expenseFields" style="display: none;">  
+          <label>Amount (Limit 10 digits)</label>  
+          <input type="number" id="expAmount" placeholder="0.00" maxlength="10"/>  
+          <div style="display: flex; gap: 10px; margin-bottom: 15px;">  
+             <select id="expCurrency" style="flex: 1; margin:0;">  
+                <option value="USD">USD ($)</option><option value="INR">INR (₹)</option><option value="EUR">EUR (€)</option>  
+                <option value="GBP">GBP (£)</option><option value="JPY">JPY (¥)</option><option value="CAD">CAD (CA$)</option>  
+                <option value="AUD">AUD (A$)</option><option value="CNY">CNY (¥)</option><option value="CHF">CHF (Fr)</option>  
+                <option value="SEK">SEK (kr)</option><option value="NZD">NZD (NZ$)</option><option value="KRW">KRW (₩)</option>  
+                <option value="SGD">SGD (S$)</option><option value="HKD">HKD (HK$)</option><option value="NOK">NOK (kr)</option>  
+                <option value="DKK">DKK (kr)</option><option value="RUB">RUB (₽)</option><option value="BRL">BRL (R$)</option>  
+                <option value="ZAR">ZAR (R)</option><option value="MXN">MXN (Mex$)</option><option value="IDR">IDR (Rp)</option>  
+                <option value="MYR">MYR (RM)</option><option value="PHP">PHP (₱)</option><option value="TWD">TWD (NT$)</option>  
+                <option value="THB">THB (฿)</option><option value="VND">VND (₫)</option><option value="BDT">BDT (৳)</option>  
+             </select>  
+             <select id="expType" style="flex: 1; margin:0;">  
+               <option value="debited">Debit (Red)</option> <option value="credited">Credit (Green)</option>  
+             </select>  
+          </div>  
+          <label>Reason</label>  
+          <textarea id="expReason" placeholder="Where did you spend?"></textarea>  
+        </div>  
+
+        <input type="file" id="mediaInput" accept="image/*, video/*" style="display:none;">  
+        <button type="button" id="removeMediaBtn" style="display:none; width:100%; padding:8px; background:#ffebee; color:red; border:none; border-radius:5px; margin-bottom: 20px;">Remove Media</button>  
+        <input type="hidden" id="editId">  
+      </form>  
+    </div>
+</div>
+
+<div class="modal-overlay" id="drawingModal">  
+    <div class="modal-header">  
+       <button class="close-modal" onclick="saveAndCloseDrawing()">&#8592;</button>  
+       <div class="modal-title" style="color: var(--text-main);">Drawing</div>  
+       <div style="width: 28px;"></div>  
+    </div>  
+    <div class="modal-body">  
+       <canvas id="drawCanvas"></canvas>  
+       <div class="drawing-tools">  
+          <button class="color-btn active" data-tool="color" data-color="#000" style="background:#000"></button>  
+          <button class="color-btn" data-tool="color" data-color="#e74c3c" style="background:#e74c3c"></button>  
+          <button class="color-btn" data-tool="color" data-color="#4CAF50" style="background:#4CAF50"></button>  
+          <button class="color-btn" data-tool="color" data-color="#2196F3" style="background:#2196F3"></button>  
+          <button class="tool-btn" id="eraserBtn" data-tool="eraser" title="Eraser">  
+             <svg viewBox="0 0 24 24"><path d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 0 1-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.91-10.91c.79-.78 2.05-.78 2.84 0zM4.22 15.58l3.54 3.53c.78.79 2.04.79 2.83 0l8.48-8.48-4.95-4.95-8.48 8.48c-.78.79-.78 2.04 0 2.83z"/></svg>  
+          </button>  
+       </div>  
+    </div>
+</div>
+
+<div id="mediaViewerOverlay">  
+     <button class="close-viewer" onclick="closeMediaViewer()">&times;</button>  
+     <img id="mediaViewerContent">  
+     <video id="mediaViewerVideo" controls style="display:none; max-width:100%; max-height:100%;"></video>  
+</div>
+
+<div class="action-sheet-overlay" id="actionSheet">  
+    <div class="action-sheet">  
+      <div class="sheet-handle"></div>  
+      <div class="action-btn-group">  
+        <!-- Copy Button Added -->
+        <button class="action-btn" id="actionCopy"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> Copy Text</button>  
+        <button class="action-btn" id="actionEdit"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> Edit Entry</button>  
+        <button class="action-btn delete" id="actionDelete"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Delete Entry</button>  
+      </div>  
+      <button class="action-btn cancel" id="actionClose">Cancel</button>  
+    </div>  
+</div>
+
+<div class="modal-overlay" id="textModal">  
+    <div class="modal">  
+      <div class="modal-header">  
+        <!-- Title is now dynamic -->
+        <h3 class="modal-title" id="detailModalTitle" style="color:var(--text-main);">Details</h3>  
+        <button class="close-modal" onclick="document.getElementById('textModal').style.display='none'">&times;</button>  
+      </div>  
+      <div class="modal-body">  
+        <div id="fullTextContent"></div>  
+      </div>  
+    </div>  
+</div>
+
+<div class="toast" id="toast">Entry Saved!</div>
+
+<script>  
+    // --- SECURITY LOGIC ---  
+    let securityConfig = JSON.parse(localStorage.getItem('quickNoteSecurity') || '{"enabled":false, "type":"pin", "code":"", "recovery":""}');  
+    const auth = {  
+      overlay: document.getElementById('authOverlay'),  
+      pinUI: document.getElementById('pinModeUI'),  
+      pinInput: document.getElementById('authPinInput'),  
+      passUI: document.getElementById('passModeUI'),  
+      forgetLink: document.getElementById('forgetLink'),  
+      recoveryUI: document.getElementById('recoveryUI'),  
+      recoveryInput: document.getElementById('recoveryInput'),  
+      revealSection: document.getElementById('revealSection'),  
+      revealedCode: document.getElementById('revealedCode'),  
+      passInput: document.getElementById('authPassInput'),  
+      menuBtn: document.getElementById('mainMenuBtn'),  
+      secBtn: document.getElementById('openSecurityBtn'),  
+      secModal: document.getElementById('securityModal'),  
+      closeSecModal: document.getElementById('closeSecurityModal'),  
+      disableSecBtn: document.getElementById('disableSecBtn'),  
+      sidebar: document.getElementById('sidebar'),  
+      sidebarOverlay: document.getElementById('sidebarOverlay')  
+    };  
+  
+    function checkSecurity() {  
+      if (securityConfig.enabled) {  
+        auth.overlay.style.display = 'flex';  
+        document.getElementById('authTitle').innerText = securityConfig.type === 'pin' ? 'Enter PIN' : 'Enter Password';  
+        auth.recoveryUI.style.display = 'none';  
+        auth.forgetLink.style.display = 'block';  
+        if (securityConfig.type === 'pin') {  
+          auth.pinUI.style.display = 'block';  
+          auth.passUI.style.display = 'none';  
+          auth.pinInput.value = "";  
+        } else {  
+          auth.pinUI.style.display = 'none';  
+          auth.passUI.style.display = 'block';  
+          auth.passInput.value = "";  
+        }  
+      }  
+    }  
+    function checkPin() { if (auth.pinInput.value === securityConfig.code) unlockApp(); else showAuthError(); }  
+    function checkPass() { if (auth.passInput.value === securityConfig.code) unlockApp(); else showAuthError(); }  
+    function showAuthError() {  
+       document.getElementById('authSub').innerText = "Wrong Code! Try Again.";  
+       document.getElementById('authSub').style.color = "red";  
+       navigator.vibrate(200);  
+    }  
+    function unlockApp() {  
+      auth.overlay.style.opacity = "0";  
+      setTimeout(() => { auth.overlay.style.display = "none"; auth.overlay.style.opacity = "1"; }, 300);  
+    }  
       
-      <div id="recoveryUI" class="recovery-section">
-        <p style="margin-bottom:10px; font-weight:600; font-size:18px; color:var(--text-main);">Recovery</p>
-        <p style="font-size:13px; color:var(--text-sub); margin-bottom:15px;">Enter your recovery word to reveal your code.</p>
-        <input type="text" id="recoveryInput" class="auth-input" placeholder="Enter Recovery Word" style="font-size:16px;">
-        <button class="auth-btn" style="background:#333" onclick="verifyRecovery()">Verify & Show Code</button>
-        <div id="revealSection" class="reveal-box">
-           <input type="text" id="revealedCode" class="reveal-input" readonly>
-           <button class="copy-btn-inside" onclick="copyCode()">
-             <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-           </button>
-        </div>
-        <button class="auth-btn" style="background:#eee; color:#333; margin-top:15px;" onclick="hideRecovery()">Back to Login</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Sidebar Overlay & Menu -->
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-title">Quick Note ET</div>
-    </div>
-    <div class="sidebar-menu">
-      <div class="sidebar-section-title">Settings & Privacy</div>
+    function showRecovery() {  
+       auth.pinUI.style.display = 'none'; auth.passUI.style.display = 'none'; auth.forgetLink.style.display = 'none';  
+       document.getElementById('authTitle').style.display = 'none';  
+       document.getElementById('authSub').style.display = 'none';  
+       auth.recoveryUI.style.display = 'block'; auth.revealSection.style.display = 'none'; auth.recoveryInput.value = '';  
+    }  
+    function hideRecovery() {  
+       document.getElementById('authTitle').style.display = 'block';  
+       document.getElementById('authSub').style.display = 'block';  
+       document.getElementById('authSub').innerText = 'Enter to access notes';  
+       document.getElementById('authSub').style.color = 'var(--text-sub)';  
+       auth.recoveryUI.style.display = 'none'; auth.forgetLink.style.display = 'block';  
+       if (securityConfig.type === 'pin') { auth.pinUI.style.display = 'block'; auth.pinInput.value = ""; }   
+       else { auth.passUI.style.display = 'block'; }  
+    }  
+    function verifyRecovery() {  
+       const word = auth.recoveryInput.value.trim();  
+       if (word && word.toLowerCase() === securityConfig.recovery.toLowerCase()) {  
+          auth.revealedCode.value = securityConfig.code; auth.revealSection.style.display = 'block';  
+       } else { alert('Incorrect Recovery Word'); auth.revealSection.style.display = 'none'; }  
+    }  
+    function copyCode() {  
+       const code = auth.revealedCode.value;  
+       navigator.clipboard.writeText(code).then(() => showToast('Copied: ' + code));  
+    }  
       
-      <div class="sidebar-item" id="openSecurityBtn">
-        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
-        Secure App
-      </div>
-
-      <!-- App Theme Accordion -->
-      <div class="sidebar-item" id="themeToggleBtn" onclick="toggleThemeMenu()">
-        <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
-        App Theme
-        <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-      </div>
+    // Sidebar Logic  
+    function toggleSidebar(open) {  
+       if (open) {  
+          auth.sidebar.classList.add('open');  
+          auth.sidebarOverlay.style.display = 'block';  
+       } else {  
+          auth.sidebar.classList.remove('open');  
+          auth.sidebarOverlay.style.display = 'none';  
+          // Collapse theme menu on close  
+          document.getElementById('themeOptionsList').style.display = 'none';  
+          document.getElementById('themeToggleBtn').classList.remove('expanded');  
+       }  
+    }  
       
-      <!-- CHANGED: Items now text-left, circle-right -->
-      <div class="theme-options-container" id="themeOptionsList">
-         <label class="theme-opt">
-            Light
-            <input type="radio" name="appTheme" value="light" onclick="setTheme('light')">
-         </label>
-         <label class="theme-opt">
-            Dark
-            <input type="radio" name="appTheme" value="dark" onclick="setTheme('dark')">
-         </label>
-         <label class="theme-opt">
-            System Default
-            <input type="radio" name="appTheme" value="system" onclick="setTheme('system')">
-         </label>
-      </div>
-
-    </div>
-  </aside>
-
-  <header>
-    <div class="header-default" id="headerDefault">
-      <div class="title-group">
-        <div class="app-title">Quick Note ET</div>
-        <div class="sub-title">Simple Note For You</div>
-      </div>
-      <div class="header-icons">
-        <button class="icon-btn" id="openSearchBtn">
-          <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-        </button>
-        <button class="icon-btn" id="mainMenuBtn">
-          <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-        </button>
-      </div>
-    </div>
-    <div class="header-search" id="headerSearch">
-      <input type="text" id="searchInput" class="search-input-expanded" placeholder="Search...">
-      <button class="icon-btn" id="closeSearchBtn">
-        <svg viewBox="0 0 24 24" style="fill: var(--text-sub);"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-      </button>
-    </div>
-  </header>
-
-  <main id="notesList">
-    <div class="empty-state" id="emptyState">
-      <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
-      <p>No notes yet. Tap + to add one!</p>
-    </div>
-  </main>
-
-  <div class="fab-container">
-    <div class="fab-options" id="fabOptions">
-      <button class="fab-opt-btn" onclick="openEntry('note')">Text <svg viewBox="0 0 24 24"><path d="M2.5 4v3h5v12h3V7h5V4h-13zm19 5h-9v3h3v7h3v-7h3V9z"/></svg></button>
-      <button class="fab-opt-btn" onclick="openEntry('image')">Image <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></button>
-      <button class="fab-opt-btn" onclick="openDrawing()">Drawing <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
-      <button class="fab-opt-btn" onclick="openEntry('expense')">Expense <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></button>
-    </div>
-    <div class="fab" id="fabBtn"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>
-  </div>
-
-  <div class="modal-overlay" id="securityModal">
-    <div class="modal">
-      <div class="modal-header">
-         <button class="close-modal" id="closeSecurityModal">&times;</button>
-         <div class="modal-title" style="color:var(--text-main); font-weight:700;">Secure App</div>
-         <div style="width: 28px;"></div>
-      </div>
-      <div class="modal-body">
-         <p style="color:var(--text-sub); margin-bottom:15px; font-size:13px;">Set a PIN or Password to protect your notes.</p>
-         <div class="radio-group">
-            <label class="radio-label"><input type="radio" name="secType" value="pin" checked onchange="toggleSecInputs()"> PIN</label>
-            <label class="radio-label"><input type="radio" name="secType" value="password" onchange="toggleSecInputs()"> Password</label>
-         </div>
-         <div id="setupPinField">
-            <label>Enter PIN (4-16 digits)</label>
-            <input type="number" id="setupPinInput" placeholder="xxxx" maxlength="16">
-         </div>
-         <div id="setupPassField" style="display:none;">
-            <label>Enter Password</label>
-            <input type="text" id="setupPassInput" placeholder="MySecretPass123">
-         </div>
-         <label>Recovery Word (Required)</label>
-         <input type="text" id="setupRecovery" placeholder="e.g. My pet name">
-         <p style="color:#e74c3c; font-size:11px; margin-bottom:15px;">Use this word to reveal your code if forgotten.</p>
-         
-         <button class="enable-btn" onclick="saveSecurity()">Enable Security</button>
-         <button id="disableSecBtn" class="disable-btn" onclick="disableSecurity()">Disable Security</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="entryModal">
-    <div class="modal-header">
-       <!-- Back button style matching request: solid background, no blur -->
-       <button class="close-modal" id="closeModal">&#8592;</button>
-       <div style="width: 24px;"></div> 
-    </div>
-    
-    <div class="modal-body">
-      <form id="entryForm" style="display:flex; flex-direction:column; height:100%;">
-        <div id="noteFields">
-          <input type="text" id="noteTitle" class="note-title-input" placeholder="Title" />
-          <textarea id="noteBody" class="note-body-input" placeholder="Note"></textarea>
-          <img id="previewImg" class="file-preview">
-          <video id="previewVid" class="file-preview" controls></video>
-        </div>
-
-        <div id="expenseFields" style="display: none;">
-          <label>Amount (Limit 10 digits)</label>
-          <input type="number" id="expAmount" placeholder="0.00" maxlength="10"/>
-          <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-             <select id="expCurrency" style="flex: 1; margin:0;">
-                <option value="USD">USD ($)</option><option value="INR">INR (₹)</option><option value="EUR">EUR (€)</option>
-                <option value="GBP">GBP (£)</option><option value="JPY">JPY (¥)</option><option value="CAD">CAD (CA$)</option>
-                <option value="AUD">AUD (A$)</option><option value="CNY">CNY (¥)</option><option value="CHF">CHF (Fr)</option>
-                <option value="SEK">SEK (kr)</option><option value="NZD">NZD (NZ$)</option><option value="KRW">KRW (₩)</option>
-                <option value="SGD">SGD (S$)</option><option value="HKD">HKD (HK$)</option><option value="NOK">NOK (kr)</option>
-                <option value="DKK">DKK (kr)</option><option value="RUB">RUB (₽)</option><option value="BRL">BRL (R$)</option>
-                <option value="ZAR">ZAR (R)</option><option value="MXN">MXN (Mex$)</option><option value="IDR">IDR (Rp)</option>
-                <option value="MYR">MYR (RM)</option><option value="PHP">PHP (₱)</option><option value="TWD">TWD (NT$)</option>
-                <option value="THB">THB (฿)</option><option value="VND">VND (₫)</option><option value="BDT">BDT (৳)</option>
-             </select>
-             <select id="expType" style="flex: 1; margin:0;">
-               <option value="debited">Debit (Red)</option> <option value="credited">Credit (Green)</option>
-             </select>
-          </div>
-          <label>Reason</label>
-          <textarea id="expReason" rows="2" placeholder="Where did you spend?"></textarea>
-        </div>
-
-        <input type="file" id="mediaInput" accept="image/*, video/*" style="display:none;">
-        <button type="button" id="removeMediaBtn" style="display:none; width:100%; padding:8px; background:#ffebee; color:red; border:none; border-radius:5px; margin-bottom: 20px;">Remove Media</button>
-        <input type="hidden" id="editId">
-      </form>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="drawingModal">
-    <div class="modal-header">
-       <button class="close-modal" onclick="saveAndCloseDrawing()">&#8592;</button>
-       <div class="modal-title" style="color: var(--text-main);">Drawing</div>
-       <div style="width: 28px;"></div> <!-- Spacer -->
-    </div>
-    <div class="modal-body">
-       <canvas id="drawCanvas"></canvas>
-       <div class="drawing-tools">
-          <button class="color-btn active" data-tool="color" data-color="#000" style="background:#000"></button>
-          <button class="color-btn" data-tool="color" data-color="#e74c3c" style="background:#e74c3c"></button>
-          <button class="color-btn" data-tool="color" data-color="#4CAF50" style="background:#4CAF50"></button>
-          <button class="color-btn" data-tool="color" data-color="#2196F3" style="background:#2196F3"></button>
+    // Theme Menu Toggle Logic  
+    function toggleThemeMenu() {  
+       const list = document.getElementById('themeOptionsList');  
+       const btn = document.getElementById('themeToggleBtn');  
+       if (list.style.display === 'flex') {  
+          list.style.display = 'none';  
+          btn.classList.remove('expanded');  
+       } else {  
+          list.style.display = 'flex';  
+          btn.classList.add('expanded');  
+       }  
+    }  
+  
+    auth.menuBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleSidebar(true); });  
+    auth.sidebarOverlay.addEventListener('click', () => toggleSidebar(false));  
+  
+    auth.secBtn.addEventListener('click', () => {  
+       toggleSidebar(false);   
+       auth.secModal.style.display = 'flex';  
+       if (securityConfig.enabled) auth.disableSecBtn.style.display = 'block'; else auth.disableSecBtn.style.display = 'none';  
+    });  
+    auth.closeSecModal.addEventListener('click', () => auth.secModal.style.display = 'none');  
+      
+    function toggleSecInputs() {  
+       const type = document.querySelector('input[name="secType"]:checked').value;  
+       if(type === 'pin') { document.getElementById('setupPinField').style.display = 'block'; document.getElementById('setupPassField').style.display = 'none'; }   
+       else { document.getElementById('setupPinField').style.display = 'none'; document.getElementById('setupPassField').style.display = 'block'; }  
+    }  
+    function saveSecurity() {  
+       const type = document.querySelector('input[name="secType"]:checked').value;  
+       const recovery = document.getElementById('setupRecovery').value.trim();  
+       let code = "";  
+       if(!recovery) return alert('Recovery word is required!');  
+       if(type === 'pin') { code = document.getElementById('setupPinInput').value; if(code.length < 4 || code.length > 16) return alert('PIN must be 4-16 digits'); }   
+       else { code = document.getElementById('setupPassInput').value.trim(); if(!code) return alert('Password cannot be empty'); }  
+       securityConfig = { enabled: true, type: type, code: code, recovery: recovery };  
+       localStorage.setItem('quickNoteSecurity', JSON.stringify(securityConfig));  
+       auth.secModal.style.display = 'none'; alert('Security Enabled!'); checkSecurity();  
+    }  
+    function disableSecurity() {  
+      if(confirm('Disable security?')) {  
+         securityConfig = { enabled: false, type: 'pin', code: '', recovery: '' };  
+         localStorage.setItem('quickNoteSecurity', JSON.stringify(securityConfig));  
+         auth.secModal.style.display = 'none'; showToast('Security Disabled');  
+      }  
+    }  
+    checkSecurity();  
+  
+    // --- THEME LOGIC ---  
+    function setTheme(theme) {  
+       localStorage.setItem('appTheme', theme);  
+       applyTheme(theme);  
+    }  
+    function applyTheme(theme) {  
+       if (theme === 'dark') {  
+          document.body.classList.add('dark-mode');  
+       } else if (theme === 'light') {  
+          document.body.classList.remove('dark-mode');  
+       } else if (theme === 'system') {  
+          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {  
+             document.body.classList.add('dark-mode');  
+          } else {  
+             document.body.classList.remove('dark-mode');  
+          }  
+       }  
+       // Update radio button UI  
+       const radios = document.getElementsByName('appTheme');  
+       for (const r of radios) { if (r.value === theme) r.checked = true; }  
+    }  
+    // Initialize Theme  
+    const savedTheme = localStorage.getItem('appTheme') || 'system';  
+    applyTheme(savedTheme);  
+  
+    // --- APP LOGIC ---  
+    let entries = JSON.parse(localStorage.getItem('quickNoteExpenses') || '[]');  
+    let currentMode = 'note';  
+    let selectedId = null;   
+    let tempMedia = null;  
+    let tempMediaType = null;  
+    let drawingData = null;  
+    let lastBackTime = 0; // For double click exit  
+    let longPressTimer; // For Long Press  
+      
+    const dom = {  
+      list: document.getElementById('notesList'),  
+      empty: document.getElementById('emptyState'),  
+      fab: document.getElementById('fabBtn'),  
+      fabOptions: document.getElementById('fabOptions'),  
+      modal: document.getElementById('entryModal'),  
+      closeModal: document.getElementById('closeModal'),  
+      form: document.getElementById('entryForm'),  
+      headerDefault: document.getElementById('headerDefault'),  
+      headerSearch: document.getElementById('headerSearch'),  
+      openSearchBtn: document.getElementById('openSearchBtn'),  
+      closeSearchBtn: document.getElementById('closeSearchBtn'),  
+      searchInput: document.getElementById('searchInput'),  
+      noteFields: document.getElementById('noteFields'),  
+      expenseFields: document.getElementById('expenseFields'),  
+      actionSheet: document.getElementById('actionSheet'),  
+      actionEdit: document.getElementById('actionEdit'),  
+      actionDelete: document.getElementById('actionDelete'),  
+      actionCopy: document.getElementById('actionCopy'),  
+      actionClose: document.getElementById('actionClose'),  
+      toast: document.getElementById('toast'),  
+      noteTitle: document.getElementById('noteTitle'),  
+      noteBody: document.getElementById('noteBody'),  
+      expAmount: document.getElementById('expAmount'),  
+      expCurrency: document.getElementById('expCurrency'),  
+      expType: document.getElementById('expType'),  
+      expReason: document.getElementById('expReason'),  
+      mediaInput: document.getElementById('mediaInput'),  
+      previewImg: document.getElementById('previewImg'),  
+      previewVid: document.getElementById('previewVid'),  
+      editId: document.getElementById('editId'),  
+      removeMediaBtn: document.getElementById('removeMediaBtn'),  
+      mediaViewerOverlay: document.getElementById('mediaViewerOverlay'),  
+      mediaViewerContent: document.getElementById('mediaViewerContent'),  
+      mediaViewerVideo: document.getElementById('mediaViewerVideo')  
+    };  
+  
+    function saveToStorage() { localStorage.setItem('quickNoteExpenses', JSON.stringify(entries)); }  
+    function showToast(msg) { dom.toast.textContent = msg; dom.toast.classList.add('show'); setTimeout(() => dom.toast.classList.remove('show'), 3000); }  
+    function formatDate(ts) {  
+      const d = new Date(ts);  
+      return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' }) + ' • ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });  
+    }  
+    function escapeHTML(str) { return str ? str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m])) : ''; }  
+    function highlightText(text, term) {  
+      if (!text) return ''; if (!term) return escapeHTML(text);  
+      const safeText = escapeHTML(text); const safeTerm = escapeHTML(term);   
+      const regex = new RegExp(`(${safeTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');  
+      return safeText.replace(regex, '<span class="highlight-text">$1</span>');  
+    }  
+  
+    function toggleSearch(show) {  
+      if (show) { dom.headerDefault.style.display = 'none'; dom.headerSearch.style.display = 'flex'; dom.searchInput.focus(); }  
+      else { dom.headerSearch.style.display = 'none'; dom.headerDefault.style.display = 'flex'; dom.searchInput.value = ''; renderList(entries); }  
+    }  
+  
+    // LONG PRESS LOGIC  
+    function handleTouchStart(id) {  
+        longPressTimer = setTimeout(() => {  
+            openMenu(id);  
+            navigator.vibrate(50); // Small vibration feedback  
+        }, 600); // 600ms hold time  
+    }  
+    function handleTouchEnd() {  
+        clearTimeout(longPressTimer);  
+    }  
+  
+    function renderList(data, searchTerm = '') {  
+      dom.list.innerHTML = '';  
+      if (data.length === 0) { dom.empty.style.display = 'block'; return; }  
+      dom.empty.style.display = 'none';  
+      data.sort((a, b) => b.id - a.id).forEach((item) => {  
+        const el = document.createElement('div');  
+        el.className = 'note-item';  
           
-          <button class="tool-btn" id="eraserBtn" data-tool="eraser" title="Eraser">
-             <svg viewBox="0 0 24 24"><path d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 0 1-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.91-10.91c.79-.78 2.05-.78 2.84 0zM4.22 15.58l3.54 3.53c.78.79 2.04.79 2.83 0l8.48-8.48-4.95-4.95-8.48 8.48c-.78.79-.78 2.04 0 2.83z"/></svg>
-          </button>
-       </div>
-    </div>
-  </div>
-
-  <div id="mediaViewerOverlay">
-     <button class="close-viewer" onclick="closeMediaViewer()">&times;</button>
-     <img id="mediaViewerContent">
-     <video id="mediaViewerVideo" controls style="display:none; max-width:100%; max-height:100%;"></video>
-  </div>
-
-  <div class="action-sheet-overlay" id="actionSheet">
-    <div class="action-sheet">
-      <div class="sheet-handle"></div>
-      <div class="action-btn-group">
-        <button class="action-btn" id="actionEdit"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> Edit Entry</button>
-        <button class="action-btn delete" id="actionDelete"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Delete Entry</button>
-      </div>
-      <button class="action-btn cancel" id="actionClose">Cancel</button>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="textModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 class="modal-title" style="color:var(--text-main);">Details</h3>
-        <button class="close-modal" onclick="document.getElementById('textModal').style.display='none'">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div id="fullTextContent" style="white-space: pre-wrap; line-height: 1.6; color: var(--text-main);"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="toast" id="toast">Entry Saved!</div>
-
-  <script>
-    // --- SECURITY LOGIC ---
-    let securityConfig = JSON.parse(localStorage.getItem('quickNoteSecurity') || '{"enabled":false, "type":"pin", "code":"", "recovery":""}');
-    const auth = {
-      overlay: document.getElementById('authOverlay'),
-      pinUI: document.getElementById('pinModeUI'),
-      pinInput: document.getElementById('authPinInput'),
-      passUI: document.getElementById('passModeUI'),
-      forgetLink: document.getElementById('forgetLink'),
-      recoveryUI: document.getElementById('recoveryUI'),
-      recoveryInput: document.getElementById('recoveryInput'),
-      revealSection: document.getElementById('revealSection'),
-      revealedCode: document.getElementById('revealedCode'),
-      passInput: document.getElementById('authPassInput'),
-      menuBtn: document.getElementById('mainMenuBtn'),
-      secBtn: document.getElementById('openSecurityBtn'),
-      secModal: document.getElementById('securityModal'),
-      closeSecModal: document.getElementById('closeSecurityModal'),
-      disableSecBtn: document.getElementById('disableSecBtn'),
-      sidebar: document.getElementById('sidebar'),
-      sidebarOverlay: document.getElementById('sidebarOverlay')
-    };
-
-    function checkSecurity() {
-      if (securityConfig.enabled) {
-        auth.overlay.style.display = 'flex';
-        document.getElementById('authTitle').innerText = securityConfig.type === 'pin' ? 'Enter PIN' : 'Enter Password';
-        auth.recoveryUI.style.display = 'none';
-        auth.forgetLink.style.display = 'block';
-        if (securityConfig.type === 'pin') {
-          auth.pinUI.style.display = 'block';
-          auth.passUI.style.display = 'none';
-          auth.pinInput.value = "";
-        } else {
-          auth.pinUI.style.display = 'none';
-          auth.passUI.style.display = 'block';
-          auth.passInput.value = "";
-        }
-      }
-    }
-    function checkPin() { if (auth.pinInput.value === securityConfig.code) unlockApp(); else showAuthError(); }
-    function checkPass() { if (auth.passInput.value === securityConfig.code) unlockApp(); else showAuthError(); }
-    function showAuthError() {
-       document.getElementById('authSub').innerText = "Wrong Code! Try Again.";
-       document.getElementById('authSub').style.color = "red";
-       navigator.vibrate(200);
-    }
-    function unlockApp() {
-      auth.overlay.style.opacity = "0";
-      setTimeout(() => { auth.overlay.style.display = "none"; auth.overlay.style.opacity = "1"; }, 300);
-    }
-    
-    function showRecovery() {
-       auth.pinUI.style.display = 'none'; auth.passUI.style.display = 'none'; auth.forgetLink.style.display = 'none';
-       document.getElementById('authTitle').style.display = 'none';
-       document.getElementById('authSub').style.display = 'none';
-       auth.recoveryUI.style.display = 'block'; auth.revealSection.style.display = 'none'; auth.recoveryInput.value = '';
-    }
-    function hideRecovery() {
-       document.getElementById('authTitle').style.display = 'block';
-       document.getElementById('authSub').style.display = 'block';
-       document.getElementById('authSub').innerText = 'Enter to access notes';
-       document.getElementById('authSub').style.color = 'var(--text-sub)';
-       auth.recoveryUI.style.display = 'none'; auth.forgetLink.style.display = 'block';
-       if (securityConfig.type === 'pin') { auth.pinUI.style.display = 'block'; auth.pinInput.value = ""; } 
-       else { auth.passUI.style.display = 'block'; }
-    }
-    function verifyRecovery() {
-       const word = auth.recoveryInput.value.trim();
-       if (word && word.toLowerCase() === securityConfig.recovery.toLowerCase()) {
-          auth.revealedCode.value = securityConfig.code; auth.revealSection.style.display = 'block';
-       } else { alert('Incorrect Recovery Word'); auth.revealSection.style.display = 'none'; }
-    }
-    function copyCode() {
-       const code = auth.revealedCode.value;
-       navigator.clipboard.writeText(code).then(() => showToast('Copied: ' + code));
-    }
-    
-    // Sidebar Logic
-    function toggleSidebar(open) {
-       if (open) {
-          auth.sidebar.classList.add('open');
-          auth.sidebarOverlay.style.display = 'block';
-       } else {
-          auth.sidebar.classList.remove('open');
-          auth.sidebarOverlay.style.display = 'none';
-          // Collapse theme menu on close
-          document.getElementById('themeOptionsList').style.display = 'none';
-          document.getElementById('themeToggleBtn').classList.remove('expanded');
-       }
-    }
-    
-    // Theme Menu Toggle Logic
-    function toggleThemeMenu() {
-       const list = document.getElementById('themeOptionsList');
-       const btn = document.getElementById('themeToggleBtn');
-       if (list.style.display === 'flex') {
-          list.style.display = 'none';
-          btn.classList.remove('expanded');
-       } else {
-          list.style.display = 'flex';
-          btn.classList.add('expanded');
-       }
-    }
-
-    auth.menuBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleSidebar(true); });
-    auth.sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
-
-    auth.secBtn.addEventListener('click', () => {
-       toggleSidebar(false); 
-       auth.secModal.style.display = 'flex';
-       if (securityConfig.enabled) auth.disableSecBtn.style.display = 'block'; else auth.disableSecBtn.style.display = 'none';
-    });
-    auth.closeSecModal.addEventListener('click', () => auth.secModal.style.display = 'none');
-    
-    function toggleSecInputs() {
-       const type = document.querySelector('input[name="secType"]:checked').value;
-       if(type === 'pin') { document.getElementById('setupPinField').style.display = 'block'; document.getElementById('setupPassField').style.display = 'none'; } 
-       else { document.getElementById('setupPinField').style.display = 'none'; document.getElementById('setupPassField').style.display = 'block'; }
-    }
-    function saveSecurity() {
-       const type = document.querySelector('input[name="secType"]:checked').value;
-       const recovery = document.getElementById('setupRecovery').value.trim();
-       let code = "";
-       if(!recovery) return alert('Recovery word is required!');
-       if(type === 'pin') { code = document.getElementById('setupPinInput').value; if(code.length < 4 || code.length > 16) return alert('PIN must be 4-16 digits'); } 
-       else { code = document.getElementById('setupPassInput').value.trim(); if(!code) return alert('Password cannot be empty'); }
-       securityConfig = { enabled: true, type: type, code: code, recovery: recovery };
-       localStorage.setItem('quickNoteSecurity', JSON.stringify(securityConfig));
-       auth.secModal.style.display = 'none'; alert('Security Enabled!'); checkSecurity();
-    }
-    function disableSecurity() {
-      if(confirm('Disable security?')) {
-         securityConfig = { enabled: false, type: 'pin', code: '', recovery: '' };
-         localStorage.setItem('quickNoteSecurity', JSON.stringify(securityConfig));
-         auth.secModal.style.display = 'none'; showToast('Security Disabled');
-      }
-    }
-    checkSecurity();
-
-    // --- THEME LOGIC ---
-    function setTheme(theme) {
-       localStorage.setItem('appTheme', theme);
-       applyTheme(theme);
-    }
-    function applyTheme(theme) {
-       if (theme === 'dark') {
-          document.body.classList.add('dark-mode');
-       } else if (theme === 'light') {
-          document.body.classList.remove('dark-mode');
-       } else if (theme === 'system') {
-          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-             document.body.classList.add('dark-mode');
-          } else {
-             document.body.classList.remove('dark-mode');
-          }
-       }
-       // Update radio button UI
-       const radios = document.getElementsByName('appTheme');
-       for (const r of radios) { if (r.value === theme) r.checked = true; }
-    }
-    // Initialize Theme
-    const savedTheme = localStorage.getItem('appTheme') || 'system';
-    applyTheme(savedTheme);
-
-    // --- APP LOGIC ---
-    let entries = JSON.parse(localStorage.getItem('quickNoteExpenses') || '[]');
-    let currentMode = 'note';
-    let selectedId = null; 
-    let tempMedia = null;
-    let tempMediaType = null;
-    let drawingData = null;
-    let lastBackTime = 0; // For double click exit
-    
-    const dom = {
-      list: document.getElementById('notesList'),
-      empty: document.getElementById('emptyState'),
-      fab: document.getElementById('fabBtn'),
-      fabOptions: document.getElementById('fabOptions'),
-      modal: document.getElementById('entryModal'),
-      closeModal: document.getElementById('closeModal'),
-      form: document.getElementById('entryForm'),
-      headerDefault: document.getElementById('headerDefault'),
-      headerSearch: document.getElementById('headerSearch'),
-      openSearchBtn: document.getElementById('openSearchBtn'),
-      closeSearchBtn: document.getElementById('closeSearchBtn'),
-      searchInput: document.getElementById('searchInput'),
-      noteFields: document.getElementById('noteFields'),
-      expenseFields: document.getElementById('expenseFields'),
-      actionSheet: document.getElementById('actionSheet'),
-      actionEdit: document.getElementById('actionEdit'),
-      actionDelete: document.getElementById('actionDelete'),
-      actionClose: document.getElementById('actionClose'),
-      toast: document.getElementById('toast'),
-      noteTitle: document.getElementById('noteTitle'),
-      noteBody: document.getElementById('noteBody'),
-      expAmount: document.getElementById('expAmount'),
-      expCurrency: document.getElementById('expCurrency'),
-      expType: document.getElementById('expType'),
-      expReason: document.getElementById('expReason'),
-      mediaInput: document.getElementById('mediaInput'),
-      previewImg: document.getElementById('previewImg'),
-      previewVid: document.getElementById('previewVid'),
-      editId: document.getElementById('editId'),
-      removeMediaBtn: document.getElementById('removeMediaBtn'),
-      mediaViewerOverlay: document.getElementById('mediaViewerOverlay'),
-      mediaViewerContent: document.getElementById('mediaViewerContent'),
-      mediaViewerVideo: document.getElementById('mediaViewerVideo')
-    };
-
-    function saveToStorage() { localStorage.setItem('quickNoteExpenses', JSON.stringify(entries)); }
-    function showToast(msg) { dom.toast.textContent = msg; dom.toast.classList.add('show'); setTimeout(() => dom.toast.classList.remove('show'), 3000); }
-    function formatDate(ts) {
-      const d = new Date(ts);
-      return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' }) + ' • ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    }
-    function escapeHTML(str) { return str ? str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m])) : ''; }
-    function highlightText(text, term) {
-      if (!text) return ''; if (!term) return escapeHTML(text);
-      const safeText = escapeHTML(text); const safeTerm = escapeHTML(term); 
-      const regex = new RegExp(`(${safeTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-      return safeText.replace(regex, '<span class="highlight-text">$1</span>');
-    }
-
-    function toggleSearch(show) {
-      if (show) { dom.headerDefault.style.display = 'none'; dom.headerSearch.style.display = 'flex'; dom.searchInput.focus(); }
-      else { dom.headerSearch.style.display = 'none'; dom.headerDefault.style.display = 'flex'; dom.searchInput.value = ''; renderList(entries); }
-    }
-
-    function renderList(data, searchTerm = '') {
-      dom.list.innerHTML = '';
-      if (data.length === 0) { dom.empty.style.display = 'block'; return; }
-      dom.empty.style.display = 'none';
-      data.sort((a, b) => b.id - a.id).forEach((item) => {
-        const el = document.createElement('div');
-        el.className = 'note-item';
-        let contentHtml = '';
-        if (item.type === 'note' || item.type === 'drawing') {
-          contentHtml = `
-            <div class="note-header">
-              <div class="note-title">${highlightText(item.title || (item.type === 'drawing' ? 'Drawing' : 'Untitled'), searchTerm)}</div>
-              <button class="menu-btn" onclick="openMenu(${item.id})"><svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
-            </div>
-            ${item.type === 'note' ? `<span class="note-category">${escapeHTML(item.category || 'General')}</span>` : ''}
-            <div class="note-body note-body-truncated" id="body-${item.id}">${highlightText(item.body, searchTerm)}</div>
-            ${item.body && item.body.length > 100 ? `<span class="see-more-link" onclick="showFullText(${item.id})">See More</span>` : ''}
-          `;
-        } else {
-          contentHtml = `
-             <div class="note-header">
-              <div class="amount-display">${item.amount} ${item.currency}</div>
-              <button class="menu-btn" onclick="openMenu(${item.id})"><svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
-            </div>
-            <span class="note-category ${item.expType === 'credited' ? 'cat-expense-credited' : 'cat-expense-debited'}">${item.expType}</span>
-            <div class="note-body note-body-truncated">${highlightText(item.reason, searchTerm)}</div>
-          `;
-        }
-        if (item.media) {
-          contentHtml += `<div class="media-container" onclick="openMediaViewer('${item.media}', '${item.mediaType}')">`;
-          contentHtml += item.mediaType === 'image' ? `<img src="${item.media}">` : `<video src="${item.media}"></video>`;
-          contentHtml += `</div>`;
-        }
-        contentHtml += `<div class="note-footer"><span class="note-timestamp">${formatDate(item.timestamp)}</span></div>`;
-        el.innerHTML = contentHtml;
-        dom.list.appendChild(el);
-      });
-    }
-
-    // Media Viewer Logic
-    function openMediaViewer(src, type) {
-       dom.mediaViewerOverlay.style.display = 'flex';
-       if(type === 'image') {
-          dom.mediaViewerContent.src = src;
-          dom.mediaViewerContent.style.display = 'block';
-          dom.mediaViewerVideo.style.display = 'none';
-       } else {
-          dom.mediaViewerVideo.src = src;
-          dom.mediaViewerVideo.style.display = 'block';
-          dom.mediaViewerContent.style.display = 'none';
-       }
-    }
-    function closeMediaViewer() {
-       dom.mediaViewerOverlay.style.display = 'none';
-       dom.mediaViewerVideo.pause();
-    }
-
-    function showFullText(id) {
-      const item = entries.find(e => e.id === id);
-      if(item) {
-        document.getElementById('fullTextContent').innerHTML = `<b>${escapeHTML(item.title || 'Details')}</b><br><br>${escapeHTML(item.body || item.reason)}`;
-        document.getElementById('textModal').style.display = 'flex';
-      }
-    }
-
-    dom.searchInput.addEventListener('input', (e) => {
-      const term = e.target.value.toLowerCase();
-      const filtered = entries.filter(item => 
-        (item.title||'').toLowerCase().includes(term) || (item.body||'').toLowerCase().includes(term) || 
-        (item.reason||'').toLowerCase().includes(term)
-      );
-      renderList(filtered, e.target.value);
-    });
-    dom.openSearchBtn.addEventListener('click', () => toggleSearch(true));
-    dom.closeSearchBtn.addEventListener('click', () => toggleSearch(false));
-
-    // --- FAB & MENU LOGIC ---
-    dom.fab.addEventListener('click', (e) => {
-       e.stopPropagation();
-       dom.fab.classList.toggle('rotate');
-       dom.fabOptions.style.display = dom.fabOptions.style.display === 'flex' ? 'none' : 'flex';
-    });
-
-    function openEntry(mode) {
-      // Hardware Back Button: Push state so checking back works
-      history.pushState({page: 'entry'}, null, '');
+        // Attach Long Press Listeners  
+        el.addEventListener('touchstart', () => handleTouchStart(item.id));  
+        el.addEventListener('touchend', handleTouchEnd);  
+        el.addEventListener('mousedown', () => handleTouchStart(item.id)); // For desktop testing  
+        el.addEventListener('mouseup', handleTouchEnd);  
+        el.addEventListener('mouseleave', handleTouchEnd);  
+  
+        let contentHtml = '';  
+        // Logic for See More: If > 3 lines (checked by newline count) OR very long text string (approx 120 chars)  
+        // This removes the strict 100 limit but ensures "See More" shows if it wraps visually.  
+        const textContent = item.body || item.reason || '';  
+        const hasNewLines = textContent.split('\n').length > 3;  
+        const isLongText = textContent.length > 120; // Fallback for long single lines that wrap  
+        const showSeeMore = hasNewLines || isLongText;  
+  
+        if (item.type === 'note' || item.type === 'drawing') {  
+          contentHtml = `  
+            <div class="note-header">  
+              <div class="note-title">${highlightText(item.title || (item.type === 'drawing' ? 'Drawing' : 'Untitled'), searchTerm)}</div>  
+              <button class="menu-btn" onclick="openMenu(${item.id})"><svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>  
+            </div>  
+            ${item.type === 'note' ? `<span class="note-category">${escapeHTML(item.category || 'General')}</span>` : ''}  
+            <div class="note-body note-body-truncated" id="body-${item.id}">${highlightText(item.body, searchTerm)}</div>  
+            ${showSeeMore ? `<span class="see-more-link" onclick="showFullText(${item.id})">See More</span>` : ''}  
+          `;  
+        } else {  
+          contentHtml = `  
+             <div class="note-header">  
+              <div class="amount-display">${item.amount} ${item.currency}</div>  
+              <button class="menu-btn" onclick="openMenu(${item.id})"><svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>  
+            </div>  
+            <span class="note-category ${item.expType === 'credited' ? 'cat-expense-credited' : 'cat-expense-debited'}">${item.expType}</span>  
+            <div class="note-body note-body-truncated">${highlightText(item.reason, searchTerm)}</div>  
+            ${showSeeMore ? `<span class="see-more-link" onclick="showFullText(${item.id})">See More</span>` : ''}  
+          `;  
+        }  
+        if (item.media) {  
+          contentHtml += `<div class="media-container" onclick="openMediaViewer('${item.media}', '${item.mediaType}')">`;  
+          contentHtml += item.mediaType === 'image' ? `<img src="${item.media}">` : `<video src="${item.media}"></video>`;  
+          contentHtml += `</div>`;  
+        }  
+        contentHtml += `<div class="note-footer"><span class="note-timestamp">${formatDate(item.timestamp)}</span></div>`;  
+        el.innerHTML = contentHtml;  
+        dom.list.appendChild(el);  
+      });  
+    }  
+  
+    // Media Viewer Logic  
+    function openMediaViewer(src, type) {  
+       dom.mediaViewerOverlay.style.display = 'flex';  
+       if(type === 'image') {  
+          dom.mediaViewerContent.src = src;  
+          dom.mediaViewerContent.style.display = 'block';  
+          dom.mediaViewerVideo.style.display = 'none';  
+       } else {  
+          dom.mediaViewerVideo.src = src;  
+          dom.mediaViewerVideo.style.display = 'block';  
+          dom.mediaViewerContent.style.display = 'none';  
+       }  
+    }  
+    function closeMediaViewer() {  
+       dom.mediaViewerOverlay.style.display = 'none';  
+       dom.mediaViewerVideo.pause();  
+    }  
+  
+    function showFullText(id) {  
+      const item = entries.find(e => e.id === id);  
+      if(item) {  
+        // Fix 1: Title goes to Header
+        document.getElementById('detailModalTitle').innerText = item.title || (item.type === 'expense' ? 'Expense Details' : 'Details');
+        // Fix 1 & 2: Body goes to Content area, duplicate title removed.
+        document.getElementById('fullTextContent').innerHTML = escapeHTML(item.body || item.reason);
+        document.getElementById('textModal').style.display = 'flex';  
+      }  
+    }  
+  
+    dom.searchInput.addEventListener('input', (e) => {  
+      const term = e.target.value.toLowerCase();  
+      const filtered = entries.filter(item =>   
+        (item.title||'').toLowerCase().includes(term) || (item.body||'').toLowerCase().includes(term) ||   
+        (item.reason||'').toLowerCase().includes(term)  
+      );  
+      renderList(filtered, e.target.value);  
+    });  
+    dom.openSearchBtn.addEventListener('click', () => toggleSearch(true));  
+    dom.closeSearchBtn.addEventListener('click', () => toggleSearch(false));  
+  
+    // --- FAB & MENU LOGIC ---  
+    dom.fab.addEventListener('click', (e) => {  
+       e.stopPropagation();  
+       dom.fab.classList.toggle('rotate');  
+       dom.fabOptions.style.display = dom.fabOptions.style.display === 'flex' ? 'none' : 'flex';  
+    });  
+  
+    function openEntry(mode) {  
+      // Hardware Back Button: Push state so checking back works  
+      history.pushState({page: 'entry'}, null, '');  
+        
+      dom.fabOptions.style.display = 'none'; dom.fab.classList.remove('rotate');  
+      currentMode = mode;  
+      dom.modal.style.display = 'flex';  
+      dom.form.reset(); dom.editId.value = ''; resetMedia(); drawingData = null;  
+        
+      if (mode === 'expense') {  
+         dom.noteFields.style.display = 'none';  
+         dom.expenseFields.style.display = 'flex'; // Flex for Full Screen  
+      } else {  
+         dom.noteFields.style.display = 'flex'; // Flex for Full Screen  
+         dom.expenseFields.style.display = 'none';  
+         if(mode === 'image') dom.mediaInput.click();  
+      }  
+    }  
+  
+    dom.closeModal.addEventListener('click', () => {  
+       saveEntryAndClose();  
+    });  
+  
+    function saveEntryAndClose() {  
+       let hasContent = false;  
+       if(currentMode === 'note' || currentMode === 'image') {  
+          if(dom.noteTitle.value.trim() || dom.noteBody.value.trim() || tempMedia) hasContent = true;  
+       } else {  
+          if(dom.expAmount.value) hasContent = true;  
+       }  
+  
+       if (!hasContent) {  
+          dom.modal.style.display = 'none';  
+          return;   
+       }  
+  
+       const ts = new Date().getTime();  
+       let newItem = {};  
+       if (currentMode === 'note' || currentMode === 'image') {  
+         newItem = { type: 'note', title: dom.noteTitle.value, body: dom.noteBody.value, category: 'General' };  
+       } else {  
+         newItem = { type: 'expense', amount: dom.expAmount.value.slice(0, 10), currency: dom.expCurrency.value, reason: dom.expReason.value, expType: dom.expType.value };  
+       }  
+       newItem.media = tempMedia; newItem.mediaType = tempMediaType; newItem.timestamp = ts;  
+         
+       if (dom.editId.value) {  
+         const index = entries.findIndex(x => x.id == dom.editId.value);  
+         if(index > -1) { newItem.id = parseInt(dom.editId.value); entries[index] = newItem; }  
+       } else { newItem.id = ts; entries.push(newItem); }  
+         
+       saveToStorage(); renderList(entries, dom.searchInput.value);  
+       dom.modal.style.display = 'none';   
+       showToast('Saved');  
+    }  
+  
+    window.addEventListener('click', (e) => {  
+       if (!dom.fab.contains(e.target) && !dom.fabOptions.contains(e.target)) {  
+          dom.fabOptions.style.display = 'none';  
+          dom.fab.classList.remove('rotate');  
+       }  
+    });  
+  
+    // --- DRAWING LOGIC (Editable) ---  
+    const canvas = document.getElementById('drawCanvas');  
+    const ctx = canvas.getContext('2d');  
+    let isDrawing = false;  
+    let lastX = 0; let lastY = 0;  
+    let penSize = 3;  
+    let eraserSize = 10;  
+    let paths = [];   
+    let currentPath = [];   
       
-      dom.fabOptions.style.display = 'none'; dom.fab.classList.remove('rotate');
-      currentMode = mode;
-      dom.modal.style.display = 'flex';
-      dom.form.reset(); dom.editId.value = ''; resetMedia(); drawingData = null;
+    function resizeCanvas() {   
+        canvas.width = window.innerWidth;   
+        canvas.height = window.innerHeight;   
+        redrawCanvas();  
+    }  
+    window.addEventListener('resize', resizeCanvas);  
+  
+    function redrawCanvas() {  
+       ctx.fillStyle = "#ffffff";  
+       ctx.fillRect(0, 0, canvas.width, canvas.height);  
+       ctx.lineCap = 'round';  
+       paths.forEach(p => {  
+          ctx.beginPath();  
+          ctx.strokeStyle = p.color;  
+          ctx.lineWidth = p.size;  
+          ctx.globalCompositeOperation = p.mode;  
+          if(p.points.length > 0) {  
+             ctx.moveTo(p.points[0].x, p.points[0].y);  
+             for(let i=1; i<p.points.length; i++) ctx.lineTo(p.points[i].x, p.points[i].y);  
+             ctx.stroke();  
+          }  
+       });  
+    }  
+  
+    function openDrawing() {  
+       // Hardware Back Button: Push state so checking back works  
+       history.pushState({page: 'drawing'}, null, '');  
+  
+       dom.fabOptions.style.display = 'none'; dom.fab.classList.remove('rotate');  
+       document.getElementById('drawingModal').style.display = 'flex';  
+         
+       if(!drawingData) {  
+          paths = [];   
+          resizeCanvas();  
+       } else {  
+          paths = JSON.parse(drawingData);   
+          resizeCanvas();  
+       }  
+         
+       ctx.strokeStyle = '#000'; ctx.lineWidth = penSize; ctx.lineCap = 'round';  
+       document.querySelectorAll('.color-btn').forEach(btn => enableSizeGesture(btn, 'color'));  
+       enableSizeGesture(document.getElementById('eraserBtn'), 'eraser');  
+    }  
       
-      if (mode === 'expense') {
-         dom.noteFields.style.display = 'none';
-         dom.expenseFields.style.display = 'block';
-      } else {
-         dom.noteFields.style.display = 'block';
-         dom.expenseFields.style.display = 'none';
-         if(mode === 'image') dom.mediaInput.click();
-      }
-    }
-
-    dom.closeModal.addEventListener('click', () => {
-       saveEntryAndClose();
-    });
-
-    function saveEntryAndClose() {
-       let hasContent = false;
-       if(currentMode === 'note' || currentMode === 'image') {
-          if(dom.noteTitle.value.trim() || dom.noteBody.value.trim() || tempMedia) hasContent = true;
-       } else {
-          if(dom.expAmount.value) hasContent = true;
-       }
-
-       if (!hasContent) {
-          dom.modal.style.display = 'none';
-          return; 
-       }
-
-       const ts = new Date().getTime();
-       let newItem = {};
-       if (currentMode === 'note' || currentMode === 'image') {
-         newItem = { type: 'note', title: dom.noteTitle.value, body: dom.noteBody.value, category: 'General' };
-       } else {
-         newItem = { type: 'expense', amount: dom.expAmount.value.slice(0, 10), currency: dom.expCurrency.value, reason: dom.expReason.value, expType: dom.expType.value };
-       }
-       newItem.media = tempMedia; newItem.mediaType = tempMediaType; newItem.timestamp = ts;
-       
-       if (dom.editId.value) {
-         const index = entries.findIndex(x => x.id == dom.editId.value);
-         if(index > -1) { newItem.id = parseInt(dom.editId.value); entries[index] = newItem; }
-       } else { newItem.id = ts; entries.push(newItem); }
-       
-       saveToStorage(); renderList(entries, dom.searchInput.value);
-       dom.modal.style.display = 'none'; 
-       showToast('Saved');
-    }
-
-    window.addEventListener('click', (e) => {
-       if (!dom.fab.contains(e.target) && !dom.fabOptions.contains(e.target)) {
-          dom.fabOptions.style.display = 'none';
-          dom.fab.classList.remove('rotate');
-       }
-    });
-
-    // --- DRAWING LOGIC (Editable) ---
-    const canvas = document.getElementById('drawCanvas');
-    const ctx = canvas.getContext('2d');
-    let isDrawing = false;
-    let lastX = 0; let lastY = 0;
-    let penSize = 3;
-    let eraserSize = 10;
-    let paths = []; 
-    let currentPath = []; 
-    
-    function resizeCanvas() { 
-        canvas.width = window.innerWidth; 
-        canvas.height = window.innerHeight; 
-        redrawCanvas();
-    }
-    window.addEventListener('resize', resizeCanvas);
-
-    function redrawCanvas() {
-       ctx.fillStyle = "#ffffff";
-       ctx.fillRect(0, 0, canvas.width, canvas.height);
-       ctx.lineCap = 'round';
-       paths.forEach(p => {
-          ctx.beginPath();
-          ctx.strokeStyle = p.color;
-          ctx.lineWidth = p.size;
-          ctx.globalCompositeOperation = p.mode;
-          if(p.points.length > 0) {
-             ctx.moveTo(p.points[0].x, p.points[0].y);
-             for(let i=1; i<p.points.length; i++) ctx.lineTo(p.points[i].x, p.points[i].y);
-             ctx.stroke();
-          }
-       });
-    }
-
-    function openDrawing() {
-       // Hardware Back Button: Push state so checking back works
-       history.pushState({page: 'drawing'}, null, '');
-
-       dom.fabOptions.style.display = 'none'; dom.fab.classList.remove('rotate');
-       document.getElementById('drawingModal').style.display = 'flex';
-       
-       if(!drawingData) {
-          paths = []; 
-          resizeCanvas();
-       } else {
-          paths = JSON.parse(drawingData); 
-          resizeCanvas();
-       }
-       
-       ctx.strokeStyle = '#000'; ctx.lineWidth = penSize; ctx.lineCap = 'round';
-       document.querySelectorAll('.color-btn').forEach(btn => enableSizeGesture(btn, 'color'));
-       enableSizeGesture(document.getElementById('eraserBtn'), 'eraser');
-    }
-    
-    function saveAndCloseDrawing() {
-       if (paths.length === 0) {
-          document.getElementById('drawingModal').style.display = 'none';
-          return;
-       }
-
-       const tempCanvas = document.createElement('canvas'); tempCanvas.width = canvas.width; tempCanvas.height = canvas.height;
-       const tCtx = tempCanvas.getContext('2d'); tCtx.fillStyle = "#ffffff"; tCtx.fillRect(0,0,tempCanvas.width, tempCanvas.height); tCtx.drawImage(canvas, 0,0);
-       
-       const ts = new Date().getTime();
-       let newItem = { 
-          id: dom.editId.value ? parseInt(dom.editId.value) : ts,
-          type: 'drawing', 
-          title: 'Drawing',
-          body: '',
-          media: tempCanvas.toDataURL(), 
-          mediaType: 'image',
-          drawingData: JSON.stringify(paths),
-          timestamp: ts,
-          category: 'General'
-       };
-
-       if (dom.editId.value) {
-         const index = entries.findIndex(x => x.id == newItem.id);
-         if(index > -1) entries[index] = newItem;
-       } else { entries.push(newItem); }
-       
-       saveToStorage(); renderList(entries, dom.searchInput.value);
-       document.getElementById('drawingModal').style.display = 'none';
-       showToast('Saved');
-    }
-
-    function setStrokeColor(color, btn) { ctx.strokeStyle = color; ctx.globalCompositeOperation = 'source-over'; ctx.lineWidth = penSize; highlightTool(btn); }
-    function setEraser() { ctx.globalCompositeOperation = 'destination-out'; ctx.lineWidth = eraserSize; highlightTool(document.getElementById('eraserBtn')); }
-    
-    function highlightTool(btn) { 
-       document.querySelectorAll('.color-btn, .tool-btn').forEach(b => b.classList.remove('active'));
-       if(btn) btn.classList.add('active');
-    }
-
-    function enableSizeGesture(btn, type) {
-       let startX = 0; let startSize = type === 'eraser' ? eraserSize : penSize; let isSliding = false;
-       btn.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; startSize = type === 'eraser' ? eraserSize : penSize; isSliding = false; });
-       btn.addEventListener('touchmove', (e) => {
-           const diff = e.touches[0].clientX - startX;
-           if (Math.abs(diff) > 10) {
-               isSliding = true; e.preventDefault(); 
-               let change = Math.floor(diff / 5);
-               let newSize = Math.max(1, Math.min(50, startSize + change));
-               if(type === 'eraser') { eraserSize = newSize; ctx.lineWidth = eraserSize; showToast('Eraser: ' + newSize); } 
-               else { penSize = newSize; if(ctx.globalCompositeOperation !== 'destination-out') ctx.lineWidth = penSize; showToast('Pen: ' + newSize); }
-           }
-       });
-       btn.addEventListener('touchend', (e) => { if(!isSliding) { if(type === 'eraser') setEraser(); else setStrokeColor(btn.getAttribute('data-color'), btn); } });
-    }
-
-    function startDraw(e) { 
-       isDrawing = true; [lastX, lastY] = getXY(e); 
-       currentPath = [{x: lastX, y: lastY}];
-    }
-    function draw(e) {
-       if(!isDrawing) return;
-       const [x, y] = getXY(e);
-       ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(x, y); ctx.stroke();
-       [lastX, lastY] = [x, y];
-       currentPath.push({x: x, y: y});
-    }
-    function stopDraw() { 
-       if(isDrawing) {
-          isDrawing = false; 
-          paths.push({
-             points: currentPath,
-             color: ctx.strokeStyle,
-             size: ctx.lineWidth,
-             mode: ctx.globalCompositeOperation
-          });
-       }
-    }
-    function getXY(e) { if(e.touches) return [e.touches[0].clientX, e.touches[0].clientY - 60]; return [e.offsetX, e.offsetY]; }
-
-    canvas.addEventListener('mousedown', startDraw); canvas.addEventListener('mousemove', draw); canvas.addEventListener('mouseup', stopDraw); canvas.addEventListener('mouseout', stopDraw);
-    canvas.addEventListener('touchstart', startDraw); canvas.addEventListener('touchmove', draw); canvas.addEventListener('touchend', stopDraw);
-
-
-    // Media
-    dom.mediaInput.addEventListener('change', function() {
-      const file = this.files[0];
-      if (file) {
-        if (file.size > 2 * 1024 * 1024) { alert('File > 2MB'); this.value = ''; return; }
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          tempMedia = e.target.result; tempMediaType = file.type.startsWith('image/') ? 'image' : 'video';
-          if(tempMediaType === 'image') { dom.previewImg.src = tempMedia; dom.previewImg.style.display = 'block'; dom.previewVid.style.display = 'none'; }
-          else { dom.previewVid.src = tempMedia; dom.previewVid.style.display = 'block'; dom.previewImg.style.display = 'none'; }
-          dom.removeMediaBtn.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-    dom.removeMediaBtn.addEventListener('click', resetMedia);
-    function resetMedia() { dom.mediaInput.value = ''; dom.previewImg.style.display = 'none'; dom.previewVid.style.display = 'none'; dom.removeMediaBtn.style.display = 'none'; tempMedia = null; }
-
-    // Action Sheet Logic
-    window.openMenu = function(id) { selectedId = id; dom.actionSheet.style.display = 'block'; }
-    dom.actionSheet.addEventListener('click', (e) => { if(e.target === dom.actionSheet) dom.actionSheet.style.display = 'none'; });
-    dom.actionClose.addEventListener('click', () => dom.actionSheet.style.display = 'none');
-    dom.actionDelete.addEventListener('click', () => {
-      if(confirm('Delete this item?')) {
-        entries = entries.filter(e => e.id !== selectedId); saveToStorage(); renderList(entries, dom.searchInput.value); showToast('Deleted');
-      }
-      dom.actionSheet.style.display = 'none';
-    });
-    
-    dom.actionEdit.addEventListener('click', () => {
-      dom.actionSheet.style.display = 'none';
-      const item = entries.find(e => e.id === selectedId);
-      if(!item) return;
+    function saveAndCloseDrawing() {  
+       if (paths.length === 0) {  
+          document.getElementById('drawingModal').style.display = 'none';  
+          return;  
+       }  
+  
+       const tempCanvas = document.createElement('canvas'); tempCanvas.width = canvas.width; tempCanvas.height = canvas.height;  
+       const tCtx = tempCanvas.getContext('2d'); tCtx.fillStyle = "#ffffff"; tCtx.fillRect(0,0,tempCanvas.width, tempCanvas.height); tCtx.drawImage(canvas, 0,0);  
+         
+       const ts = new Date().getTime();  
+       let newItem = {   
+          id: dom.editId.value ? parseInt(dom.editId.value) : ts,  
+          type: 'drawing',   
+          title: 'Drawing',  
+          body: '',  
+          media: tempCanvas.toDataURL(),   
+          mediaType: 'image',  
+          drawingData: JSON.stringify(paths),  
+          timestamp: ts,  
+          category: 'General'  
+       };  
+  
+       if (dom.editId.value) {  
+         const index = entries.findIndex(x => x.id == newItem.id);  
+         if(index > -1) entries[index] = newItem;  
+       } else { entries.push(newItem); }  
+         
+       saveToStorage(); renderList(entries, dom.searchInput.value);  
+       document.getElementById('drawingModal').style.display = 'none';  
+       showToast('Saved');  
+    }  
+  
+    function setStrokeColor(color, btn) { ctx.strokeStyle = color; ctx.globalCompositeOperation = 'source-over'; ctx.lineWidth = penSize; highlightTool(btn); }  
+    function setEraser() { ctx.globalCompositeOperation = 'destination-out'; ctx.lineWidth = eraserSize; highlightTool(document.getElementById('eraserBtn')); }  
       
-      dom.editId.value = item.id;
+    function highlightTool(btn) {   
+       document.querySelectorAll('.color-btn, .tool-btn').forEach(b => b.classList.remove('active'));  
+       if(btn) btn.classList.add('active');  
+    }  
+  
+    function enableSizeGesture(btn, type) {  
+       let startX = 0; let startSize = type === 'eraser' ? eraserSize : penSize; let isSliding = false;  
+       btn.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; startSize = type === 'eraser' ? eraserSize : penSize; isSliding = false; });  
+       btn.addEventListener('touchmove', (e) => {  
+           const diff = e.touches[0].clientX - startX;  
+           if (Math.abs(diff) > 10) {  
+               isSliding = true; e.preventDefault();   
+               let change = Math.floor(diff / 5);  
+               let newSize = Math.max(1, Math.min(50, startSize + change));  
+               if(type === 'eraser') { eraserSize = newSize; ctx.lineWidth = eraserSize; showToast('Eraser: ' + newSize); }   
+               else { penSize = newSize; if(ctx.globalCompositeOperation !== 'destination-out') ctx.lineWidth = penSize; showToast('Pen: ' + newSize); }  
+           }  
+       });  
+       btn.addEventListener('touchend', (e) => { if(!isSliding) { if(type === 'eraser') setEraser(); else setStrokeColor(btn.getAttribute('data-color'), btn); } });  
+    }  
+  
+    function startDraw(e) {   
+       isDrawing = true; [lastX, lastY] = getXY(e);   
+       currentPath = [{x: lastX, y: lastY}];  
+    }  
+    function draw(e) {  
+       if(!isDrawing) return;  
+       const [x, y] = getXY(e);  
+       ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(x, y); ctx.stroke();  
+       [lastX, lastY] = [x, y];  
+       currentPath.push({x: x, y: y});  
+    }  
+    function stopDraw() {   
+       if(isDrawing) {  
+          isDrawing = false;   
+          paths.push({  
+             points: currentPath,  
+             color: ctx.strokeStyle,  
+             size: ctx.lineWidth,  
+             mode: ctx.globalCompositeOperation  
+          });  
+       }  
+    }  
+    function getXY(e) { if(e.touches) return [e.touches[0].clientX, e.touches[0].clientY - 60]; return [e.offsetX, e.offsetY]; }  
+  
+    canvas.addEventListener('mousedown', startDraw); canvas.addEventListener('mousemove', draw); canvas.addEventListener('mouseup', stopDraw); canvas.addEventListener('mouseout', stopDraw);  
+    canvas.addEventListener('touchstart', startDraw); canvas.addEventListener('touchmove', draw); canvas.addEventListener('touchend', stopDraw);  
+  
+  
+    // Media  
+    dom.mediaInput.addEventListener('change', function() {  
+      const file = this.files[0];  
+      if (file) {  
+        if (file.size > 2 * 1024 * 1024) { alert('File > 2MB'); this.value = ''; return; }  
+        const reader = new FileReader();  
+        reader.onload = function(e) {  
+          tempMedia = e.target.result; tempMediaType = file.type.startsWith('image/') ? 'image' : 'video';  
+          if(tempMediaType === 'image') { dom.previewImg.src = tempMedia; dom.previewImg.style.display = 'block'; dom.previewVid.style.display = 'none'; }  
+          else { dom.previewVid.src = tempMedia; dom.previewVid.style.display = 'block'; dom.previewImg.style.display = 'none'; }  
+          dom.removeMediaBtn.style.display = 'block';  
+        };  
+        reader.readAsDataURL(file);  
+      }  
+    });  
+    dom.removeMediaBtn.addEventListener('click', resetMedia);  
+    function resetMedia() { dom.mediaInput.value = ''; dom.previewImg.style.display = 'none'; dom.previewVid.style.display = 'none'; dom.removeMediaBtn.style.display = 'none'; tempMedia = null; }  
+  
+    // Action Sheet Logic  
+    window.openMenu = function(id, isLongPress = false) {   
+        selectedId = id;   
+        dom.actionSheet.style.display = 'block';   
+    }  
+    dom.actionSheet.addEventListener('click', (e) => { if(e.target === dom.actionSheet) dom.actionSheet.style.display = 'none'; });  
+    dom.actionClose.addEventListener('click', () => dom.actionSheet.style.display = 'none');  
+    dom.actionDelete.addEventListener('click', () => {  
+      if(confirm('Delete this item?')) {  
+        entries = entries.filter(e => e.id !== selectedId); saveToStorage(); renderList(entries, dom.searchInput.value); showToast('Deleted');  
+      }  
+      dom.actionSheet.style.display = 'none';  
+    });  
+  
+    // COPY LOGIC ADDED  
+    dom.actionCopy.addEventListener('click', () => {  
+       dom.actionSheet.style.display = 'none';  
+       const item = entries.find(e => e.id === selectedId);  
+       if(item) {  
+          // Copies raw text content including original new lines  
+          const textToCopy = item.type === 'expense'   
+             ? `Amount: ${item.amount} ${item.currency}\nType: ${item.expType}\nReason: ${item.reason}`  
+             : `${item.title}\n\n${item.body}`;  
+            
+          navigator.clipboard.writeText(textToCopy).then(() => {  
+              showToast('Copied to Clipboard');  
+          }).catch(err => {  
+              showToast('Failed to Copy');  
+          });  
+       }  
+    });  
       
-      if(item.type === 'drawing') {
-         drawingData = item.drawingData; 
-         openDrawing();
-         return; 
-      }
-      
-      openEntry(item.type); 
-      if(item.type === 'note') {
-        dom.noteTitle.value = item.title; dom.noteBody.value = item.body;
-      } else {
-        dom.expAmount.value = item.amount; dom.expCurrency.value = item.currency;
-        dom.expReason.value = item.reason; dom.expType.value = item.expType;
-      }
-      if(item.media) {
-         tempMedia = item.media; tempMediaType = item.mediaType;
-         if(item.mediaType === 'image') { dom.previewImg.src = item.media; dom.previewImg.style.display = 'block'; }
-         else { dom.previewVid.src = item.media; dom.previewVid.style.display = 'block'; }
-         dom.removeMediaBtn.style.display = 'block';
-      }
-    });
-
-    renderList(entries);
-
-    // --- HARDWARE BACK BUTTON LOGIC ---
-    // 1. Initialize History State for Home Screen
-    window.addEventListener('load', () => {
-        history.replaceState({page: 'home'}, null, '');
-        // Push a state so that the first back click doesn't exit immediately (allows double click logic)
-        history.pushState({page: 'home'}, null, '');
-    });
-
-    // 2. Handle Back Button Press (popstate)
-    window.addEventListener('popstate', (e) => {
-        // Check if Entry Modal is Open
-        if (dom.modal.style.display === 'flex') {
-            saveEntryAndClose(); // This handles saving if content exists, or just closing if empty
-            // We are already 'back' in history stack, so we don't need to push/pop manually here
-            return;
-        }
-
-        // Check if Drawing Modal is Open
-        if (document.getElementById('drawingModal').style.display === 'flex') {
-            saveAndCloseDrawing(); // Handles saving or closing
-            return;
-        }
-
-        // Home Screen Logic (Double Click to Exit)
-        const currentTime = new Date().getTime();
-        // If pressed twice within 2 seconds
-        if (currentTime - lastBackTime < 2000) {
-            // Allow Exit: We do nothing, and since the history stack is empty/at start, WebView usually exits.
-            // Or force it:
-            history.back(); 
-        } else {
-            // First Click
-            lastBackTime = currentTime;
-            showToast('Press back again to exit');
-            // Since the user pressed back, the browser popped the state. 
-            // We push it back immediately to stay on the "Home" state visually and logically.
-            history.pushState({page: 'home'}, null, '');
-        }
-    });
-
-  </script>
-</body>
+    dom.actionEdit.addEventListener('click', () => {  
+      dom.actionSheet.style.display = 'none';  
+      const item = entries.find(e => e.id === selectedId);  
+      if(!item) return;  
+        
+      dom.editId.value = item.id;  
+        
+      if(item.type === 'drawing') {  
+         drawingData = item.drawingData;   
+         openDrawing();  
+         return;   
+      }  
+        
+      openEntry(item.type);   
+      if(item.type === 'note') {  
+        dom.noteTitle.value = item.title; dom.noteBody.value = item.body;  
+      } else {  
+        dom.expAmount.value = item.amount; dom.expCurrency.value = item.currency;  
+        dom.expReason.value = item.reason; dom.expType.value = item.expType;  
+      }  
+      if(item.media) {  
+         tempMedia = item.media; tempMediaType = item.mediaType;  
+         if(item.mediaType === 'image') { dom.previewImg.src = item.media; dom.previewImg.style.display = 'block'; }  
+         else { dom.previewVid.src = item.media; dom.previewVid.style.display = 'block'; }  
+         dom.removeMediaBtn.style.display = 'block';  
+      }  
+    });  
+  
+    renderList(entries);  
+  
+    // --- HARDWARE BACK BUTTON LOGIC ---  
+    // 1. Initialize History State for Home Screen  
+    window.addEventListener('load', () => {  
+        history.replaceState({page: 'home'}, null, '');  
+        // Push a state so that the first back click doesn't exit immediately (allows double click logic)  
+        history.pushState({page: 'home'}, null, '');  
+    });  
+  
+    // 2. Handle Back Button Press (popstate)  
+    window.addEventListener('popstate', (e) => {  
+        // Check if Entry Modal is Open  
+        if (dom.modal.style.display === 'flex') {  
+            saveEntryAndClose(); // This handles saving if content exists, or just closing if empty  
+            // We are already 'back' in history stack, so we don't need to push/pop manually here  
+            return;  
+        }  
+  
+        // Check if Drawing Modal is Open  
+        if (document.getElementById('drawingModal').style.display === 'flex') {  
+            saveAndCloseDrawing(); // Handles saving or closing  
+            return;  
+        }  
+  
+        // Home Screen Logic (Double Click to Exit)  
+        const currentTime = new Date().getTime();  
+        // If pressed twice within 2 seconds  
+        if (currentTime - lastBackTime < 2000) {  
+            // Allow Exit: We do nothing, and since the history stack is empty/at start, WebView usually exits.  
+            // Or force it:  
+            history.back();   
+        } else {  
+            // First Click  
+            lastBackTime = currentTime;  
+            showToast('Press back again to exit');  
+            // Since the user pressed back, the browser popped the state.   
+            // We push it back immediately to stay on the "Home" state visually and logically.  
+            history.pushState({page: 'home'}, null, '');  
+        }  
+    });  
+</script>  
+</body>  
 </html>
