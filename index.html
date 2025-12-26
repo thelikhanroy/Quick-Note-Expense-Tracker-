@@ -171,11 +171,17 @@
     .tool-btn.active { background: var(--primary-color); color: white; }  
     .tool-btn svg { width: 18px; height: 18px; fill: currentColor; }  
 
-    /* Security Modal */  
-    #securityModal .modal { height: auto; max-width: 350px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin: auto; background: var(--modal-bg); }  
-    #securityModal { align-items: center; background: rgba(0,0,0,0.6); }  
-    .enable-btn { background: #4CAF50; color: white; width: 100%; padding: 12px; border:none; border-radius:10px; font-weight:600; margin-bottom: 10px; cursor: pointer; }  
-    .disable-btn { background: #ffebee; color: #c2185b; border: 1px solid #ffcdd2; width: 100%; padding: 12px; border-radius:10px; font-weight:600; cursor: pointer; display: none; }  
+    /* Security Modal & Cloud Modal (Shared Modern Style) */  
+    #securityModal .modal, #cloudModal .modal { height: auto; max-width: 350px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin: auto; background: var(--modal-bg); }  
+    #securityModal, #cloudModal { align-items: center; background: rgba(0,0,0,0.6); }  
+    
+    /* Shared Buttons */
+    .enable-btn, .sync-btn-primary { background: #4CAF50; color: white; width: 100%; padding: 12px; border:none; border-radius:10px; font-weight:600; margin-bottom: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;}  
+    .disable-btn, .sync-btn-danger { background: #ffebee; color: #c2185b; border: 1px solid #ffcdd2; width: 100%; padding: 12px; border-radius:10px; font-weight:600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;}  
+    
+    /* Specific Sync Buttons */
+    .sync-btn-secondary { background: #e3f2fd; color: #1976d2; border: 1px solid #bbdefb; width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 0;}
+    .sync-btn-neutral { background: #f5f5f5; color: #666; border: 1px solid #ddd; width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 0;}
 
     /* Action Sheet */  
     .action-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 2000; display: none; }  
@@ -210,11 +216,46 @@
        line-height: 1.6;
        color: var(--text-main);
     }
+
+    /* CLOUD SYNC STYLES (Up and Down 2x2 Grid) */
+    .cloud-btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+    .cloud-btn-primary { flex: 1; background: var(--primary-color); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; }
+    .cloud-btn-secondary { flex: 1; background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; }
+    
+    .user-info { margin-bottom: 20px; padding: 15px; background: rgba(0,0,0,0.03); border-radius: 10px; text-align: center; width: 100%; }
+    .user-email { font-weight: 700; color: var(--primary-color); font-size: 16px; display: block; margin-bottom: 5px; }
+    
+    .sync-grid { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+    .sync-row { display: flex; gap: 10px; width: 100%; }
+    
+    .toggle-auth-link { margin-top: 15px; text-align: center; font-size: 13px; color: var(--text-sub); cursor: pointer; text-decoration: underline; }
+    .sync-icon { width: 20px; height: 20px; fill: currentColor; }
+
+    /* Password Input Wrapper for Eye Icon */
+    .password-wrapper { position: relative; width: 100%; margin-bottom: 5px; }
+    .password-wrapper input { margin-bottom: 0; padding-right: 40px; }
+    .eye-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; }
+    .eye-btn svg { width: 20px; height: 20px; fill: var(--text-sub); }
+    .pass-hint { font-size: 11px; color: var(--text-sub); margin-bottom: 15px; text-align: left; padding-left: 2px; }
+    
+    /* Forgot Password Link Style */
+    .forgot-link {
+        font-size: 12px;
+        color: var(--primary-color);
+        text-align: right;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        display: block;
+        width: 100%;
+        text-decoration: none;
+    }
+    .forgot-link:active { opacity: 0.7; }
   </style>  
 </head>  
 <body>  
 
-<!-- Auth Screen -->  
+<!-- Auth Screen (App Lock) -->  
 <div id="authOverlay">  
     <div class="auth-box">  
       <div class="auth-title" id="authTitle">Locked</div>  
@@ -260,10 +301,18 @@
     </div>  
     <div class="sidebar-menu">  
       <div class="sidebar-section-title">Settings & Privacy</div>  
+
+      <!-- Cloud Sync / Sign In Option -->
+      <div class="sidebar-item" onclick="window.openCloudModal()">
+         <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/></svg>
+         Cloud Backup (Sign In)
+      </div>
+
+      <!-- Secure App -->
       <div class="sidebar-item" id="openSecurityBtn">  
         <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>  
         Secure App  
-      </div>  
+      </div> 
 
       <!-- App Theme Accordion -->  
       <div class="sidebar-item" id="themeToggleBtn" onclick="toggleThemeMenu()">  
@@ -329,6 +378,7 @@
     <div class="fab" id="fabBtn"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>  
 </div>
 
+<!-- Security Modal -->
 <div class="modal-overlay" id="securityModal">  
     <div class="modal">  
       <div class="modal-header">  
@@ -356,6 +406,99 @@
          <button class="enable-btn" onclick="saveSecurity()">Enable Security</button>  
          <button id="disableSecBtn" class="disable-btn" onclick="disableSecurity()">Disable Security</button>  
       </div>  
+    </div>
+</div>
+
+<!-- Cloud Sync / Authentication Modal (Modern Design & 2x2 Grid) -->
+<div class="modal-overlay" id="cloudModal">
+    <div class="modal">
+        <div class="modal-header">
+            <button class="close-modal" onclick="document.getElementById('cloudModal').style.display='none'">&times;</button>
+            <div class="modal-title" style="color:var(--text-main); font-weight:700;">Cloud Sync</div>
+            <div style="width: 28px;"></div>
+        </div>
+        <div class="modal-body">
+            <!-- Loading State -->
+            <div id="cloudLoading" style="display:none; text-align:center; padding:20px;">
+                <p>Please wait...</p>
+            </div>
+
+            <!-- Login / Signup Form -->
+            <div id="authFormSection">
+                <p id="authHeaderText" style="color:var(--text-sub); margin-bottom:15px; font-size:13px; text-align:center;">
+                    Sign in to backup and restore your notes.
+                </p>
+                <label>Email</label>
+                <input type="email" id="cloudEmail" placeholder="yourname@email.com">
+                <label>Password</label>
+                
+                <!-- Password Field 1 with Eye -->
+                <div class="password-wrapper">
+                    <input type="password" id="cloudPassword" placeholder="******">
+                    <!-- Default Icon: Hidden (Eye with Cut) -->
+                    <button class="eye-btn" onclick="togglePass('cloudPassword', this)">
+                        <svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
+                    </button>
+                </div>
+                
+                <!-- Password Hint (Hidden in Login, Visible in Signup) -->
+                <p id="passHint" class="pass-hint" style="display:none;">Must be at least 6 digits.</p>
+
+                <!-- Confirm Password Field (Hidden in Login) -->
+                <div class="password-wrapper" id="confirmPassWrapper" style="display:none;">
+                    <input type="password" id="cloudConfirmPassword" placeholder="Confirm Password">
+                    <!-- Default Icon: Hidden (Eye with Cut) -->
+                    <button class="eye-btn" onclick="togglePass('cloudConfirmPassword', this)">
+                        <svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
+                    </button>
+                </div>
+                
+                <!-- Forgot Password Link -->
+                <div id="forgotCloudPass" class="forgot-link" onclick="handleForgotPassword()">Forgot Password?</div>
+
+                <div class="cloud-btn-group">
+                    <button id="cloudLoginBtn" class="cloud-btn-primary">Sign In</button>
+                    <button id="cloudRegisterBtn" class="cloud-btn-secondary" style="display:none;">Sign Up</button>
+                </div>
+                
+                <div id="toggleAuthMode" class="toggle-auth-link">Don't have an account? Sign Up</div>
+            </div>
+
+            <!-- Logged In / Sync Section (2x2 Layout) -->
+            <div id="syncSection" style="display:none; flex-direction: column; align-items: center; width: 100%;">
+                <div class="user-info">
+                    <span class="user-email" id="currentUserEmail">user@example.com</span>
+                    <span style="font-size:11px; color:var(--text-sub);">Signed In</span>
+                </div>
+                
+                <div class="sync-grid">
+                    <!-- Row 1: Backup & Restore -->
+                    <div class="sync-row">
+                        <button class="sync-btn-primary" id="backupDataBtn" style="flex: 1;">
+                            <svg class="sync-icon" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                            Backup
+                        </button>
+                        
+                        <button class="sync-btn-secondary" id="restoreDataBtn" style="flex: 1;">
+                            <svg class="sync-icon" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" transform="rotate(180 12 12)"/></svg>
+                            Restore
+                        </button>
+                    </div>
+
+                    <!-- Row 2: Delete & Logout -->
+                    <div class="sync-row">
+                        <button class="sync-btn-danger" id="deleteCloudDataBtn" style="flex: 1;">
+                             <svg class="sync-icon" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                             Delete
+                        </button>
+
+                        <button class="sync-btn-neutral" id="cloudLogoutBtn" style="flex: 1;">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -462,6 +605,304 @@
 </div>
 
 <div class="toast" id="toast">Entry Saved!</div>
+
+<!-- FIREBASE MODULE -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getDatabase, ref, set, get, child, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDg7lSIWbcCDPhi79ZeZMGz2honC5TjxJo",
+      authDomain: "quick-note-et-f4afa.firebaseapp.com",
+      databaseURL: "https://quick-note-et-f4afa-default-rtdb.firebaseio.com",
+      projectId: "quick-note-et-f4afa",
+      storageBucket: "quick-note-et-f4afa.firebasestorage.app",
+      messagingSenderId: "665350091194",
+      appId: "1:665350091194:web:f61eb04c77c12c90ba6d83",
+      measurementId: "G-Y7Q0FHCC6T"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    // UI Elements for Cloud Sync
+    const cloudModal = document.getElementById('cloudModal');
+    const authSection = document.getElementById('authFormSection');
+    const syncSection = document.getElementById('syncSection');
+    const cloudLoading = document.getElementById('cloudLoading');
+    
+    const emailInput = document.getElementById('cloudEmail');
+    const passInput = document.getElementById('cloudPassword');
+    const confirmPassInput = document.getElementById('cloudConfirmPassword');
+    const confirmPassWrapper = document.getElementById('confirmPassWrapper');
+    const passHint = document.getElementById('passHint');
+    const forgotPassLink = document.getElementById('forgotCloudPass');
+
+    const loginBtn = document.getElementById('cloudLoginBtn');
+    const registerBtn = document.getElementById('cloudRegisterBtn');
+    const toggleLink = document.getElementById('toggleAuthMode');
+    const authHeader = document.getElementById('authHeaderText');
+
+    const currentUserEmail = document.getElementById('currentUserEmail');
+    const logoutBtn = document.getElementById('cloudLogoutBtn');
+    const backupBtn = document.getElementById('backupDataBtn');
+    const restoreBtn = document.getElementById('restoreDataBtn');
+    const deleteCloudBtn = document.getElementById('deleteCloudDataBtn');
+
+    // Global toggle pass function (Updated Logic: Hidden=Cut, Visible=Open)
+    window.togglePass = function(id, btn) {
+        const input = document.getElementById(id);
+        const path = btn.querySelector('path');
+        
+        // Paths
+        const eyeOpen = "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z";
+        const eyeSlash = "M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z";
+
+        if(input.type === 'password') {
+            // Switch to Visible
+            input.type = 'text';
+            path.setAttribute('d', eyeOpen); // Remove Cut (Open Eye)
+        } else {
+            // Switch to Hidden
+            input.type = 'password';
+            path.setAttribute('d', eyeSlash); // Add Cut (Eye Slash)
+        }
+    };
+
+    // Forgot Password Logic
+    window.handleForgotPassword = function() {
+        const email = emailInput.value;
+        if(!email) {
+            alert("Please enter your email first!");
+            return;
+        }
+        
+        if(!confirm("Send password reset email to " + email + "?")) return;
+
+        cloudLoading.style.display = 'block';
+        sendPasswordResetEmail(auth, email)
+            .then(() => {
+                cloudLoading.style.display = 'none';
+                alert("Password reset email sent! Check your (inbox) or (spam) folder");
+            })
+            .catch((error) => {
+                cloudLoading.style.display = 'none';
+                if(error.code === 'auth/user-not-found') alert("No account found with this email.");
+                else if(error.code === 'auth/invalid-email') alert("Invalid email format.");
+                else alert("Error: " + error.message);
+            });
+    };
+
+    // Expose open function to global window so the sidebar can call it
+    window.openCloudModal = function() {
+        document.getElementById('sidebarOverlay').click(); // Close sidebar
+        cloudModal.style.display = 'flex';
+    };
+
+    // Auth State Monitor
+    onAuthStateChanged(auth, (user) => {
+        cloudLoading.style.display = 'none';
+        if (user) {
+            // User is signed in
+            authSection.style.display = 'none';
+            syncSection.style.display = 'flex';
+            currentUserEmail.innerText = user.email;
+        } else {
+            // User is signed out
+            authSection.style.display = 'block';
+            syncSection.style.display = 'none';
+        }
+    });
+
+    // Toggle Login/Register
+    let isRegisterMode = false;
+    toggleLink.addEventListener('click', () => {
+        isRegisterMode = !isRegisterMode;
+        if(isRegisterMode) {
+            // Sign Up Mode
+            loginBtn.style.display = 'none';
+            registerBtn.style.display = 'block';
+            confirmPassWrapper.style.display = 'block'; // Show Confirm
+            passHint.style.display = 'block'; // Show Hint
+            forgotPassLink.style.display = 'none'; // Hide Forgot Link
+            toggleLink.innerText = "Already have an account? Sign In";
+            authHeader.innerText = "Create an account to backup your data.";
+        } else {
+            // Login Mode
+            loginBtn.style.display = 'block';
+            registerBtn.style.display = 'none';
+            confirmPassWrapper.style.display = 'none'; // Hide Confirm
+            passHint.style.display = 'none'; // Hide Hint
+            forgotPassLink.style.display = 'block'; // Show Forgot Link
+            toggleLink.innerText = "Don't have an account? Sign Up";
+            authHeader.innerText = "Sign in to backup and restore your notes.";
+        }
+    });
+
+    // Login Action
+    loginBtn.addEventListener('click', () => {
+        const email = emailInput.value;
+        const pass = passInput.value;
+        if(!email || !pass) return alert("Please fill all fields");
+        
+        cloudLoading.style.display = 'block';
+        signInWithEmailAndPassword(auth, email, pass)
+            .catch((error) => {
+                cloudLoading.style.display = 'none';
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-email') {
+                    alert("No account found with this email! Please Sign Up.");
+                } else if (error.code === 'auth/wrong-password') {
+                    alert("Incorrect password! Please try again.");
+                } else if (error.code === 'auth/network-request-failed') {
+                    alert("Network error! Check your connection.");
+                } else {
+                    alert("Login Failed. Please try again.");
+                }
+            });
+    });
+
+    // Register Action
+    registerBtn.addEventListener('click', () => {
+        const email = emailInput.value;
+        const pass = passInput.value;
+        const confirm = confirmPassInput.value;
+
+        if(!email || !pass || !confirm) return alert("Please fill all fields");
+        
+        // 6 digits validation
+        if(pass.length < 6) return alert("Password must be at least 6 characters.");
+        
+        // Match validation
+        if(pass !== confirm) return alert("Password does not match!");
+
+        cloudLoading.style.display = 'block';
+        createUserWithEmailAndPassword(auth, email, pass)
+            .catch((error) => {
+                cloudLoading.style.display = 'none';
+                if (error.code === 'auth/email-already-in-use') {
+                    alert("Account already exists with this email! Please Sign In.");
+                } else if (error.code === 'auth/weak-password') {
+                    alert("Password is too weak. Use at least 6 characters.");
+                } else if (error.code === 'auth/network-request-failed') {
+                    alert("Network error! Check your connection.");
+                } else {
+                    alert("Signup Failed. Please try again.");
+                }
+            });
+    });
+
+    // Logout Action
+    logoutBtn.addEventListener('click', () => {
+        signOut(auth);
+    });
+
+    // Helper: Show custom toast (since showToast is in main script, we access it via window or redefine)
+    function notify(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // BACKUP DATA
+    backupBtn.addEventListener('click', () => {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        if(!confirm("Backup all current data to cloud? This will overwrite previous backups.")) return;
+
+        cloudLoading.style.display = 'block';
+        
+        // Gather data from localStorage
+        const dataToBackup = {
+            expenses: localStorage.getItem('quickNoteExpenses'),
+            security: localStorage.getItem('quickNoteSecurity'),
+            theme: localStorage.getItem('appTheme')
+        };
+
+        set(ref(db, 'users/' + user.uid), dataToBackup)
+            .then(() => {
+                cloudLoading.style.display = 'none';
+                notify("Backup Successful!");
+                cloudModal.style.display = 'none';
+            })
+            .catch((error) => {
+                cloudLoading.style.display = 'none';
+                alert("Backup Failed. Check connection.");
+            });
+    });
+
+    // RESTORE DATA (Smart Merge Logic)
+    restoreBtn.addEventListener('click', () => {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        if(!confirm("Sync data from cloud? This will merge cloud data with your current notes.")) return;
+
+        cloudLoading.style.display = 'block';
+
+        const dbRef = ref(db);
+        get(child(dbRef, `users/${user.uid}`))
+            .then((snapshot) => {
+                cloudLoading.style.display = 'none';
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    
+                    if (data.expenses) {
+                        const currentLocalData = JSON.parse(localStorage.getItem('quickNoteExpenses') || '[]');
+                        const expenseMap = new Map();
+                        
+                        currentLocalData.forEach(item => {
+                            if(item.id) expenseMap.set(item.id, item);
+                        });
+
+                        const cloudDataArray = JSON.parse(data.expenses);
+                        cloudDataArray.forEach(item => {
+                            if(item.id) expenseMap.set(item.id, item);
+                        });
+
+                        const mergedExpenses = Array.from(expenseMap.values());
+                        localStorage.setItem('quickNoteExpenses', JSON.stringify(mergedExpenses));
+                    }
+
+                    if(data.security) localStorage.setItem('quickNoteSecurity', data.security);
+                    if(data.theme) localStorage.setItem('appTheme', data.theme);
+                    
+                    notify("Sync Successful! Reloading...");
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    alert("No backup found for this account.");
+                }
+            })
+            .catch((error) => {
+                cloudLoading.style.display = 'none';
+                alert("Restore Failed. Check connection.");
+            });
+    });
+
+    // PERMANENTLY DELETE BACKUP
+    deleteCloudBtn.addEventListener('click', () => {
+        const user = auth.currentUser;
+        if (!user) return;
+
+        if(!confirm("⚠️ PERMANENTLY DELETE your Cloud Backup?\n\nThis cannot be undone. Local data will stay on this device.")) return;
+
+        cloudLoading.style.display = 'block';
+
+        remove(ref(db, 'users/' + user.uid))
+            .then(() => {
+                cloudLoading.style.display = 'none';
+                notify("Cloud Backup Deleted");
+            })
+            .catch((error) => {
+                cloudLoading.style.display = 'none';
+                alert("Delete Failed. Check connection.");
+            });
+    });
+</script>
 
 <script>  
     // --- SECURITY LOGIC ---  
@@ -1123,6 +1564,14 @@
   
     // 2. Handle Back Button Press (popstate)  
     window.addEventListener('popstate', (e) => {  
+        // Check if Cloud Modal is Open (New logic for cloud modal)
+        if (document.getElementById('cloudModal').style.display === 'flex') {
+            document.getElementById('cloudModal').style.display = 'none';
+            // Push state back so we stay "in app"
+            history.pushState({page: 'home'}, null, '');
+            return;
+        }
+
         // Check if Entry Modal is Open  
         if (dom.modal.style.display === 'flex') {  
             saveEntryAndClose(); // This handles saving if content exists, or just closing if empty  
