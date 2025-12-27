@@ -63,6 +63,15 @@
     .icon-btn:active { background: rgba(0,0,0,0.1); }  
     .icon-btn svg { width: 24px; height: 24px; fill: var(--text-main); }  
 
+    /* Cloud Status Icon Styles */
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .cloud-status-btn { background: transparent; border: none; padding: 8px; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: default; }
+    .cloud-status-btn svg { width: 24px; height: 24px; }
+    
+    .cloud-icon-idle svg { fill: var(--text-sub); }
+    .cloud-icon-loading svg { fill: var(--primary-color); animation: spin 1s linear infinite; }
+    .cloud-icon-success svg { fill: var(--primary-color); }
+
     /* Sidebar Styles */  
     .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 199; display: none; }   
     .sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: var(--modal-bg); z-index: 200; transform: translateX(-100%); transition: transform 0.3s ease; box-shadow: 2px 0 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; }  
@@ -345,6 +354,11 @@
         <div class="sub-title">Simple Note For You</div>  
       </div>  
       <div class="header-icons">  
+        <!-- NEW: Cloud Status Icon (Replaced with Sidebar Cloud Style) -->
+        <div id="cloudStatusIcon" class="cloud-status-btn cloud-icon-idle">
+            <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/></svg>
+        </div>
+
         <button class="icon-btn" id="openSearchBtn">  
           <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>  
         </button>  
@@ -464,32 +478,19 @@
                 <div id="toggleAuthMode" class="toggle-auth-link">Don't have an account? Sign Up</div>
             </div>
 
-            <!-- Logged In / Sync Section (2x2 Layout) -->
+            <!-- Logged In / Realtime Sync Section -->
             <div id="syncSection" style="display:none; flex-direction: column; align-items: center; width: 100%;">
                 <div class="user-info">
                     <span class="user-email" id="currentUserEmail">user@example.com</span>
-                    <span style="font-size:11px; color:var(--text-sub);">Signed In</span>
+                    <span style="font-size:12px; color:var(--primary-color); font-weight:600;">● Realtime Sync Active</span>
                 </div>
                 
                 <div class="sync-grid">
-                    <!-- Row 1: Backup & Restore -->
-                    <div class="sync-row">
-                        <button class="sync-btn-primary" id="backupDataBtn" style="flex: 1;">
-                            <svg class="sync-icon" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
-                            Backup
-                        </button>
-                        
-                        <button class="sync-btn-secondary" id="restoreDataBtn" style="flex: 1;">
-                            <svg class="sync-icon" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" transform="rotate(180 12 12)"/></svg>
-                            Restore
-                        </button>
-                    </div>
-
                     <!-- Row 2: Delete & Logout -->
                     <div class="sync-row">
                         <button class="sync-btn-danger" id="deleteCloudDataBtn" style="flex: 1;">
                              <svg class="sync-icon" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                             Delete
+                             Delete Cloud Data
                         </button>
 
                         <button class="sync-btn-neutral" id="cloudLogoutBtn" style="flex: 1;">
@@ -610,7 +611,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getDatabase, ref, set, get, child, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, set, get, child, remove, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDg7lSIWbcCDPhi79ZeZMGz2honC5TjxJo",
@@ -648,9 +649,35 @@
 
     const currentUserEmail = document.getElementById('currentUserEmail');
     const logoutBtn = document.getElementById('cloudLogoutBtn');
-    const backupBtn = document.getElementById('backupDataBtn');
-    const restoreBtn = document.getElementById('restoreDataBtn');
     const deleteCloudBtn = document.getElementById('deleteCloudDataBtn');
+    
+    // Header Cloud Status Element
+    const cloudStatusBtn = document.getElementById('cloudStatusIcon');
+
+    // Function to Update Header Icon State
+    function updateCloudStatus(state) {
+        cloudStatusBtn.style.display = 'flex';
+        cloudStatusBtn.className = 'icon-btn cloud-status-btn'; // Reset classes
+        
+        // Icon Paths
+        const iconCloud = '<path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/>';
+        const iconSync = '<path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>';
+        const iconCheck = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
+
+        if(state === 'loading') {
+            cloudStatusBtn.innerHTML = `<svg viewBox="0 0 24 24">${iconSync}</svg>`;
+            cloudStatusBtn.classList.add('cloud-icon-loading');
+        } else if(state === 'success') {
+            cloudStatusBtn.innerHTML = `<svg viewBox="0 0 24 24">${iconCheck}</svg>`;
+            cloudStatusBtn.classList.add('cloud-icon-success');
+            // Revert back to idle after 2 seconds
+            setTimeout(() => updateCloudStatus('idle'), 2000);
+        } else {
+            // Idle
+            cloudStatusBtn.innerHTML = `<svg viewBox="0 0 24 24">${iconCloud}</svg>`;
+            cloudStatusBtn.classList.add('cloud-icon-idle');
+        }
+    }
 
     // Global toggle pass function (Updated Logic: Hidden=Cut, Visible=Open)
     window.togglePass = function(id, btn) {
@@ -686,7 +713,7 @@
         sendPasswordResetEmail(auth, email)
             .then(() => {
                 cloudLoading.style.display = 'none';
-                alert("Password reset email sent! Check your (inbox) or (spam) folder");
+                alert("Password reset email sent! Check your inbox.");
             })
             .catch((error) => {
                 cloudLoading.style.display = 'none';
@@ -702,7 +729,29 @@
         cloudModal.style.display = 'flex';
     };
 
-    // Auth State Monitor
+    // AUTO SYNC LOGIC
+    // 1. Function to trigger backup from Main Script
+    window.triggerAutoBackup = (data) => {
+        const user = auth.currentUser;
+        if(user) {
+            updateCloudStatus('loading'); // Show Spinner
+            
+            const dataToBackup = {
+                expenses: JSON.stringify(data),
+                security: localStorage.getItem('quickNoteSecurity'),
+                theme: localStorage.getItem('appTheme')
+            };
+            set(ref(db, 'users/' + user.uid), dataToBackup).then(() => {
+                updateCloudStatus('success'); // Show Tick
+            }).catch(() => {
+                updateCloudStatus('idle'); // Revert on error
+            });
+        }
+    };
+
+    // 2. Realtime Listener
+    let unsubscribe = null;
+
     onAuthStateChanged(auth, (user) => {
         cloudLoading.style.display = 'none';
         if (user) {
@@ -710,10 +759,27 @@
             authSection.style.display = 'none';
             syncSection.style.display = 'flex';
             currentUserEmail.innerText = user.email;
+            
+            updateCloudStatus('idle'); // Show Icon
+
+            // Start Realtime Listener
+            const userRef = ref(db, 'users/' + user.uid);
+            unsubscribe = onValue(userRef, (snapshot) => {
+                const data = snapshot.val();
+                if(data && data.expenses) {
+                    // Send data back to main script to update UI
+                    if(window.updateFromCloud) {
+                        window.updateFromCloud(data);
+                    }
+                }
+            });
+
         } else {
             // User is signed out
             authSection.style.display = 'block';
             syncSection.style.display = 'none';
+            if(unsubscribe) unsubscribe(); // Stop listening
+            cloudStatusBtn.style.display = 'none'; // Hide Icon
         }
     });
 
@@ -799,89 +865,13 @@
         signOut(auth);
     });
 
-    // Helper: Show custom toast (since showToast is in main script, we access it via window or redefine)
+    // Helper: Show custom toast
     function notify(msg) {
         const t = document.getElementById('toast');
         t.innerText = msg;
         t.classList.add('show');
         setTimeout(() => t.classList.remove('show'), 3000);
     }
-
-    // BACKUP DATA
-    backupBtn.addEventListener('click', () => {
-        const user = auth.currentUser;
-        if (!user) return;
-
-        if(!confirm("Backup all current data to cloud? This will overwrite previous backups.")) return;
-
-        cloudLoading.style.display = 'block';
-        
-        // Gather data from localStorage
-        const dataToBackup = {
-            expenses: localStorage.getItem('quickNoteExpenses'),
-            security: localStorage.getItem('quickNoteSecurity'),
-            theme: localStorage.getItem('appTheme')
-        };
-
-        set(ref(db, 'users/' + user.uid), dataToBackup)
-            .then(() => {
-                cloudLoading.style.display = 'none';
-                notify("Backup Successful!");
-                cloudModal.style.display = 'none';
-            })
-            .catch((error) => {
-                cloudLoading.style.display = 'none';
-                alert("Backup Failed. Check connection.");
-            });
-    });
-
-    // RESTORE DATA (Smart Merge Logic)
-    restoreBtn.addEventListener('click', () => {
-        const user = auth.currentUser;
-        if (!user) return;
-
-        if(!confirm("Sync data from cloud? This will merge cloud data with your current notes.")) return;
-
-        cloudLoading.style.display = 'block';
-
-        const dbRef = ref(db);
-        get(child(dbRef, `users/${user.uid}`))
-            .then((snapshot) => {
-                cloudLoading.style.display = 'none';
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    
-                    if (data.expenses) {
-                        const currentLocalData = JSON.parse(localStorage.getItem('quickNoteExpenses') || '[]');
-                        const expenseMap = new Map();
-                        
-                        currentLocalData.forEach(item => {
-                            if(item.id) expenseMap.set(item.id, item);
-                        });
-
-                        const cloudDataArray = JSON.parse(data.expenses);
-                        cloudDataArray.forEach(item => {
-                            if(item.id) expenseMap.set(item.id, item);
-                        });
-
-                        const mergedExpenses = Array.from(expenseMap.values());
-                        localStorage.setItem('quickNoteExpenses', JSON.stringify(mergedExpenses));
-                    }
-
-                    if(data.security) localStorage.setItem('quickNoteSecurity', data.security);
-                    if(data.theme) localStorage.setItem('appTheme', data.theme);
-                    
-                    notify("Sync Successful! Reloading...");
-                    setTimeout(() => location.reload(), 1000);
-                } else {
-                    alert("No backup found for this account.");
-                }
-            })
-            .catch((error) => {
-                cloudLoading.style.display = 'none';
-                alert("Restore Failed. Check connection.");
-            });
-    });
 
     // PERMANENTLY DELETE BACKUP
     deleteCloudBtn.addEventListener('click', () => {
@@ -1116,7 +1106,48 @@
       mediaViewerVideo: document.getElementById('mediaViewerVideo')  
     };  
   
-    function saveToStorage() { localStorage.setItem('quickNoteExpenses', JSON.stringify(entries)); }  
+    function saveToStorage() {   
+        // 1. Save Locally  
+        localStorage.setItem('quickNoteExpenses', JSON.stringify(entries));   
+        
+        // 2. Trigger Auto Backup (Cloud)  
+        if(window.triggerAutoBackup) {  
+            window.triggerAutoBackup(entries);  
+        }  
+    }  
+
+    // New Function to handle Realtime Updates from Cloud
+    window.updateFromCloud = (data) => {
+        if(data && data.expenses) {
+            // Smart Merge using Map (Prevent Duplicates, Update Existing)
+            const localMap = new Map(entries.map(e => [e.id, e]));
+            const cloudEntries = JSON.parse(data.expenses);
+            
+            // Cloud is source of truth for updates
+            cloudEntries.forEach(item => {
+                localMap.set(item.id, item);
+            });
+
+            // Convert back to array
+            entries = Array.from(localMap.values());
+
+            // Save to local storage (No auto-backup trigger loop)
+            localStorage.setItem('quickNoteExpenses', JSON.stringify(entries));
+            
+            // Re-render UI
+            renderList(entries, dom.searchInput.value);
+            
+            // Sync settings if they exist
+            if(data.security) {
+                localStorage.setItem('quickNoteSecurity', data.security);
+                securityConfig = JSON.parse(data.security); 
+            }
+            if(data.theme) {
+                setTheme(data.theme); 
+            }
+        }
+    };
+
     function showToast(msg) { dom.toast.textContent = msg; dom.toast.classList.add('show'); setTimeout(() => dom.toast.classList.remove('show'), 3000); }  
     function formatDate(ts) {  
       const d = new Date(ts);  
@@ -1501,7 +1532,10 @@
     dom.actionClose.addEventListener('click', () => dom.actionSheet.style.display = 'none');  
     dom.actionDelete.addEventListener('click', () => {  
       if(confirm('Delete this item?')) {  
-        entries = entries.filter(e => e.id !== selectedId); saveToStorage(); renderList(entries, dom.searchInput.value); showToast('Deleted');  
+        entries = entries.filter(e => e.id !== selectedId); 
+        saveToStorage(); 
+        renderList(entries, dom.searchInput.value); 
+        showToast('Deleted');  
       }  
       dom.actionSheet.style.display = 'none';  
     });  
@@ -1528,8 +1562,10 @@
       dom.actionSheet.style.display = 'none';  
       const item = entries.find(e => e.id === selectedId);  
       if(!item) return;  
-        
-      dom.editId.value = item.id;  
+      
+      // FIXED EDIT LOGIC  
+      openEntry(item.type); // Open modal FIRST  
+      dom.editId.value = item.id; // THEN set the ID  
         
       if(item.type === 'drawing') {  
          drawingData = item.drawingData;   
@@ -1537,7 +1573,6 @@
          return;   
       }  
         
-      openEntry(item.type);   
       if(item.type === 'note') {  
         dom.noteTitle.value = item.title; dom.noteBody.value = item.body;  
       } else {  
