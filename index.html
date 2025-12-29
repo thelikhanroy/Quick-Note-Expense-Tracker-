@@ -4,8 +4,10 @@
   <meta charset="UTF-8" />  
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>  
   <title>Quick Note ET</title>  
-  <!-- Fonts for Multi-language support -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Hind:wght@400;700&family=Noto+Sans+Bengali:wght@400;700&family=Mukta:wght@400;700&family=Tiro+Bangla&family=Playfair+Display:wght@400;600&family=Source+Code+Pro:wght@400;600&family=Nunito:wght@400;600&family=Luckiest+Guy&display=swap" rel="stylesheet">  
+  <!-- Fonts (Updated for better loading) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Dancing+Script:wght@400;700&family=Hind:wght@400;700&family=Lobster&family=Mukta:wght@400;700&family=Noto+Sans+Bengali:wght@400;700&family=Nunito:wght@400;600&family=Orbitron:wght@500&family=Pacifico&family=Playfair+Display:wght@400;600&family=Poppins:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;600&family=Tiro+Bangla&display=swap" rel="stylesheet">  
   <style>  
     :root {  
       --primary-color: #4CAF50;  
@@ -76,12 +78,20 @@
     .sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100%; background: var(--modal-bg); z-index: 200; transform: translateX(-100%); transition: transform 0.3s ease; box-shadow: 2px 0 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; }  
     .sidebar.open { transform: translateX(0); }  
     .sidebar-header { padding: 25px 20px; border-bottom: 1px solid var(--border-color); background: var(--primary-color); color: white; }  
-    .sidebar-title { font-size: 20px; font-weight: 700; }  
+    .sidebar-title { font-size: 20px; font-weight: 700; }
+    .sidebar-subtitle { font-size: 12px; font-weight: 500; opacity: 0.9; margin-top: 4px; }  
+
     .sidebar-menu { flex: 1; overflow-y: auto; padding: 10px 0; }  
     .sidebar-section-title { font-size: 12px; font-weight: 600; color: var(--text-sub); padding: 15px 20px 5px; text-transform: uppercase; }  
-    .sidebar-item { padding: 12px 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; color: var(--text-main); font-size: 15px; }  
+    .sidebar-item { padding: 12px 20px; display: flex; align-items: center; gap: 15px; cursor: pointer; color: var(--text-main); font-size: 15px; text-decoration: none; }  
     .sidebar-item:active { background: rgba(0,0,0,0.05); }  
     .sidebar-item svg { width: 22px; height: 22px; fill: var(--text-sub); }  
+    
+    /* Social Media Styles */
+    .social-icons-container { display: flex; gap: 20px; padding: 10px 20px; }
+    .social-icon { display: block; transition: transform 0.2s; }
+    .social-icon:active { transform: scale(0.9); }
+    .social-icon svg { width: 32px; height: 32px; }
 
     /* Theme Options */  
     .theme-options-container { display: none; flex-direction: column; background: rgba(0,0,0,0.02); }  
@@ -94,7 +104,7 @@
     .search-input-expanded { flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); font-size: 15px; }  
     .highlight-text { background-color: var(--highlight-bg); color: #000; font-weight: 700; border-radius: 2px; padding: 0 1px; }  
 
-    main { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; scroll-behavior: smooth; }  
+    main { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 150px; scroll-behavior: smooth; }  
     .empty-state { text-align: center; margin-top: 50px; color: var(--text-sub); display: none; }  
     .empty-state svg { width: 60px; height: 60px; fill: var(--border-color); margin-bottom: 15px; }  
 
@@ -102,23 +112,30 @@
     .note-item { background: var(--card-bg); border-radius: 16px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; animation: fadeIn 0.3s ease-out forwards; border: 1px solid var(--border-color); user-select: none; }  
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }  
     .note-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }  
-    .note-title { font-weight: 700; font-size: 16px; color: var(--text-main); width: 85%; line-height: 1.4; }  
+    /* Title Font forced to Poppins (Fix Issue 3) */
+    .note-title { font-family: 'Poppins', sans-serif !important; font-weight: 700; font-size: 16px; color: var(--text-main); width: 85%; line-height: 1.4; }  
     .menu-btn { background: transparent; border: none; padding: 8px; cursor: pointer; border-radius: 50%; margin-right: -8px; margin-top: -8px; }  
     .menu-btn svg { width: 22px; height: 22px; fill: var(--text-sub); }  
     .note-category { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; margin-bottom: 10px; background: #e3f2fd; color: #1976d2; }  
     .cat-expense-debited { background: #fce4ec; color: #c2185b; }  
     .cat-expense-credited { background: #e8f5e9; color: #388e3c; }  
+    
+    /* WYSIWYG Styling on List */
     .note-body { font-size: 14px; color: var(--text-sub); line-height: 1.6; white-space: pre-wrap; word-wrap: break-word; }  
     .note-body-truncated { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }  
+    
     .see-more-link { color: var(--primary-color); font-size: 13px; font-weight: 600; cursor: pointer; display: inline-block; margin-top: 4px; }  
     .note-footer { margin-top: 15px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px; }  
     .note-timestamp { font-size: 11px; color: #999; }  
-    .media-container { margin-top: 10px; border-radius: 12px; overflow: hidden; max-height: 200px; background: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; width: 100%; height: 200px; }  
+    
+    .media-container { margin-top: 10px; border-radius: 12px; overflow: hidden; max-height: 250px; background: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; width: 100%; height: 200px; }  
     .media-container img, .media-container video { width: 100%; height: 100%; object-fit: cover; }  
+    .media-container img.drawing-preview { object-fit: contain; background: white; }
+
     .amount-display { font-size: 20px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 5px; }  
 
     /* FAB */  
-    .fab-container { position: fixed; bottom: 30px; right: 25px; z-index: 90; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; }  
+    .fab-container { position: fixed; bottom: 80px; right: 25px; z-index: 90; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; }  
     .fab { width: 60px; height: 60px; background: var(--primary-color); border-radius: 50%; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s; }  
     .fab:active { transform: scale(0.9); }  
     .fab svg { width: 28px; height: 28px; fill: white; transition: 0.3s; }  
@@ -134,34 +151,81 @@
     @media (min-width: 600px) { .modal { width: 90%; height: 90%; border-radius: 20px; } }  
     .modal-header { padding: 0 15px; border-bottom: none; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; background: var(--modal-bg); height: 60px; z-index: 10; opacity: 1; }  
     .close-modal { background: transparent; border: none; font-size: 28px; color: var(--text-main); cursor: pointer; display: flex; align-items: center; height: 100%; padding: 0 10px; }  
-    .modal-body { padding: 20px; overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; background: var(--modal-bg); }  
+    .modal-body { padding: 20px; overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; background: var(--modal-bg); box-sizing: border-box; width: 100%; }  
 
     #entryModal .modal-header, #drawingModal .modal-header { display: none !important; }  
     #entryModal .modal-body, #drawingModal .modal-body { padding-top: 40px; }  
 
-    /* --- NEW BOTTOM TOOLBAR STYLE --- */
+    /* --- BOTTOM TOOLBAR STYLE --- */
     .editor-footer { border-top: 1px solid var(--border-color); padding: 10px 5px; background: var(--modal-bg); display: flex; flex-direction: column; gap: 10px; margin-top: auto; position: relative; }
-    .tool-buttons { display: flex; gap: 15px; align-items: center; }
-    .tool-btn-text { background: rgba(0,0,0,0.05); border: none; border-radius: 8px; padding: 8px 12px; font-weight: 700; color: var(--text-main); cursor: pointer; font-size: 14px; min-width: 60px; }
+    .tool-buttons { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+    .tool-btn-text { background: rgba(0,0,0,0.05); border: none; border-radius: 8px; padding: 8px 10px; font-weight: 700; color: var(--text-main); cursor: pointer; font-size: 13px; min-width: 55px; }
     .tool-btn-text.active { background: var(--primary-color); color: white; }
-    .save-btn-text { background: var(--primary-color); border: none; border-radius: 8px; padding: 8px 20px; font-weight: 700; color: white; cursor: pointer; font-size: 14px; }
-    .tool-panel { display: none; animation: fadeIn 0.2s; background: var(--modal-bg); border: 1px solid var(--border-color); border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 5px; z-index: 50; position: absolute; bottom: 60px; }
-    #sizePanel { left: 5px; width: 250px; }
-    .slider-wrapper { display: flex; align-items: center; gap: 10px; padding: 10px; }
-    input[type=range] { flex:1; height: 5px; margin: 0; }
-    #fontPanel { left: 5px; right: auto; width: max-content; max-width: 200px; }
+    .save-btn-text { background: var(--primary-color); border: none; border-radius: 8px; padding: 8px 15px; font-weight: 700; color: white; cursor: pointer; font-size: 14px; flex-shrink: 0;}
+    
+    .tool-panel { display: none; animation: fadeIn 0.2s; background: var(--modal-bg); border: 1px solid var(--border-color); border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 5px; z-index: 50; position: absolute; bottom: 65px; }
+    
+    #sizePanel { left: 5px; width: 95%; max-width: 300px; }
+    .slider-wrapper { display: flex; align-items: center; gap: 10px; padding: 15px 10px; width: 100%; }
+    
+    input[type=range] { flex:1; height: 5px; margin: 0; cursor: pointer; width: 100%; padding: 0; }
+    
+    #fontPanel { left: 5px; width: max-content; max-width: 220px; }
     .font-list-wrapper { display: flex; flex-direction: column; gap: 2px; padding: 0; max-height: 250px; overflow-y: auto; }
-    .font-chip { padding: 8px 15px; border-radius: 5px; border: none; background: transparent; color: var(--text-main); font-size: 15px; width: 100%; text-align: left; cursor: pointer; font-weight: 500; }
+    .font-chip { padding: 10px 15px; border-radius: 5px; border: none; background: transparent; color: var(--text-main); font-size: 15px; width: 100%; text-align: left; cursor: pointer; font-weight: 500; }
     .font-chip:hover { background: rgba(0,0,0,0.05); }
     .font-chip.active { color: var(--primary-color); font-weight: 700; background: rgba(76, 175, 80, 0.1); }
 
-    /* Note Input Styles */
-    .note-title-input { font-size: 22px; font-weight: 700; border: none; outline: none; width: 100%; margin-bottom: 5px; padding-bottom: 0px; background: transparent; color: var(--text-main); font-family: inherit; }  
-    .note-body-input { flex: 1; height: 100%; font-size: 16px; line-height: 1.6; border: none; outline: none; width: 100%; resize: none; background: transparent; margin-top: 0; padding-top: 5px; color: var(--text-main); white-space: pre-wrap; word-wrap: break-word; overflow-x: hidden; font-weight: 700; font-family: inherit; }  
+    /* Color Panel */
+    #colorPanel { right: 5px; left: auto; width: 95%; max-width: 320px; }
+    .color-palette-wrapper { display: flex; align-items: center; gap: 8px; padding: 10px; width: 100%; justify-content: center; }
+    .palette-nav-btn { background: #eee; border: none; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .palette-container { display: flex; gap: 10px; align-items: center; }
 
-    #noteFields { display: flex; flex-direction: column; flex: 1; height: 100%; }
-    #expenseFields { display: none; flex-direction: column; flex: 1; height: 100%; }
-    #expReason { flex: 1; resize: none; white-space: pre-wrap; word-wrap: break-word; overflow-x: hidden; font-weight: 700; font-family: inherit; }
+    /* Note Input Styles */
+    #entryForm { width: 100%; }
+    
+    .note-title-input { 
+        font-family: 'Poppins', sans-serif !important; /* Force Title Font */
+        font-size: 22px; 
+        font-weight: 700; 
+        border: none; 
+        outline: none; 
+        width: 100%; 
+        padding-bottom: 5px; 
+        background: transparent; 
+        color: var(--text-main); 
+        display: block; 
+        box-sizing: border-box; 
+        margin-bottom: 0px !important; 
+        line-height: 1.2;
+    }  
+    
+    .note-body-input { 
+        flex: 1; 
+        height: 100%; 
+        font-size: 16px; 
+        line-height: 1.6; 
+        border: none; 
+        outline: none; 
+        width: 100%; 
+        resize: none; 
+        background: transparent; 
+        padding-top: 5px; 
+        margin-top: 0px !important; 
+        color: var(--text-main); 
+        white-space: pre-wrap; 
+        word-wrap: break-word; 
+        overflow-x: hidden; 
+        font-weight: 700; 
+        font-family: inherit; 
+        display: block; 
+        box-sizing: border-box; 
+    }  
+
+    #noteFields { display: flex; flex-direction: column; flex: 1; height: 100%; width: 100%; }
+    #expenseFields { display: none; flex-direction: column; flex: 1; height: 100%; width: 100%; }
+    #expReason { flex: 1; resize: none; white-space: pre-wrap; word-wrap: break-word; overflow-x: hidden; font-weight: 700; font-family: inherit; width: 100%; display: block; box-sizing: border-box; }
 
     input, textarea, select { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; font-family: inherit; font-size: 15px; margin-top: 5px; margin-bottom: 15px; background: var(--input-bg); color: var(--text-main); }  
     #entryModal input, #entryModal textarea { border-color: transparent; }  
@@ -201,6 +265,7 @@
     
     .sync-btn-secondary { background: #e3f2fd; color: #1976d2; border: 1px solid #bbdefb; width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 0;}
     .sync-btn-neutral { background: #f5f5f5; color: #666; border: 1px solid #ddd; width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 0;}
+    .sync-btn-app-delete { background: #d32f2f; color: white; width: 85%; padding: 10px; border:none; border-radius:10px; font-weight:600; margin: 5px auto 10px auto; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px;}
 
     /* Action Sheet */  
     .action-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 2000; display: none; }  
@@ -300,7 +365,8 @@
 <div class="sidebar-overlay" id="sidebarOverlay"></div>  
 <aside class="sidebar" id="sidebar">  
     <div class="sidebar-header">  
-      <div class="sidebar-title">Quick Note ET</div>  
+      <div class="sidebar-title">Quick Note ET</div>
+      <div class="sidebar-subtitle"><strong>Made by Likhan Roy</strong></div>
     </div>  
     <div class="sidebar-menu">  
       <div class="sidebar-section-title">Settings & Privacy</div>  
@@ -337,7 +403,68 @@
             System Default  
             <input type="radio" name="appTheme" value="system" onclick="setTheme('system')">  
          </label>  
-      </div>  
+      </div>
+
+      <!-- Social Media Section -->
+      <div class="sidebar-section-title">Social Media</div>
+      <div class="social-icons-container">
+          <!-- YouTube -->
+          <a href="https://www.youtube.com/@Likhan.Officials" target="_blank" class="social-icon">
+             <svg viewBox="0 0 24 24" style="fill:#FF0000;">
+                 <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+             </svg>
+          </a>
+          <!-- Facebook -->
+          <a href="https://www.facebook.com/Likhan.Officials" target="_blank" class="social-icon">
+             <svg viewBox="0 0 24 24" style="fill:#1877F2;">
+                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+             </svg>
+          </a>
+          <!-- Instagram -->
+          <a href="https://www.instagram.com/Likhan.Officials" target="_blank" class="social-icon">
+             <svg viewBox="0 0 24 24" style="fill:#E1306C;">
+                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.069-4.85.069-3.204 0-3.584-.012-4.849-.069-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.073-4.948-.2-4.356-2.612-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+             </svg>
+          </a>
+      </div>
+
+      <!-- More Info Section -->
+      <div class="sidebar-section-title">More Info</div>
+      
+      <!-- About Developer -->
+      <a href="https://sites.google.com/view/quicknoteet-about-developer" target="_blank" style="text-decoration: none;">
+          <div class="sidebar-item">
+              <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+              About Developer
+          </div>
+      </a>
+
+      <!-- Privacy Policy -->
+      <a href="https://sites.google.com/view/quicknoteet-privacy-policy" target="_blank" style="text-decoration: none;">
+          <div class="sidebar-item">
+              <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+              Privacy Policy
+          </div>
+      </a>
+      
+      <!-- Terms & Conditions -->
+<a href="https://sites.google.com/view/quicknoteet-termsandconditions" target="_blank" style="text-decoration: none;">
+  <div class="sidebar-item">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 1L4 4v6c0 5.25 3.5 10.5 8 11 4.5-.5 8-5.75 8-11V4l-8-3zm0 4l4 1.5V10c0 3.5-2.25 7.25-4 7.75C10.25 17.25 8 13.5 8 10V6.5L12 5z"/>
+    </svg>
+    Terms & Conditions
+  </div>
+</a>
+
+      <!-- Email Us -->
+      <a href="mailto:thelikhanroy@gmail.com" style="text-decoration: none;">
+          <div class="sidebar-item">
+              <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+              Email Us
+          </div>
+      </a>
+
     </div>
 </aside>
 
@@ -348,7 +475,7 @@
         <div class="sub-title">Simple Note For You</div>  
       </div>  
       <div class="header-icons">  
-        <!-- NEW: Cloud Status Icon (Replaced with Sidebar Cloud Style) -->
+        <!-- Cloud Status Icon -->
         <div id="cloudStatusIcon" class="cloud-status-btn cloud-icon-idle">
             <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/></svg>
         </div>
@@ -417,62 +544,51 @@
     </div>
 </div>
 
-<!-- Cloud Sync / Authentication Modal (Modern Design & 2x2 Grid) -->
+<!-- Cloud Sync Modal -->
 <div class="modal-overlay" id="cloudModal">
     <div class="modal">
         <div class="modal-header">
             <button class="close-modal" onclick="document.getElementById('cloudModal').style.display='none'">&times;</button>
             <div class="modal-title" style="color:var(--text-main); font-weight:700;">Cloud Sync</div>
-            <div style="width: 28px;"></div>
+            <!-- REQ 1: App Data Delete Button (Text + Icon on Right) -->
+            <button id="deleteAppDataBtn" style="background:transparent; border:none; padding: 8px; color: #ff3b30; font-weight:600; font-size:14px; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="Delete App Data">
+                 App Data
+                 <svg viewBox="0 0 24 24" style="width: 22px; height: 22px; fill: currentColor;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+            </button>
         </div>
         <div class="modal-body">
-            <!-- Loading State -->
             <div id="cloudLoading" style="display:none; text-align:center; padding:20px;">
                 <p>Please wait...</p>
             </div>
-
-            <!-- Login / Signup Form -->
             <div id="authFormSection">
                 <p id="authHeaderText" style="color:var(--text-sub); margin-bottom:15px; font-size:13px; text-align:center;">
-                    Sign in to backup and restore your notes.
+                    Create an account to backup your data.
                 </p>
                 <label>Email</label>
                 <input type="email" id="cloudEmail" placeholder="yourname@email.com">
                 <label>Password</label>
-                
-                <!-- Password Field 1 with Eye -->
                 <div class="password-wrapper">
                     <input type="password" id="cloudPassword" placeholder="******">
-                    <!-- Default Icon: Hidden (Eye with Cut) -->
                     <button class="eye-btn" onclick="togglePass('cloudPassword', this)">
                         <svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
                     </button>
                 </div>
-                
-                <!-- Password Hint (Hidden in Login, Visible in Signup) -->
-                <p id="passHint" class="pass-hint" style="display:none;">Must be at least 6 digits.</p>
-
-                <!-- Confirm Password Field (Hidden in Login) -->
-                <div class="password-wrapper" id="confirmPassWrapper" style="display:none;">
+                <p id="passHint" class="pass-hint" style="display:block;">Must be at least 6 digits.</p>
+                <div class="password-wrapper" id="confirmPassWrapper" style="display:block;">
                     <input type="password" id="cloudConfirmPassword" placeholder="Confirm Password">
-                    <!-- Default Icon: Hidden (Eye with Cut) -->
                     <button class="eye-btn" onclick="togglePass('cloudConfirmPassword', this)">
                         <svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
                     </button>
                 </div>
-                
-                <!-- Forgot Password Link -->
-                <div id="forgotCloudPass" class="forgot-link" onclick="handleForgotPassword()">Forgot Password?</div>
-
+                <div id="forgotCloudPass" class="forgot-link" onclick="handleForgotPassword()" style="display:none;">Forgot Password?</div>
                 <div class="cloud-btn-group">
-                    <button id="cloudLoginBtn" class="cloud-btn-primary">Sign In</button>
-                    <button id="cloudRegisterBtn" class="cloud-btn-secondary" style="display:none;">Sign Up</button>
+                    <!-- Default to Sign Up Visible -->
+                    <button id="cloudLoginBtn" class="cloud-btn-primary" style="display:none;">Sign In</button>
+                    <button id="cloudRegisterBtn" class="cloud-btn-secondary" style="display:block;">Sign Up</button>
                 </div>
-                
-                <div id="toggleAuthMode" class="toggle-auth-link">Don't have an account? Sign Up</div>
+                <div id="toggleAuthMode" class="toggle-auth-link">Already have an account? Sign In</div>
             </div>
-
-            <!-- Logged In / Realtime Sync Section -->
+            
             <div id="syncSection" style="display:none; flex-direction: column; align-items: center; width: 100%;">
                 <div class="user-info">
                     <span class="user-email" id="currentUserEmail">user@example.com</span>
@@ -480,13 +596,11 @@
                 </div>
                 
                 <div class="sync-grid">
-                    <!-- Row 2: Delete & Logout -->
                     <div class="sync-row">
                         <button class="sync-btn-danger" id="deleteCloudDataBtn" style="flex: 1;">
                              <svg class="sync-icon" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                              Delete Cloud Data
                         </button>
-
                         <button class="sync-btn-neutral" id="cloudLogoutBtn" style="flex: 1;">
                             Logout
                         </button>
@@ -545,13 +659,13 @@
             <div id="sizePanel" class="tool-panel">
                 <div class="slider-wrapper">
                     <span style="font-size:12px; color:var(--text-sub);">A-</span>
-                    <!-- Modified: Range 0-10 -->
-                    <input type="range" id="sizeSlider" min="0" max="10" value="3" step="1" oninput="applyFormat()">
+                    <!-- REQ 2: WIDER RANGE & VISUAL FIX -->
+                    <input type="range" id="sizeSlider" min="0" max="20" value="4" step="1" oninput="applyFormat()">
                     <span style="font-size:16px; font-weight:bold; color:var(--text-sub);">A+</span>
                 </div>
             </div>
 
-            <!-- MODIFIED: Font Panel Floating Exactly Above ff -->
+            <!-- Font Panel Floating Above -->
             <div id="fontPanel" class="tool-panel">
                 <div class="font-list-wrapper">
                     <div class="font-chip" onclick="setFont('Poppins', this)" style="font-family:'Poppins', sans-serif">Poppins</div>
@@ -559,16 +673,34 @@
                     <div class="font-chip" onclick="setFont('Noto Sans Bengali', this)" style="font-family:'Noto Sans Bengali', sans-serif">Bengali</div>
                     <div class="font-chip" onclick="setFont('Mukta', this)" style="font-family:'Mukta', sans-serif">Mukta</div>
                     <div class="font-chip" onclick="setFont('Tiro Bangla', this)" style="font-family:'Tiro Bangla', serif">Tiro</div>
+                    <!-- REQ 1: NEW FONTS -->
+                    <div class="font-chip" onclick="setFont('Dancing Script', this)" style="font-family:'Dancing Script', cursive">Dancing</div>
+                    <div class="font-chip" onclick="setFont('Pacifico', this)" style="font-family:'Pacifico', cursive">Pacifico</div>
+                    <div class="font-chip" onclick="setFont('Anton', this)" style="font-family:'Anton', sans-serif">Anton</div>
+                    <div class="font-chip" onclick="setFont('Orbitron', this)" style="font-family:'Orbitron', sans-serif">Orbitron</div>
+                    <div class="font-chip" onclick="setFont('Lobster', this)" style="font-family:'Lobster', cursive">Lobster</div>
+                </div>
+            </div>
+
+            <!-- REQ 3: Color Panel -->
+            <div id="colorPanel" class="tool-panel">
+                <div class="color-palette-wrapper">
+                    <button type="button" class="palette-nav-btn" id="prevTextColorBtn">&lt;</button>
+                    <div id="dynamicTextColorContainer" class="palette-container"></div>
+                    <button type="button" class="palette-nav-btn" id="nextTextColorBtn">&gt;</button>
                 </div>
             </div>
 
             <!-- Main Buttons -->
             <div class="tool-buttons">
                 <!-- TT shows size e.g. TT 5 -->
-                <button type="button" class="tool-btn-text" id="btnTT" onclick="toggleTool('size')">Size 3</button>
-                <button type="button" class="tool-btn-text" id="btnFF" onclick="toggleTool('font')">Style</button>
+                <button type="button" class="tool-btn-text" id="btnTT" onclick="toggleTool('size')">Size 4</button>
+                <!-- REQ 1: Renamed Style to Fonts -->
+                <button type="button" class="tool-btn-text" id="btnFF" onclick="toggleTool('font')">Fonts</button>
                 <!-- Req 2: Save Button -->
                 <button type="button" class="save-btn-text" onclick="saveEntryAndClose()">Save</button>
+                <!-- REQ 3: Color Button Right of Save -->
+                <button type="button" class="tool-btn-text" id="btnColor" onclick="toggleTool('color')">Color</button>
             </div>
         </div>
 
@@ -583,27 +715,31 @@
        <div style="width: 28px;"></div>  
     </div>  
     <div class="modal-body">  
-       <!-- Modified: Only Zoom Display & Move Mode -->
+       <!-- Only Zoom Display & Move Mode -->
        <div class="drawing-header">
            <span class="zoom-display" id="zoomLevelDisplay">0%</span>
            <div style="width:1px; height:15px; background:#ccc;"></div>
+           
+           <button class="mode-btn" onclick="undoDrawing()">
+               <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+           </button>
+
            <button class="mode-btn" id="panModeBtn" onclick="togglePanMode()">
                <svg style="width:16px; height:16px; fill:currentColor" viewBox="0 0 24 24"><path d="M18 9c-.95 0-1.81.51-2.27 1.29-.27-.08-.55-.12-.85-.12-.87 0-1.68.32-2.31.87-.29-.63-.94-1.04-1.67-1.04-.6 0-1.15.26-1.53.69-.15-.09-.32-.15-.51-.15-1.54 0-2.61 1.67-1.85 3.19l1.6 3.21c1.37 2.74 4.19 4.3 6.94 4.04 3.01-.28 5.37-3.04 5.37-6.08V11c0-1.1-.9-2-2-2z"/></svg> Move
            </button>
-           <!-- Req 2: Save Button in Drawing -->
+           
+           <button class="mode-btn" onclick="redoDrawing()">
+               <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor"><path d="M18.4 10.6C16.55 9 14.15 8 11.5 8c-4.65 0-8.58 3.03-9.96 7.22L3.9 16c1.05-3.19 4.05-5.5 7.6-5.5 1.95 0 3.73.72 5.12 1.88L13 16h9V7l-3.6 3.6z"/></svg>
+           </button>
+
            <div style="width:1px; height:15px; background:#ccc;"></div>
            <button class="mode-btn" onclick="saveAndCloseDrawing()" style="background:var(--primary-color); color:white;">Save</button>
        </div>
 
        <canvas id="drawCanvas"></canvas>  
        <div class="drawing-tools">  
-          <!-- Left Arrow -->
           <button class="tool-btn" id="prevColorBtn">&lt;</button>
-          
-          <!-- Color Container -->
           <div id="dynamicColorContainer" style="display:flex; gap:10px; align-items:center;"></div>
-          
-          <!-- Right Arrow -->
           <button class="tool-btn" id="nextColorBtn">&gt;</button>
 
           <div style="width:1px; height:20px; background:#ddd; margin:0 5px;"></div>
@@ -625,10 +761,9 @@
     <div class="action-sheet">  
       <div class="sheet-handle"></div>  
       <div class="action-btn-group">  
-        <!-- Copy Button Added -->
         <button class="action-btn" id="actionCopy"><svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> Copy Text</button>  
-        <button class="action-btn" id="actionEdit"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> Edit Entry</button>  
-        <button class="action-btn delete" id="actionDelete"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Delete Entry</button>  
+        <button class="action-btn" id="actionEdit"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> Edit Note</button>  
+        <button class="action-btn delete" id="actionDelete"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Delete Note</button>  
       </div>  
       <button class="action-btn cancel" id="actionClose">Cancel</button>  
     </div>  
@@ -637,7 +772,6 @@
 <div class="modal-overlay" id="textModal">  
     <div class="modal">  
       <div class="modal-header">  
-        <!-- Title is now dynamic -->
         <h3 class="modal-title" id="detailModalTitle" style="color:var(--text-main);">Details</h3>  
         <button class="close-modal" onclick="document.getElementById('textModal').style.display='none'">&times;</button>  
       </div>  
@@ -666,42 +800,34 @@
       measurementId: "G-Y7Q0FHCC6T"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    // UI Elements for Cloud Sync
     const cloudModal = document.getElementById('cloudModal');
     const authSection = document.getElementById('authFormSection');
     const syncSection = document.getElementById('syncSection');
     const cloudLoading = document.getElementById('cloudLoading');
-    
     const emailInput = document.getElementById('cloudEmail');
     const passInput = document.getElementById('cloudPassword');
     const confirmPassInput = document.getElementById('cloudConfirmPassword');
     const confirmPassWrapper = document.getElementById('confirmPassWrapper');
     const passHint = document.getElementById('passHint');
     const forgotPassLink = document.getElementById('forgotCloudPass');
-
     const loginBtn = document.getElementById('cloudLoginBtn');
     const registerBtn = document.getElementById('cloudRegisterBtn');
     const toggleLink = document.getElementById('toggleAuthMode');
     const authHeader = document.getElementById('authHeaderText');
-
     const currentUserEmail = document.getElementById('currentUserEmail');
     const logoutBtn = document.getElementById('cloudLogoutBtn');
     const deleteCloudBtn = document.getElementById('deleteCloudDataBtn');
-    
-    // Header Cloud Status Element
+    const deleteAppDataBtn = document.getElementById('deleteAppDataBtn');
     const cloudStatusBtn = document.getElementById('cloudStatusIcon');
 
-    // Function to Update Header Icon State
     function updateCloudStatus(state) {
         cloudStatusBtn.style.display = 'flex';
-        cloudStatusBtn.className = 'icon-btn cloud-status-btn'; // Reset classes
+        cloudStatusBtn.className = 'icon-btn cloud-status-btn';
         
-        // Icon Paths
         const iconCloud = '<path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/>';
         const iconSync = '<path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>';
         const iconCheck = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
@@ -712,513 +838,254 @@
         } else if(state === 'success') {
             cloudStatusBtn.innerHTML = `<svg viewBox="0 0 24 24">${iconCheck}</svg>`;
             cloudStatusBtn.classList.add('cloud-icon-success');
-            // Revert back to idle after 2 seconds
             setTimeout(() => updateCloudStatus('idle'), 2000);
         } else {
-            // Idle
             cloudStatusBtn.innerHTML = `<svg viewBox="0 0 24 24">${iconCloud}</svg>`;
             cloudStatusBtn.classList.add('cloud-icon-idle');
         }
     }
 
-    // Global toggle pass function (Updated Logic: Hidden=Cut, Visible=Open)
     window.togglePass = function(id, btn) {
         const input = document.getElementById(id);
         const path = btn.querySelector('path');
-        
-        // Paths
         const eyeOpen = "M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z";
         const eyeSlash = "M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z";
 
         if(input.type === 'password') {
-            // Switch to Visible
-            input.type = 'text';
-            path.setAttribute('d', eyeOpen); // Remove Cut (Open Eye)
+            input.type = 'text'; path.setAttribute('d', eyeOpen);
         } else {
-            // Switch to Hidden
-            input.type = 'password';
-            path.setAttribute('d', eyeSlash); // Add Cut (Eye Slash)
+            input.type = 'password'; path.setAttribute('d', eyeSlash);
         }
     };
 
-    // Forgot Password Logic
     window.handleForgotPassword = function() {
         const email = emailInput.value;
-        if(!email) {
-            alert("Please enter your email first!");
-            return;
-        }
-        
-        if(!confirm("Send password reset email to " + email + "?")) return;
-
+        if(!email) { alert("Please enter your email first!"); return; }
+        if(!confirm("Send password reset link to " + email + "?")) return;
         cloudLoading.style.display = 'block';
         sendPasswordResetEmail(auth, email)
-            .then(() => {
-                cloudLoading.style.display = 'none';
-                alert("Password reset email sent! Check your inbox.");
-            })
-            .catch((error) => {
-                cloudLoading.style.display = 'none';
-                if(error.code === 'auth/user-not-found') alert("No account found with this email.");
-                else if(error.code === 'auth/invalid-email') alert("Invalid email format.");
-                else alert("Error: " + error.message);
-            });
+            .then(() => { cloudLoading.style.display = 'none'; alert("Password reset link sent! Check your (inbox) or (spam) folder."); })
+            .catch((error) => { cloudLoading.style.display = 'none'; alert("Error: " + error.message); });
     };
 
-    // Expose open function to global window so the sidebar can call it
     window.openCloudModal = function() {
-        document.getElementById('sidebarOverlay').click(); // Close sidebar
+        document.getElementById('sidebarOverlay').click();
         cloudModal.style.display = 'flex';
     };
 
-    // AUTO SYNC LOGIC
-    // 1. Function to trigger backup from Main Script
     window.triggerAutoBackup = (data) => {
         const user = auth.currentUser;
         if(user) {
-            updateCloudStatus('loading'); // Show Spinner
-            
-            const dataToBackup = {
-                expenses: JSON.stringify(data),
-                security: localStorage.getItem('quickNoteSecurity'),
-                theme: localStorage.getItem('appTheme')
-            };
-            set(ref(db, 'users/' + user.uid), dataToBackup).then(() => {
-                updateCloudStatus('success'); // Show Tick
-            }).catch(() => {
-                updateCloudStatus('idle'); // Revert on error
-            });
+            updateCloudStatus('loading');
+            const dataToBackup = { expenses: JSON.stringify(data), security: localStorage.getItem('quickNoteSecurity'), theme: localStorage.getItem('appTheme') };
+            set(ref(db, 'users/' + user.uid), dataToBackup).then(() => { updateCloudStatus('success'); }).catch(() => { updateCloudStatus('idle'); });
         }
     };
 
-    // 2. Realtime Listener
     let unsubscribe = null;
-
     onAuthStateChanged(auth, (user) => {
         cloudLoading.style.display = 'none';
         if (user) {
-            // User is signed in
-            authSection.style.display = 'none';
-            syncSection.style.display = 'flex';
-            currentUserEmail.innerText = user.email;
+            authSection.style.display = 'none'; syncSection.style.display = 'flex'; currentUserEmail.innerText = user.email; updateCloudStatus('idle');
             
-            updateCloudStatus('idle'); // Show Icon
-
-            // Start Realtime Listener
             const userRef = ref(db, 'users/' + user.uid);
-            unsubscribe = onValue(userRef, (snapshot) => {
-                const data = snapshot.val();
-                if(data && data.expenses) {
-                    // Send data back to main script to update UI
-                    if(window.updateFromCloud) {
-                        window.updateFromCloud(data);
-                    }
+            
+            // --- NEW: Auto Backup on Sign In (Merge Logic) ---
+            // This gets existing cloud data, merges with local, and saves back.
+            get(userRef).then((snapshot) => {
+                const cloudData = snapshot.val();
+                let mergedList = [...entries]; // Current Local Data
+
+                // If cloud has data, merge it so we don't overwrite/lose cloud notes
+                if (cloudData && cloudData.expenses) {
+                    const cloudList = JSON.parse(cloudData.expenses);
+                    const map = new Map();
+                    // Load Cloud first
+                    cloudList.forEach(c => map.set(c.id, c));
+                    // Overwrite/Add Local (Local takes precedence if conflict, ensures sync up)
+                    mergedList.forEach(l => map.set(l.id, l));
+                    mergedList = Array.from(map.values());
                 }
+
+                // Update Local Global Var and Storage
+                entries = mergedList;
+                saveToStorage(); // This saves to localStorage
+
+                // Push to Cloud (The Auto Backup Step)
+                const dataToSync = { 
+                    expenses: JSON.stringify(entries), 
+                    security: localStorage.getItem('quickNoteSecurity'), 
+                    theme: localStorage.getItem('appTheme') 
+                };
+                return set(userRef, dataToSync);
+            }).then(() => {
+                // Now Start Listening for updates
+                unsubscribe = onValue(userRef, (snapshot) => {
+                    const data = snapshot.val();
+                    if(data && data.expenses) {
+                        if(window.updateFromCloud) { window.updateFromCloud(data); }
+                    }
+                });
             });
+            // --------------------------------------------------
 
         } else {
-            // User is signed out
-            authSection.style.display = 'block';
-            syncSection.style.display = 'none';
-            if(unsubscribe) unsubscribe(); // Stop listening
-            cloudStatusBtn.style.display = 'none'; // Hide Icon
+            authSection.style.display = 'block'; syncSection.style.display = 'none'; if(unsubscribe) unsubscribe(); cloudStatusBtn.style.display = 'none';
         }
     });
 
-    // Toggle Login/Register
-    let isRegisterMode = false;
+    // START WITH SIGN UP (True)
+    let isRegisterMode = true; 
+    
+    // INITIAL STATE SET
+    toggleLink.innerText = "Already have an account? Sign In"; 
+    authHeader.innerText = "Create an account to backup your data.";
+
     toggleLink.addEventListener('click', () => {
         isRegisterMode = !isRegisterMode;
         if(isRegisterMode) {
-            // Sign Up Mode
-            loginBtn.style.display = 'none';
-            registerBtn.style.display = 'block';
-            confirmPassWrapper.style.display = 'block'; // Show Confirm
-            passHint.style.display = 'block'; // Show Hint
-            forgotPassLink.style.display = 'none'; // Hide Forgot Link
-            toggleLink.innerText = "Already have an account? Sign In";
-            authHeader.innerText = "Create an account to backup your data.";
+            loginBtn.style.display = 'none'; registerBtn.style.display = 'block'; confirmPassWrapper.style.display = 'block'; passHint.style.display = 'block'; forgotPassLink.style.display = 'none'; toggleLink.innerText = "Already have an account? Sign In"; authHeader.innerText = "Create an account to backup your data.";
         } else {
-            // Login Mode
-            loginBtn.style.display = 'block';
-            registerBtn.style.display = 'none';
-            confirmPassWrapper.style.display = 'none'; // Hide Confirm
-            passHint.style.display = 'none'; // Hide Hint
-            forgotPassLink.style.display = 'block'; // Show Forgot Link
-            toggleLink.innerText = "Don't have an account? Sign Up";
-            authHeader.innerText = "Sign in to backup and restore your notes.";
+            loginBtn.style.display = 'block'; registerBtn.style.display = 'none'; confirmPassWrapper.style.display = 'none'; passHint.style.display = 'none'; forgotPassLink.style.display = 'block'; toggleLink.innerText = "Don't have an account? Sign Up"; authHeader.innerText = "Sign in to backup and restore your notes.";
         }
     });
 
-    // Login Action
     loginBtn.addEventListener('click', () => {
-        const email = emailInput.value;
-        const pass = passInput.value;
+        const email = emailInput.value; const pass = passInput.value;
         if(!email || !pass) return alert("Please fill all fields");
-        
         cloudLoading.style.display = 'block';
-        signInWithEmailAndPassword(auth, email, pass)
-            .catch((error) => {
-                cloudLoading.style.display = 'none';
-                if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-email') {
-                    alert("No account found with this email! Please Sign Up.");
-                } else if (error.code === 'auth/wrong-password') {
-                    alert("Incorrect password! Please try again.");
-                } else if (error.code === 'auth/network-request-failed') {
-                    alert("Network error! Check your connection.");
-                } else {
-                    alert("Login Failed. Please try again.");
-                }
-            });
+        signInWithEmailAndPassword(auth, email, pass).catch((error) => { 
+            cloudLoading.style.display = 'none'; 
+            if(error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-email') {
+                alert("No account found! Please check your (Email & Password).");
+            } else if (error.code === 'auth/wrong-password') {
+                alert("Password incorrect. Please use 'Forgot Password'.");
+            } else {
+                alert("Login Failed: " + error.message);
+            }
+        });
     });
 
-    // Register Action
     registerBtn.addEventListener('click', () => {
-        const email = emailInput.value;
-        const pass = passInput.value;
-        const confirm = confirmPassInput.value;
-
+        const email = emailInput.value; const pass = passInput.value; const confirm = confirmPassInput.value;
         if(!email || !pass || !confirm) return alert("Please fill all fields");
-        
-        // 6 digits validation
         if(pass.length < 6) return alert("Password must be at least 6 characters.");
-        
-        // Match validation
         if(pass !== confirm) return alert("Password does not match!");
-
         cloudLoading.style.display = 'block';
-        createUserWithEmailAndPassword(auth, email, pass)
-            .catch((error) => {
-                cloudLoading.style.display = 'none';
-                if (error.code === 'auth/email-already-in-use') {
-                    alert("Account already exists with this email! Please Sign In.");
-                } else if (error.code === 'auth/weak-password') {
-                    alert("Password is too weak. Use at least 6 characters.");
-                } else if (error.code === 'auth/network-request-failed') {
-                    alert("Network error! Check your connection.");
-                } else {
-                    alert("Signup Failed. Please try again.");
+        createUserWithEmailAndPassword(auth, email, pass).catch((error) => { 
+            cloudLoading.style.display = 'none'; 
+            if(error.code === 'auth/email-already-in-use') {
+                alert("Account already exists. Please Sign In.");
+            } else {
+                alert("Signup Failed: " + error.message); 
+            }
+        });
+    });
+
+    logoutBtn.addEventListener('click', () => { signOut(auth); });
+
+    function notify(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+    
+    // DELETE CLOUD DATA (Button in sync section)
+    deleteCloudBtn.addEventListener('click', () => {
+        const user = auth.currentUser; if (!user) return;
+        if(!confirm("⚠️ PERMANENTLY DELETE your Cloud Backup?")) return;
+        cloudLoading.style.display = 'block';
+        remove(ref(db, 'users/' + user.uid)).then(() => { cloudLoading.style.display = 'none'; notify("Cloud Backup Deleted"); }).catch(() => { cloudLoading.style.display = 'none'; alert("Delete Failed."); });
+    });
+
+    // NEW: DELETE APP DATA FUNCTION
+    async function performAppReset() {
+        if(!confirm("⚠️ Are you sure you want to delete ALL App Data? This will clear all local notes and settings.")) return;
+        
+        const user = auth.currentUser;
+        
+        if(user) {
+            // If logged in, warn about Cloud Data
+            if(confirm("You are currently Signed In. This will ALSO delete your Cloud Backup permanently. Proceed?")) {
+                cloudLoading.style.display = 'block';
+                try {
+                    await remove(ref(db, 'users/' + user.uid));
+                    // Proceed to clear local
+                } catch(e) {
+                    alert("Cloud delete failed: " + e.message);
+                    cloudLoading.style.display = 'none';
+                    return; 
                 }
-            });
-    });
+            } else {
+                // User cancelled the combined delete
+                return;
+            }
+        } 
 
-    // Logout Action
-    logoutBtn.addEventListener('click', () => {
-        signOut(auth);
-    });
-
-    // Helper: Show custom toast
-    function notify(msg) {
-        const t = document.getElementById('toast');
-        t.innerText = msg;
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 3000);
+        // Clear Local Data (Runs for both logged in after cloud delete, OR logged out users)
+        localStorage.removeItem('quickNoteExpenses');
+        localStorage.removeItem('quickNoteSecurity');
+        // keeping theme preference is usually nice, but prompt said "app data", let's clear main data.
+        
+        alert("App Data Deleted. The app will now reload.");
+        location.reload();
     }
 
-    // PERMANENTLY DELETE BACKUP
-    deleteCloudBtn.addEventListener('click', () => {
-        const user = auth.currentUser;
-        if (!user) return;
+    // Attach to button (NOW IN HEADER)
+    if(deleteAppDataBtn) deleteAppDataBtn.addEventListener('click', performAppReset);
 
-        if(!confirm("⚠️ PERMANENTLY DELETE your Cloud Backup?\n\nThis cannot be undone. Local data will stay on this device.")) return;
-
-        cloudLoading.style.display = 'block';
-
-        remove(ref(db, 'users/' + user.uid))
-            .then(() => {
-                cloudLoading.style.display = 'none';
-                notify("Cloud Backup Deleted");
-            })
-            .catch((error) => {
-                cloudLoading.style.display = 'none';
-                alert("Delete Failed. Check connection.");
-            });
-    });
 </script>
 
 <script>  
-    // --- SECURITY LOGIC ---  
     let securityConfig = JSON.parse(localStorage.getItem('quickNoteSecurity') || '{"enabled":false, "type":"pin", "code":"", "recovery":""}');  
     const auth = {  
-      overlay: document.getElementById('authOverlay'),  
-      pinUI: document.getElementById('pinModeUI'),  
-      pinInput: document.getElementById('authPinInput'),  
-      passUI: document.getElementById('passModeUI'),  
-      forgetLink: document.getElementById('forgetLink'),  
-      recoveryUI: document.getElementById('recoveryUI'),  
-      recoveryInput: document.getElementById('recoveryInput'),  
-      revealSection: document.getElementById('revealSection'),  
-      revealedCode: document.getElementById('revealedCode'),  
-      passInput: document.getElementById('authPassInput'),  
-      menuBtn: document.getElementById('mainMenuBtn'),  
-      secBtn: document.getElementById('openSecurityBtn'),  
-      secModal: document.getElementById('securityModal'),  
-      closeSecModal: document.getElementById('closeSecurityModal'),  
-      disableSecBtn: document.getElementById('disableSecBtn'),  
-      sidebar: document.getElementById('sidebar'),  
-      sidebarOverlay: document.getElementById('sidebarOverlay')  
+      overlay: document.getElementById('authOverlay'), pinUI: document.getElementById('pinModeUI'), pinInput: document.getElementById('authPinInput'), passUI: document.getElementById('passModeUI'), forgetLink: document.getElementById('forgetLink'), recoveryUI: document.getElementById('recoveryUI'), recoveryInput: document.getElementById('recoveryInput'), revealSection: document.getElementById('revealSection'), revealedCode: document.getElementById('revealedCode'), passInput: document.getElementById('authPassInput'), menuBtn: document.getElementById('mainMenuBtn'), secBtn: document.getElementById('openSecurityBtn'), secModal: document.getElementById('securityModal'), closeSecModal: document.getElementById('closeSecurityModal'), disableSecBtn: document.getElementById('disableSecBtn'), sidebar: document.getElementById('sidebar'), sidebarOverlay: document.getElementById('sidebarOverlay')  
     };  
   
     function checkSecurity() {  
       if (securityConfig.enabled) {  
-        auth.overlay.style.display = 'flex';  
-        document.getElementById('authTitle').innerText = securityConfig.type === 'pin' ? 'Enter PIN' : 'Enter Password';  
-        auth.recoveryUI.style.display = 'none';  
-        auth.forgetLink.style.display = 'block';  
-        if (securityConfig.type === 'pin') {  
-          auth.pinUI.style.display = 'block';  
-          auth.passUI.style.display = 'none';  
-          auth.pinInput.value = "";  
-        } else {  
-          auth.pinUI.style.display = 'none';  
-          auth.passUI.style.display = 'block';  
-          auth.passInput.value = "";  
-        }  
+        auth.overlay.style.display = 'flex'; document.getElementById('authTitle').innerText = securityConfig.type === 'pin' ? 'Enter PIN' : 'Enter Password'; auth.recoveryUI.style.display = 'none'; auth.forgetLink.style.display = 'block';  
+        if (securityConfig.type === 'pin') { auth.pinUI.style.display = 'block'; auth.passUI.style.display = 'none'; auth.pinInput.value = ""; } else { auth.pinUI.style.display = 'none'; auth.passUI.style.display = 'block'; auth.passInput.value = ""; }  
       }  
     }  
     function checkPin() { if (auth.pinInput.value === securityConfig.code) unlockApp(); else showAuthError(); }  
     function checkPass() { if (auth.passInput.value === securityConfig.code) unlockApp(); else showAuthError(); }  
-    function showAuthError() {  
-       document.getElementById('authSub').innerText = "Wrong Code! Try Again.";  
-       document.getElementById('authSub').style.color = "red";  
-       navigator.vibrate(200);  
-    }  
-    function unlockApp() {  
-      auth.overlay.style.opacity = "0";  
-      setTimeout(() => { auth.overlay.style.display = "none"; auth.overlay.style.opacity = "1"; }, 300);  
-    }  
+    function showAuthError() { document.getElementById('authSub').innerText = "Wrong Code! Try Again."; document.getElementById('authSub').style.color = "red"; navigator.vibrate(200); }  
+    function unlockApp() { auth.overlay.style.opacity = "0"; setTimeout(() => { auth.overlay.style.display = "none"; auth.overlay.style.opacity = "1"; }, 300); }  
       
-    function showRecovery() {  
-       auth.pinUI.style.display = 'none'; auth.passUI.style.display = 'none'; auth.forgetLink.style.display = 'none';  
-       document.getElementById('authTitle').style.display = 'none';  
-       document.getElementById('authSub').style.display = 'none';  
-       auth.recoveryUI.style.display = 'block'; auth.revealSection.style.display = 'none'; auth.recoveryInput.value = '';  
-    }  
-    function hideRecovery() {  
-       document.getElementById('authTitle').style.display = 'block';  
-       document.getElementById('authSub').style.display = 'block';  
-       document.getElementById('authSub').innerText = 'Enter to access notes';  
-       document.getElementById('authSub').style.color = 'var(--text-sub)';  
-       auth.recoveryUI.style.display = 'none'; auth.forgetLink.style.display = 'block';  
-       if (securityConfig.type === 'pin') { auth.pinUI.style.display = 'block'; auth.pinInput.value = ""; }   
-       else { auth.passUI.style.display = 'block'; }  
-    }  
-    function verifyRecovery() {  
-       const word = auth.recoveryInput.value.trim();  
-       if (word && word.toLowerCase() === securityConfig.recovery.toLowerCase()) {  
-          auth.revealedCode.value = securityConfig.code; auth.revealSection.style.display = 'block';  
-       } else { alert('Incorrect Recovery Word'); auth.revealSection.style.display = 'none'; }  
-    }  
-    function copyCode() {  
-       const code = auth.revealedCode.value;  
-       navigator.clipboard.writeText(code).then(() => showToast('Copied: ' + code));  
-    }  
+    function showRecovery() { auth.pinUI.style.display = 'none'; auth.passUI.style.display = 'none'; auth.forgetLink.style.display = 'none'; document.getElementById('authTitle').style.display = 'none'; document.getElementById('authSub').style.display = 'none'; auth.recoveryUI.style.display = 'block'; auth.revealSection.style.display = 'none'; auth.recoveryInput.value = ''; }  
+    function hideRecovery() { document.getElementById('authTitle').style.display = 'block'; document.getElementById('authSub').style.display = 'block'; document.getElementById('authSub').innerText = 'Enter to access notes'; document.getElementById('authSub').style.color = 'var(--text-sub)'; auth.recoveryUI.style.display = 'none'; auth.forgetLink.style.display = 'block'; if (securityConfig.type === 'pin') { auth.pinUI.style.display = 'block'; auth.pinInput.value = ""; } else { auth.passUI.style.display = 'block'; } }  
+    function verifyRecovery() { const word = auth.recoveryInput.value.trim(); if (word && word.toLowerCase() === securityConfig.recovery.toLowerCase()) { auth.revealedCode.value = securityConfig.code; auth.revealSection.style.display = 'block'; } else { alert('Incorrect Recovery Word'); auth.revealSection.style.display = 'none'; } }  
+    function copyCode() { const code = auth.revealedCode.value; navigator.clipboard.writeText(code).then(() => showToast('Copied: ' + code)); }  
       
-    // Sidebar Logic  
-    function toggleSidebar(open) {  
-       if (open) {  
-          auth.sidebar.classList.add('open');  
-          auth.sidebarOverlay.style.display = 'block';  
-       } else {  
-          auth.sidebar.classList.remove('open');  
-          auth.sidebarOverlay.style.display = 'none';  
-          // Collapse theme menu on close  
-          document.getElementById('themeOptionsList').style.display = 'none';  
-          document.getElementById('themeToggleBtn').classList.remove('expanded');  
-       }  
-    }  
-      
-    // Theme Menu Toggle Logic  
-    function toggleThemeMenu() {  
-       const list = document.getElementById('themeOptionsList');  
-       const btn = document.getElementById('themeToggleBtn');  
-       if (list.style.display === 'flex') {  
-          list.style.display = 'none';  
-          btn.classList.remove('expanded');  
-       } else {  
-          list.style.display = 'flex';  
-          btn.classList.add('expanded');  
-       }  
-    }  
+    function toggleSidebar(open) { if (open) { auth.sidebar.classList.add('open'); auth.sidebarOverlay.style.display = 'block'; } else { auth.sidebar.classList.remove('open'); auth.sidebarOverlay.style.display = 'none'; document.getElementById('themeOptionsList').style.display = 'none'; document.getElementById('themeToggleBtn').classList.remove('expanded'); } }  
+    function toggleThemeMenu() { const list = document.getElementById('themeOptionsList'); const btn = document.getElementById('themeToggleBtn'); if (list.style.display === 'flex') { list.style.display = 'none'; btn.classList.remove('expanded'); } else { list.style.display = 'flex'; btn.classList.add('expanded'); } }  
   
     auth.menuBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleSidebar(true); });  
     auth.sidebarOverlay.addEventListener('click', () => toggleSidebar(false));  
-  
-    auth.secBtn.addEventListener('click', () => {  
-       toggleSidebar(false);   
-       auth.secModal.style.display = 'flex';  
-       if (securityConfig.enabled) auth.disableSecBtn.style.display = 'block'; else auth.disableSecBtn.style.display = 'none';  
-    });  
+    auth.secBtn.addEventListener('click', () => { toggleSidebar(false); auth.secModal.style.display = 'flex'; if (securityConfig.enabled) auth.disableSecBtn.style.display = 'block'; else auth.disableSecBtn.style.display = 'none'; });  
     auth.closeSecModal.addEventListener('click', () => auth.secModal.style.display = 'none');  
-      
-    function toggleSecInputs() {  
-       const type = document.querySelector('input[name="secType"]:checked').value;  
-       if(type === 'pin') { document.getElementById('setupPinField').style.display = 'block'; document.getElementById('setupPassField').style.display = 'none'; }   
-       else { document.getElementById('setupPinField').style.display = 'none'; document.getElementById('setupPassField').style.display = 'block'; }  
-    }  
-    function saveSecurity() {  
-       const type = document.querySelector('input[name="secType"]:checked').value;  
-       const recovery = document.getElementById('setupRecovery').value.trim();  
-       let code = "";  
-       if(!recovery) return alert('Recovery word is required!');  
-       if(type === 'pin') { code = document.getElementById('setupPinInput').value; if(code.length < 4 || code.length > 16) return alert('PIN must be 4-16 digits'); }   
-       else { code = document.getElementById('setupPassInput').value.trim(); if(!code) return alert('Password cannot be empty'); }  
-       securityConfig = { enabled: true, type: type, code: code, recovery: recovery };  
-       localStorage.setItem('quickNoteSecurity', JSON.stringify(securityConfig));  
-       auth.secModal.style.display = 'none'; alert('Security Enabled!'); checkSecurity();  
-    }  
-    function disableSecurity() {  
-      if(confirm('Disable security?')) {  
-         securityConfig = { enabled: false, type: 'pin', code: '', recovery: '' };  
-         localStorage.setItem('quickNoteSecurity', JSON.stringify(securityConfig));  
-         auth.secModal.style.display = 'none'; showToast('Security Disabled');  
-      }  
-    }  
+    function toggleSecInputs() { const type = document.querySelector('input[name="secType"]:checked').value; if(type === 'pin') { document.getElementById('setupPinField').style.display = 'block'; document.getElementById('setupPassField').style.display = 'none'; } else { document.getElementById('setupPinField').style.display = 'none'; document.getElementById('setupPassField').style.display = 'block'; } }  
+    function saveSecurity() { const type = document.querySelector('input[name="secType"]:checked').value; const recovery = document.getElementById('setupRecovery').value.trim(); let code = ""; if(!recovery) return alert('Recovery word is required!'); if(type === 'pin') { code = document.getElementById('setupPinInput').value; if(code.length < 4 || code.length > 16) return alert('PIN must be 4-16 digits'); } else { code = document.getElementById('setupPassInput').value.trim(); if(!code) return alert('Password cannot be empty'); } securityConfig = { enabled: true, type: type, code: code, recovery: recovery }; localStorage.setItem('quickNoteSecurity', JSON.stringify(securityConfig)); auth.secModal.style.display = 'none'; alert('Security Enabled!'); checkSecurity(); }  
+    function disableSecurity() { if(confirm('Disable security?')) { securityConfig = { enabled: false, type: 'pin', code: '', recovery: '' }; localStorage.setItem('quickNoteSecurity', JSON.stringify(securityConfig)); auth.secModal.style.display = 'none'; showToast('Security Disabled'); } }  
     checkSecurity();  
   
-    // --- THEME LOGIC ---  
-    function setTheme(theme) {  
-       localStorage.setItem('appTheme', theme);  
-       applyTheme(theme);  
-    }  
-    function applyTheme(theme) {  
-       if (theme === 'dark') {  
-          document.body.classList.add('dark-mode');  
-       } else if (theme === 'light') {  
-          document.body.classList.remove('dark-mode');  
-       } else if (theme === 'system') {  
-          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {  
-             document.body.classList.add('dark-mode');  
-          } else {  
-             document.body.classList.remove('dark-mode');  
-          }  
-       }  
-       // Update radio button UI  
-       const radios = document.getElementsByName('appTheme');  
-       for (const r of radios) { if (r.value === theme) r.checked = true; }  
-    }  
-    // Initialize Theme  
-    const savedTheme = localStorage.getItem('appTheme') || 'system';  
-    applyTheme(savedTheme);  
+    function setTheme(theme) { localStorage.setItem('appTheme', theme); applyTheme(theme); }  
+    function applyTheme(theme) { if (theme === 'dark') { document.body.classList.add('dark-mode'); } else if (theme === 'light') { document.body.classList.remove('dark-mode'); } else if (theme === 'system') { if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) { document.body.classList.add('dark-mode'); } else { document.body.classList.remove('dark-mode'); } } const radios = document.getElementsByName('appTheme'); for (const r of radios) { if (r.value === theme) r.checked = true; } }  
+    const savedTheme = localStorage.getItem('appTheme') || 'system'; applyTheme(savedTheme);  
   
-    // --- APP LOGIC ---  
     let entries = JSON.parse(localStorage.getItem('quickNoteExpenses') || '[]');  
-    let currentMode = 'note';  
-    let selectedId = null;   
-    let tempMedia = null;  
-    let tempMediaType = null;  
-    let drawingData = null;  
-    let lastBackTime = 0; // For double click exit  
-    let longPressTimer; // For Long Press  
+    let currentMode = 'note'; let selectedId = null; let tempMedia = null; let tempMediaType = null; let drawingData = null; let lastBackTime = 0; let longPressTimer;  
       
     const dom = {  
-      list: document.getElementById('notesList'),  
-      empty: document.getElementById('emptyState'),  
-      fab: document.getElementById('fabBtn'),  
-      fabOptions: document.getElementById('fabOptions'),  
-      modal: document.getElementById('entryModal'),  
-      closeModal: document.getElementById('closeModal'),  
-      form: document.getElementById('entryForm'),  
-      headerDefault: document.getElementById('headerDefault'),  
-      headerSearch: document.getElementById('headerSearch'),  
-      openSearchBtn: document.getElementById('openSearchBtn'),  
-      closeSearchBtn: document.getElementById('closeSearchBtn'),  
-      searchInput: document.getElementById('searchInput'),  
-      noteFields: document.getElementById('noteFields'),  
-      expenseFields: document.getElementById('expenseFields'),  
-      actionSheet: document.getElementById('actionSheet'),  
-      actionEdit: document.getElementById('actionEdit'),  
-      actionDelete: document.getElementById('actionDelete'),  
-      actionCopy: document.getElementById('actionCopy'),  
-      actionClose: document.getElementById('actionClose'),  
-      toast: document.getElementById('toast'),  
-      noteTitle: document.getElementById('noteTitle'),  
-      noteBody: document.getElementById('noteBody'),  
-      expAmount: document.getElementById('expAmount'),  
-      expCurrency: document.getElementById('expCurrency'),  
-      expType: document.getElementById('expType'),  
-      expReason: document.getElementById('expReason'),  
-      mediaInput: document.getElementById('mediaInput'),  
-      previewImg: document.getElementById('previewImg'),  
-      previewVid: document.getElementById('previewVid'),  
-      editId: document.getElementById('editId'),  
-      removeMediaBtn: document.getElementById('removeMediaBtn'),  
-      mediaViewerOverlay: document.getElementById('mediaViewerOverlay'),  
-      mediaViewerContent: document.getElementById('mediaViewerContent'),  
-      mediaViewerVideo: document.getElementById('mediaViewerVideo'),
-      sizeSlider: document.getElementById('sizeSlider')
+      list: document.getElementById('notesList'), empty: document.getElementById('emptyState'), fab: document.getElementById('fabBtn'), fabOptions: document.getElementById('fabOptions'), modal: document.getElementById('entryModal'), closeModal: document.getElementById('closeModal'), form: document.getElementById('entryForm'), headerDefault: document.getElementById('headerDefault'), headerSearch: document.getElementById('headerSearch'), openSearchBtn: document.getElementById('openSearchBtn'), closeSearchBtn: document.getElementById('closeSearchBtn'), searchInput: document.getElementById('searchInput'), noteFields: document.getElementById('noteFields'), expenseFields: document.getElementById('expenseFields'), actionSheet: document.getElementById('actionSheet'), actionEdit: document.getElementById('actionEdit'), actionDelete: document.getElementById('actionDelete'), actionCopy: document.getElementById('actionCopy'), actionClose: document.getElementById('actionClose'), toast: document.getElementById('toast'), noteTitle: document.getElementById('noteTitle'), noteBody: document.getElementById('noteBody'), expAmount: document.getElementById('expAmount'), expCurrency: document.getElementById('expCurrency'), expType: document.getElementById('expType'), expReason: document.getElementById('expReason'), mediaInput: document.getElementById('mediaInput'), previewImg: document.getElementById('previewImg'), previewVid: document.getElementById('previewVid'), editId: document.getElementById('editId'), removeMediaBtn: document.getElementById('removeMediaBtn'), mediaViewerOverlay: document.getElementById('mediaViewerOverlay'), mediaViewerContent: document.getElementById('mediaViewerContent'), mediaViewerVideo: document.getElementById('mediaViewerVideo'), sizeSlider: document.getElementById('sizeSlider')
     };  
   
-    function saveToStorage() {   
-        // 1. Save Locally  
-        localStorage.setItem('quickNoteExpenses', JSON.stringify(entries));   
-        
-        // 2. Trigger Auto Backup (Cloud)  
-        if(window.triggerAutoBackup) {  
-            window.triggerAutoBackup(entries);  
-        }  
-    }  
-
-    // New Function to handle Realtime Updates from Cloud
-    window.updateFromCloud = (data) => {
-        if(data && data.expenses) {
-            // Smart Merge using Map (Prevent Duplicates, Update Existing)
-            const localMap = new Map(entries.map(e => [e.id, e]));
-            const cloudEntries = JSON.parse(data.expenses);
-            
-            // Cloud is source of truth for updates
-            cloudEntries.forEach(item => {
-                localMap.set(item.id, item);
-            });
-
-            // Convert back to array
-            entries = Array.from(localMap.values());
-
-            // Save to local storage (No auto-backup trigger loop)
-            localStorage.setItem('quickNoteExpenses', JSON.stringify(entries));
-            
-            // Re-render UI
-            renderList(entries, dom.searchInput.value);
-            
-            // Sync settings if they exist
-            if(data.security) {
-                localStorage.setItem('quickNoteSecurity', data.security);
-                securityConfig = JSON.parse(data.security); 
-            }
-            if(data.theme) {
-                setTheme(data.theme); 
-            }
-        }
-    };
-
+    function saveToStorage() { localStorage.setItem('quickNoteExpenses', JSON.stringify(entries)); if(window.triggerAutoBackup) { window.triggerAutoBackup(entries); } }  
+    window.updateFromCloud = (data) => { if(data && data.expenses) { const localMap = new Map(entries.map(e => [e.id, e])); const cloudEntries = JSON.parse(data.expenses); cloudEntries.forEach(item => { localMap.set(item.id, item); }); entries = Array.from(localMap.values()); localStorage.setItem('quickNoteExpenses', JSON.stringify(entries)); renderList(entries, dom.searchInput.value); if(data.security) { localStorage.setItem('quickNoteSecurity', data.security); securityConfig = JSON.parse(data.security); } if(data.theme) { setTheme(data.theme); } } };
     function showToast(msg) { dom.toast.textContent = msg; dom.toast.classList.add('show'); setTimeout(() => dom.toast.classList.remove('show'), 3000); }  
-    function formatDate(ts) {  
-      const d = new Date(ts);  
-      return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' }) + ' • ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });  
-    }  
+    function formatDate(ts) { const d = new Date(ts); return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' }) + ' • ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }); }  
     function escapeHTML(str) { return str ? str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m])) : ''; }  
-    function highlightText(text, term) {  
-      if (!text) return ''; if (!term) return escapeHTML(text);  
-      const safeText = escapeHTML(text); const safeTerm = escapeHTML(term);   
-      const regex = new RegExp(`(${safeTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');  
-      return safeText.replace(regex, '<span class="highlight-text">$1</span>');  
-    }  
-  
-    function toggleSearch(show) {  
-      if (show) { dom.headerDefault.style.display = 'none'; dom.headerSearch.style.display = 'flex'; dom.searchInput.focus(); }  
-      else { dom.headerSearch.style.display = 'none'; dom.headerDefault.style.display = 'flex'; dom.searchInput.value = ''; renderList(entries); }  
-    }  
-  
-    // LONG PRESS LOGIC  
-    function handleTouchStart(id) {  
-        longPressTimer = setTimeout(() => {  
-            openMenu(id);  
-            navigator.vibrate(50); // Small vibration feedback  
-        }, 600); // 600ms hold time  
-    }  
-    function handleTouchEnd() {  
-        clearTimeout(longPressTimer);  
-    }  
+    function highlightText(text, term) { if (!text) return ''; if (!term) return escapeHTML(text); const safeText = escapeHTML(text); const safeTerm = escapeHTML(term); const regex = new RegExp(`(${safeTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'); return safeText.replace(regex, '<span class="highlight-text">$1</span>'); }  
+    function toggleSearch(show) { if (show) { dom.headerDefault.style.display = 'none'; dom.headerSearch.style.display = 'flex'; dom.searchInput.focus(); } else { dom.headerSearch.style.display = 'none'; dom.headerDefault.style.display = 'flex'; dom.searchInput.value = ''; renderList(entries); } }  
+    function handleTouchStart(id) { longPressTimer = setTimeout(() => { openMenu(id); navigator.vibrate(50); }, 600); }  
+    function handleTouchEndList() { clearTimeout(longPressTimer); }  
   
     function renderList(data, searchTerm = '') {  
       dom.list.innerHTML = '';  
@@ -1227,44 +1094,24 @@
       data.sort((a, b) => b.id - a.id).forEach((item) => {  
         const el = document.createElement('div');  
         el.className = 'note-item';  
-          
-        // Attach Long Press Listeners  
-        el.addEventListener('touchstart', () => handleTouchStart(item.id));  
-        el.addEventListener('touchend', handleTouchEnd);  
-        el.addEventListener('mousedown', () => handleTouchStart(item.id)); // For desktop testing  
-        el.addEventListener('mouseup', handleTouchEnd);  
-        el.addEventListener('mouseleave', handleTouchEnd);  
+        el.addEventListener('touchstart', () => handleTouchStart(item.id)); el.addEventListener('touchend', handleTouchEndList); el.addEventListener('mousedown', () => handleTouchStart(item.id)); el.addEventListener('mouseup', handleTouchEndList); el.addEventListener('mouseleave', handleTouchEndList);  
   
         let contentHtml = '';  
         const textContent = item.body || item.reason || '';  
-        const hasNewLines = textContent.split('\n').length > 3;  
-        const isLongText = textContent.length > 120; // Fallback for long single lines that wrap  
-        const showSeeMore = hasNewLines || isLongText;  
-  
+        const showSeeMore = textContent.split('\n').length > 3 || textContent.length > 120;  
+        
+        // FIX ISSUE 2: Default color changed from text-sub (grey) to text-main (dark/black)
+        const styleStr = `font-family: ${item.fontFamily || 'inherit'}; font-size: ${item.fontSize ? item.fontSize + 'px' : '14px'}; color: ${item.color || 'var(--text-main)'}; font-weight:700;`;
+
         if (item.type === 'note' || item.type === 'drawing') {  
-          contentHtml = `  
-            <div class="note-header">  
-              <div class="note-title">${highlightText(item.title || (item.type === 'drawing' ? 'Drawing' : 'Untitled'), searchTerm)}</div>  
-              <button class="menu-btn" onclick="openMenu(${item.id})"><svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>  
-            </div>  
-            ${item.type === 'note' ? `<span class="note-category">${escapeHTML(item.category || 'General')}</span>` : ''}  
-            <div class="note-body note-body-truncated" id="body-${item.id}" style="font-family: ${item.fontFamily || 'inherit'}; font-size: ${item.fontSize ? item.fontSize + 'px' : '14px'}; font-weight:700;">${highlightText(item.body, searchTerm)}</div>  
-            ${showSeeMore ? `<span class="see-more-link" onclick="showFullText(${item.id})">See More</span>` : ''}  
-          `;  
+          contentHtml = `<div class="note-header"><div class="note-title">${highlightText(item.title || (item.type === 'drawing' ? 'Drawing' : 'Untitled'), searchTerm)}</div><button class="menu-btn" onclick="openMenu(${item.id})"><svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button></div>${item.type === 'note' ? `<span class="note-category">${escapeHTML(item.category || 'General')}</span>` : ''}<div class="note-body note-body-truncated" style="${styleStr}">${highlightText(item.body, searchTerm)}</div>${showSeeMore ? `<span class="see-more-link" onclick="showFullText(${item.id})">See More</span>` : ''}`;  
         } else {  
-          contentHtml = `  
-             <div class="note-header">  
-              <div class="amount-display">${item.amount} ${item.currency}</div>  
-              <button class="menu-btn" onclick="openMenu(${item.id})"><svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>  
-            </div>  
-            <span class="note-category ${item.expType === 'credited' ? 'cat-expense-credited' : 'cat-expense-debited'}">${item.expType}</span>  
-            <div class="note-body note-body-truncated" style="font-family: ${item.fontFamily || 'inherit'}; font-size: ${item.fontSize ? item.fontSize + 'px' : '14px'}; font-weight:700;">${highlightText(item.reason, searchTerm)}</div>  
-            ${showSeeMore ? `<span class="see-more-link" onclick="showFullText(${item.id})">See More</span>` : ''}  
-          `;  
+          contentHtml = `<div class="note-header"><div class="amount-display">${item.amount} ${item.currency}</div><button class="menu-btn" onclick="openMenu(${item.id})"><svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button></div><span class="note-category ${item.expType === 'credited' ? 'cat-expense-credited' : 'cat-expense-debited'}">${item.expType}</span><div class="note-body note-body-truncated" style="${styleStr}">${highlightText(item.reason, searchTerm)}</div>${showSeeMore ? `<span class="see-more-link" onclick="showFullText(${item.id})">See More</span>` : ''}`;  
         }  
         if (item.media) {  
+          const imgClass = item.type === 'drawing' ? 'drawing-preview' : '';
           contentHtml += `<div class="media-container" onclick="openMediaViewer('${item.media}', '${item.mediaType}')">`;  
-          contentHtml += item.mediaType === 'image' ? `<img src="${item.media}">` : `<video src="${item.media}"></video>`;  
+          contentHtml += item.mediaType === 'image' ? `<img src="${item.media}" class="${imgClass}">` : `<video src="${item.media}"></video>`;  
           contentHtml += `</div>`;  
         }  
         contentHtml += `<div class="note-footer"><span class="note-timestamp">${formatDate(item.timestamp)}</span></div>`;  
@@ -1273,198 +1120,197 @@
       });  
     }  
   
-    // Media Viewer Logic  
-    function openMediaViewer(src, type) {  
-       dom.mediaViewerOverlay.style.display = 'flex';  
-       if(type === 'image') {  
-          dom.mediaViewerContent.src = src;  
-          dom.mediaViewerContent.style.display = 'block';  
-          dom.mediaViewerVideo.style.display = 'none';  
-       } else {  
-          dom.mediaViewerVideo.src = src;  
-          dom.mediaViewerVideo.style.display = 'block';  
-          dom.mediaViewerContent.style.display = 'none';  
-       }  
-    }  
-    function closeMediaViewer() {  
-       dom.mediaViewerOverlay.style.display = 'none';  
-       dom.mediaViewerVideo.pause();  
-    }  
+    function openMediaViewer(src, type) { dom.mediaViewerOverlay.style.display = 'flex'; if(type === 'image') { dom.mediaViewerContent.src = src; dom.mediaViewerContent.style.display = 'block'; dom.mediaViewerVideo.style.display = 'none'; } else { dom.mediaViewerVideo.src = src; dom.mediaViewerVideo.style.display = 'block'; dom.mediaViewerContent.style.display = 'none'; } }  
+    function closeMediaViewer() { dom.mediaViewerOverlay.style.display = 'none'; dom.mediaViewerVideo.pause(); }  
   
     function showFullText(id) {  
       const item = entries.find(e => e.id === id);  
       if(item) {  
-        // MODIFIED: Show Amount for Expenses, Title for Notes
-        let headerText = '';
-        if(item.type === 'expense') {
-            headerText = `${item.amount} ${item.currency}`; // Fix 2
-        } else {
-            headerText = item.title || 'Details';
-        }
-        
+        let headerText = item.type === 'expense' ? `${item.amount} ${item.currency}` : (item.title || 'Details');
         document.getElementById('detailModalTitle').innerText = headerText;
-        // APPLY SAVED FONT STYLES TO DETAILS MODAL
         const contentEl = document.getElementById('fullTextContent');
         contentEl.innerHTML = escapeHTML(item.body || item.reason);
+        // Apply Styles to Modal too (Issue 2 Fix for consistency)
         contentEl.style.fontFamily = item.fontFamily || 'inherit';
         contentEl.style.fontSize = item.fontSize ? item.fontSize + 'px' : '16px';
+        contentEl.style.color = item.color || 'var(--text-main)';
         contentEl.style.fontWeight = '700';
-
         document.getElementById('textModal').style.display = 'flex';  
       }  
     }  
   
-    dom.searchInput.addEventListener('input', (e) => {  
-      const term = e.target.value.toLowerCase();  
-      const filtered = entries.filter(item =>   
-        (item.title||'').toLowerCase().includes(term) || (item.body||'').toLowerCase().includes(term) ||   
-        (item.reason||'').toLowerCase().includes(term)  
-      );  
-      renderList(filtered, e.target.value);  
-    });  
-    dom.openSearchBtn.addEventListener('click', () => toggleSearch(true));  
-    dom.closeSearchBtn.addEventListener('click', () => toggleSearch(false));  
-  
-    // --- FAB & MENU LOGIC ---  
-    dom.fab.addEventListener('click', (e) => {  
-       e.stopPropagation();  
-       dom.fab.classList.toggle('rotate');  
-       dom.fabOptions.style.display = dom.fabOptions.style.display === 'flex' ? 'none' : 'flex';  
-    });  
+    dom.searchInput.addEventListener('input', (e) => { const term = e.target.value.toLowerCase(); const filtered = entries.filter(item => (item.title||'').toLowerCase().includes(term) || (item.body||'').toLowerCase().includes(term) || (item.reason||'').toLowerCase().includes(term)); renderList(filtered, e.target.value); });  
+    dom.openSearchBtn.addEventListener('click', () => toggleSearch(true)); dom.closeSearchBtn.addEventListener('click', () => toggleSearch(false));  
+    dom.fab.addEventListener('click', (e) => { e.stopPropagation(); dom.fab.classList.toggle('rotate'); dom.fabOptions.style.display = dom.fabOptions.style.display === 'flex' ? 'none' : 'flex'; });  
   
     // --- FORMATTING LOGIC ---
     let currentFont = "'Poppins', sans-serif";
+    let currentTextColor = ""; // Default
 
-    // Toggle Tool Panels
+    window.closeAllPanels = function() {
+        document.getElementById('sizePanel').style.display = 'none';
+        document.getElementById('fontPanel').style.display = 'none';
+        document.getElementById('colorPanel').style.display = 'none';
+        document.getElementById('btnTT').classList.remove('active');
+        document.getElementById('btnFF').classList.remove('active');
+        document.getElementById('btnColor').classList.remove('active');
+    }
+
+    // Auto Hide Panel when Typing
+    const autoHideFields = ['noteTitle', 'noteBody', 'expAmount', 'expReason'];
+    autoHideFields.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) {
+            el.addEventListener('focus', window.closeAllPanels);
+        }
+    });
+
     window.toggleTool = function(tool) {
+        // Toggle Logic (Close if already open)
         const sizePanel = document.getElementById('sizePanel');
         const fontPanel = document.getElementById('fontPanel');
+        const colorPanel = document.getElementById('colorPanel'); 
         const btnTT = document.getElementById('btnTT');
         const btnFF = document.getElementById('btnFF');
+        const btnColor = document.getElementById('btnColor');
 
-        if(tool === 'size') {
-            if(sizePanel.style.display === 'block') {
-                sizePanel.style.display = 'none';
-                btnTT.classList.remove('active');
-            } else {
-                sizePanel.style.display = 'block';
-                fontPanel.style.display = 'none';
-                btnTT.classList.add('active');
-                btnFF.classList.remove('active');
-            }
-        } else if(tool === 'font') {
-            if(fontPanel.style.display === 'block') {
-                fontPanel.style.display = 'none';
-                btnFF.classList.remove('active');
-            } else {
-                fontPanel.style.display = 'block';
-                sizePanel.style.display = 'none';
-                btnFF.classList.add('active');
-                btnTT.classList.remove('active');
-            }
+        let isSizeActive = btnTT.classList.contains('active');
+        let isFontActive = btnFF.classList.contains('active');
+        let isColorActive = btnColor.classList.contains('active');
+
+        // Close all first
+        window.closeAllPanels();
+
+        // If it WAS active and we clicked it again, do nothing (it stays closed)
+        // If it WAS NOT active, open it.
+        if(tool === 'size' && !isSizeActive) {
+             sizePanel.style.display = 'block';
+             btnTT.classList.add('active');
+        } else if(tool === 'font' && !isFontActive) {
+             fontPanel.style.display = 'block';
+             btnFF.classList.add('active');
+        } else if(tool === 'color' && !isColorActive) { 
+             colorPanel.style.display = 'block';
+             btnColor.classList.add('active');
+             renderTextColorPalette(); 
         }
     }
 
-    // Apply Size from Slider
+    // Apply Size (Wider Range)
     window.applyFormat = function() {
-        // MODIFIED: Slider logic 0-10 -> 12px-32px
         const sliderVal = parseInt(dom.sizeSlider.value);
+        // Formula: 12 + (val * 2). Max 20 * 2 + 12 = 52px. Min 12px.
         const fontSize = 12 + (sliderVal * 2); 
-
-        // Apply
         dom.noteBody.style.fontSize = fontSize + 'px';
         dom.expReason.style.fontSize = fontSize + 'px';
-        
-        // Update Button Text
         document.getElementById('btnTT').innerText = "Size " + sliderVal;
     }
 
-    // Set Font from Chip
     window.setFont = function(fontName, el) {
-        currentFont = fontName;
-        
-        // Highlight Active Chip
+        // Correct logic to set global font variable
+        currentFont = "";
+        if(fontName === 'Poppins') currentFont = "'Poppins', sans-serif";
+        else if(fontName === 'Hind') currentFont = "'Hind', sans-serif";
+        else if(fontName === 'Noto Sans Bengali') currentFont = "'Noto Sans Bengali', sans-serif";
+        else if(fontName === 'Mukta') currentFont = "'Mukta', sans-serif";
+        else if(fontName === 'Tiro Bangla') currentFont = "'Tiro Bangla', serif";
+        else if(fontName === 'Dancing Script') currentFont = "'Dancing Script', cursive";
+        else if(fontName === 'Pacifico') currentFont = "'Pacifico', cursive";
+        else if(fontName === 'Anton') currentFont = "'Anton', sans-serif";
+        else if(fontName === 'Orbitron') currentFont = "'Orbitron', sans-serif";
+        else if(fontName === 'Lobster') currentFont = "'Lobster', cursive";
+
         document.querySelectorAll('.font-chip').forEach(c => c.classList.remove('active'));
         if(el) el.classList.add('active');
 
-        // Apply Font Family
-        let actualFont = "";
-        if(fontName === 'Poppins') actualFont = "'Poppins', sans-serif";
-        else if(fontName === 'Hind') actualFont = "'Hind', sans-serif";
-        else if(fontName === 'Noto Sans Bengali') actualFont = "'Noto Sans Bengali', sans-serif";
-        else if(fontName === 'Mukta') actualFont = "'Mukta', sans-serif";
-        else if(fontName === 'Tiro Bangla') actualFont = "'Tiro Bangla', serif";
-
-        dom.noteTitle.style.fontFamily = actualFont;
-        dom.noteBody.style.fontFamily = actualFont;
-        dom.expReason.style.fontFamily = actualFont;
+        // FIX ISSUE 3: Removed Title styling. Only Body/Reason affected.
+        // dom.noteTitle.style.fontFamily = currentFont; // <-- REMOVED
+        dom.noteBody.style.fontFamily = currentFont;
+        dom.expReason.style.fontFamily = currentFont;
     }
+
+    // Text Color Logic
+    let currentTextColorPage = 0;
+    const drawingColors = ['#000000', '#e74c3c', '#4CAF50', '#2196F3', '#FFEB3B', '#FF9800', '#9C27B0', '#E91E63', '#00BCD4', '#795548', '#9E9E9E', '#607D8B', '#CDDC39', '#009688', '#3F51B5', '#FF5722'];
+
+    function renderTextColorPalette(direction) {
+        const container = document.getElementById('dynamicTextColorContainer');
+        container.classList.remove('slide-right', 'slide-left');
+        void container.offsetWidth; 
+        if(direction === 'next') container.classList.add('slide-right');
+        else if(direction === 'prev') container.classList.add('slide-left');
+
+        container.innerHTML = '';
+        const itemsPerPage = 4; 
+        const start = currentTextColorPage * itemsPerPage;
+        const pageColors = drawingColors.slice(start, start + itemsPerPage);
+
+        pageColors.forEach(color => {
+            const btn = document.createElement('button');
+            btn.className = 'color-btn';
+            btn.style.background = color;
+            if(currentTextColor === color) btn.classList.add('active');
+            btn.addEventListener('click', () => {
+                currentTextColor = color;
+                dom.noteBody.style.color = color;
+                dom.expReason.style.color = color;
+                renderTextColorPalette(); 
+            });
+            container.appendChild(btn);
+        });
+    }
+
+    document.getElementById('prevTextColorBtn').addEventListener('click', () => { if(currentTextColorPage > 0) { currentTextColorPage--; renderTextColorPalette('prev'); }});
+    document.getElementById('nextTextColorBtn').addEventListener('click', () => { if(currentTextColorPage < 3) { currentTextColorPage++; renderTextColorPalette('next'); }});
 
     function openEntry(mode) {  
       history.pushState({page: 'entry'}, null, '');  
-        
       dom.fabOptions.style.display = 'none'; dom.fab.classList.remove('rotate');  
       currentMode = mode;  
       dom.modal.style.display = 'flex';  
       dom.form.reset(); dom.editId.value = ''; resetMedia(); drawingData = null;  
       
-      // RESET FORMATTING TO DEFAULTS
-      dom.sizeSlider.value = 3; // Default 3
-      document.getElementById('btnTT').innerText = "Size 3"; // Reset Text
+      // RESET FORMATTING
+      dom.sizeSlider.value = 4; 
+      document.getElementById('btnTT').innerText = "Size 4"; 
       currentFont = "'Poppins', sans-serif";
+      currentTextColor = ""; // reset
       
-      // Reset Styles
+      // FIX ISSUE 3: Ensure title font is reset to default
+      dom.noteTitle.style.fontFamily = "'Poppins', sans-serif";
+      
       dom.noteBody.style.fontFamily = currentFont;
-      dom.noteBody.style.fontSize = '18px'; 
-      dom.expReason.style.fontFamily = currentFont;
-      dom.expReason.style.fontSize = '18px';
-
-      // Hide Panels
-      document.getElementById('sizePanel').style.display = 'none';
-      document.getElementById('fontPanel').style.display = 'none';
-      document.getElementById('btnTT').classList.remove('active');
-      document.getElementById('btnFF').classList.remove('active');
+      dom.noteBody.style.fontSize = '20px'; // Match Slider 4 (12 + 8)
+      dom.noteBody.style.color = 'var(--text-main)';
       
-      // Reset Font Chips
-      document.querySelectorAll('.font-chip').forEach(c => c.classList.remove('active'));
-      document.querySelector('.font-chip').classList.add('active'); // First one
+      dom.expReason.style.fontFamily = currentFont;
+      dom.expReason.style.fontSize = '20px';
+      dom.expReason.style.color = 'var(--text-main)';
 
-      if (mode === 'expense') {  
-         dom.noteFields.style.display = 'none';  
-         dom.expenseFields.style.display = 'flex'; 
-      } else {  
-         dom.noteFields.style.display = 'flex'; 
-         dom.expenseFields.style.display = 'none';  
-         if(mode === 'image') dom.mediaInput.click();  
-      }  
+      window.closeAllPanels();
+      
+      document.querySelectorAll('.font-chip').forEach(c => c.classList.remove('active'));
+      document.querySelector('.font-chip').classList.add('active');
+
+      if (mode === 'expense') { dom.noteFields.style.display = 'none'; dom.expenseFields.style.display = 'flex'; } else { dom.noteFields.style.display = 'flex'; dom.expenseFields.style.display = 'none'; if(mode === 'image') dom.mediaInput.click(); }  
     }  
   
-    dom.closeModal.addEventListener('click', () => {  
-       saveEntryAndClose();  
-    });  
+    dom.closeModal.addEventListener('click', () => { saveEntryAndClose(); });  
   
     function saveEntryAndClose() {  
        let hasContent = false;  
-       if(currentMode === 'note' || currentMode === 'image') {  
-          if(dom.noteTitle.value.trim() || dom.noteBody.value.trim() || tempMedia) hasContent = true;  
-       } else {  
-          if(dom.expAmount.value) hasContent = true;  
-       }  
-  
-       if (!hasContent) {  
-          dom.modal.style.display = 'none';  
-          return;   
-       }  
+       if(currentMode === 'note' || currentMode === 'image') { if(dom.noteTitle.value.trim() || dom.noteBody.value.trim() || tempMedia) hasContent = true; } else { if(dom.expAmount.value) hasContent = true; }  
+       if (!hasContent) { dom.modal.style.display = 'none'; return; }  
   
        const ts = new Date().getTime();  
-       
-       // Calculate current font size pixel value
        const sliderVal = parseInt(dom.sizeSlider.value);
        const fontSizePx = 12 + (sliderVal * 2);
 
+       // FIX ISSUE 1 & 2: Ensure values are saved properly using variables not DOM default empty strings
        let newItem = {
-           fontFamily: dom.noteBody.style.fontFamily || 'inherit',
-           fontSize: fontSizePx
+           fontFamily: currentFont || "'Poppins', sans-serif", // Fallback to Poppins if empty
+           fontSize: fontSizePx,
+           color: currentTextColor || '' // If empty, renderList will use default (Issue 2)
        };  
 
        if (currentMode === 'note' || currentMode === 'image') {  
@@ -1474,523 +1320,118 @@
        }  
        newItem.media = tempMedia; newItem.mediaType = tempMediaType; newItem.timestamp = ts;  
          
-       if (dom.editId.value) {  
-         const index = entries.findIndex(x => x.id == dom.editId.value);  
-         if(index > -1) { newItem.id = parseInt(dom.editId.value); entries[index] = newItem; }  
-       } else { newItem.id = ts; entries.push(newItem); }  
-         
-       saveToStorage(); renderList(entries, dom.searchInput.value);  
-       dom.modal.style.display = 'none';   
-       showToast('Saved');  
+       if (dom.editId.value) { const index = entries.findIndex(x => x.id == dom.editId.value); if(index > -1) { newItem.id = parseInt(dom.editId.value); entries[index] = newItem; } } else { newItem.id = ts; entries.push(newItem); }  
+       saveToStorage(); renderList(entries, dom.searchInput.value); dom.modal.style.display = 'none'; showToast('Saved');  
     }  
   
-    window.addEventListener('click', (e) => {  
-       if (!dom.fab.contains(e.target) && !dom.fabOptions.contains(e.target)) {  
-          dom.fabOptions.style.display = 'none';  
-          dom.fab.classList.remove('rotate');  
-       }  
-    });  
+    window.addEventListener('click', (e) => { if (!dom.fab.contains(e.target) && !dom.fabOptions.contains(e.target)) { dom.fabOptions.style.display = 'none'; dom.fab.classList.remove('rotate'); } });  
   
-    // --- DRAWING LOGIC (Editable + ZOOM + PAN) ---  
-    const canvas = document.getElementById('drawCanvas');  
-    const ctx = canvas.getContext('2d');  
-    let isDrawing = false;  
-    let lastX = 0; let lastY = 0;  
-    let penSize = 3;  
-    let eraserSize = 10;  
-    let paths = [];   
-    let currentPath = [];   
-    
-    // Zoom & Pan Variables
-    let scale = 1;
-    let panX = 0;
-    let panY = 0;
-    let isPanningMode = false;
-    let startPanX = 0;
-    let startPanY = 0;
-    const MAX_SCALE = 3; // Maximum zoom (100%)
+    // --- DRAWING LOGIC ---  
+    const canvas = document.getElementById('drawCanvas'); const ctx = canvas.getContext('2d');  
+    let isDrawing = false; let lastX = 0; let lastY = 0; let penSize = 3; let eraserSize = 10; let paths = []; let currentPath = []; 
+    let undoStack = []; let redoStack = []; let scale = 1; let panX = 0; let panY = 0; let isPanningMode = false; let startPanX = 0; let startPanY = 0; const MAX_SCALE = 3; let initialDistance = 0; let initialScale = 1; let isPinching = false;
 
-    // Gesture/Pinch Variables
-    let initialDistance = 0;
-    let initialScale = 1;
-    let isPinching = false;
-
-    function resizeCanvas() {   
-        canvas.width = window.innerWidth;   
-        canvas.height = window.innerHeight;   
-        redrawCanvas();  
-    }  
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; redrawCanvas(); }  
     window.addEventListener('resize', resizeCanvas);  
+    function redrawCanvas() { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.setTransform(scale, 0, 0, scale, panX, panY); ctx.lineCap = 'round'; paths.forEach(p => { ctx.beginPath(); ctx.strokeStyle = p.color; ctx.lineWidth = p.size; ctx.globalCompositeOperation = p.mode; if(p.points.length > 0) { ctx.moveTo(p.points[0].x, p.points[0].y); for(let i=1; i<p.points.length; i++) ctx.lineTo(p.points[i].x, p.points[i].y); ctx.stroke(); } }); }  
   
-    function redrawCanvas() {  
-       // Reset transform to clear the whole canvas
-       ctx.setTransform(1, 0, 0, 1, 0, 0);
-       ctx.fillStyle = "#ffffff";  
-       ctx.fillRect(0, 0, canvas.width, canvas.height);  
-
-       // Apply Zoom & Pan Transform
-       ctx.setTransform(scale, 0, 0, scale, panX, panY);
-
-       ctx.lineCap = 'round';  
-       paths.forEach(p => {  
-          ctx.beginPath();  
-          ctx.strokeStyle = p.color;  
-          ctx.lineWidth = p.size;  
-          ctx.globalCompositeOperation = p.mode;  
-          if(p.points.length > 0) {  
-             ctx.moveTo(p.points[0].x, p.points[0].y);  
-             for(let i=1; i<p.points.length; i++) ctx.lineTo(p.points[i].x, p.points[i].y);  
-             ctx.stroke();  
-          }  
-       });  
-    }  
-  
-    /* MODIFIED: Drawing Pagination Logic (4 Pages of 4 Colors) + Animations */
-    const drawingColors = [
-        '#000000', '#e74c3c', '#4CAF50', '#2196F3', // Page 1
-        '#FFEB3B', '#FF9800', '#9C27B0', '#E91E63', // Page 2
-        '#00BCD4', '#795548', '#9E9E9E', '#607D8B', // Page 3
-        '#CDDC39', '#009688', '#3F51B5', '#FF5722'  // Page 4 (New)
-    ];
     let currentColorPage = 0;
-
     function renderColorPalette(direction) {
         const container = document.getElementById('dynamicColorContainer');
-        
-        container.classList.remove('slide-right', 'slide-left');
-        void container.offsetWidth; 
-
-        if(direction === 'next') container.classList.add('slide-right');
-        else if(direction === 'prev') container.classList.add('slide-left');
-
+        container.classList.remove('slide-right', 'slide-left'); void container.offsetWidth; 
+        if(direction === 'next') container.classList.add('slide-right'); else if(direction === 'prev') container.classList.add('slide-left');
         container.innerHTML = '';
-        const itemsPerPage = 4; 
-        const start = currentColorPage * itemsPerPage;
-        const pageColors = drawingColors.slice(start, start + itemsPerPage);
-
-        pageColors.forEach(color => {
-            const btn = document.createElement('button');
-            btn.className = 'color-btn';
-            btn.style.background = color;
-            btn.setAttribute('data-color', color);
-            if(ctx.strokeStyle === color && ctx.globalCompositeOperation !== 'destination-out') {
-                btn.classList.add('active');
-            }
-            btn.addEventListener('click', () => setStrokeColor(color, btn));
-            enableSizeGesture(btn, 'color');
-            container.appendChild(btn);
-        });
+        const itemsPerPage = 4; const start = currentColorPage * itemsPerPage; const pageColors = drawingColors.slice(start, start + itemsPerPage);
+        pageColors.forEach(color => { const btn = document.createElement('button'); btn.className = 'color-btn'; btn.style.background = color; btn.setAttribute('data-color', color); if(ctx.strokeStyle === color && ctx.globalCompositeOperation !== 'destination-out') { btn.classList.add('active'); } btn.addEventListener('click', () => setStrokeColor(color, btn)); enableSizeGesture(btn, 'color'); container.appendChild(btn); });
     }
+    document.getElementById('prevColorBtn').addEventListener('click', () => { if(currentColorPage > 0) { currentColorPage--; renderColorPalette('prev'); }});
+    document.getElementById('nextColorBtn').addEventListener('click', () => { if(currentColorPage < 3) { currentColorPage++; renderColorPalette('next'); }});
 
-    document.getElementById('prevColorBtn').addEventListener('click', () => {
-        if(currentColorPage > 0) { currentColorPage--; renderColorPalette('prev'); }
-    });
-    document.getElementById('nextColorBtn').addEventListener('click', () => {
-        if(currentColorPage < 3) { currentColorPage++; renderColorPalette('next'); } 
-    });
+    window.togglePanMode = function() { isPanningMode = !isPanningMode; const btn = document.getElementById('panModeBtn'); if(isPanningMode) { btn.classList.add('active'); btn.innerHTML = `<svg style="width:16px; height:16px; fill:currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM3 13h2v-2H3v2zm16-2v2h2v-2h-2zm-6.21 4.29l1.41 1.41L12 19.41l-2.2-2.71 1.41-1.41.79.97V13h2v3.26l.79-.97zM13 11V5h-2v6h2zm-2.91-1.29l-.79.97-1.41-1.41 2.71-2.2 2.71 2.2-1.41 1.41-.79-.97v-.92l-1.02.82z"/></svg> Draw`; } else { btn.classList.remove('active'); btn.innerHTML = `<svg style="width:16px; height:16px; fill:currentColor" viewBox="0 0 24 24"><path d="M18 9c-.95 0-1.81.51-2.27 1.29-.27-.08-.55-.12-.85-.12-.87 0-1.68.32-2.31.87-.29-.63-.94-1.04-1.67-1.04-.6 0-1.15.26-1.53.69-.15-.09-.32-.15-.51-.15-1.54 0-2.61 1.67-1.85 3.19l1.6 3.21c1.37 2.74 4.19 4.3 6.94 4.04 3.01-.28 5.37-3.04 5.37-6.08V11c0-1.1-.9-2-2-2z"/></svg> Move`; } }
+    function openDrawing() { history.pushState({page: 'drawing'}, null, ''); dom.fabOptions.style.display = 'none'; dom.fab.classList.remove('rotate'); document.getElementById('drawingModal').style.display = 'flex'; undoStack = []; redoStack = []; if(!drawingData) { paths = []; resizeCanvas(); } else { paths = JSON.parse(drawingData); resizeCanvas(); } scale = 1; panX = 0; panY = 0; updateZoomDisplay(); redrawCanvas(); ctx.strokeStyle = '#000'; ctx.lineWidth = penSize; ctx.lineCap = 'round'; currentColorPage = 0; renderColorPalette(); enableSizeGesture(document.getElementById('eraserBtn'), 'eraser'); }  
+    window.undoDrawing = function() { if(undoStack.length > 0) { redoStack.push(JSON.stringify(paths)); paths = JSON.parse(undoStack.pop()); redrawCanvas(); } else { showToast("Nothing to Undo"); } }
+    window.redoDrawing = function() { if(redoStack.length > 0) { undoStack.push(JSON.stringify(paths)); paths = JSON.parse(redoStack.pop()); redrawCanvas(); } else { showToast("Nothing to Redo"); } }
 
-    window.togglePanMode = function() {
-        isPanningMode = !isPanningMode;
-        const btn = document.getElementById('panModeBtn');
-        if(isPanningMode) {
-            btn.classList.add('active');
-            btn.innerHTML = `<svg style="width:16px; height:16px; fill:currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM3 13h2v-2H3v2zm16-2v2h2v-2h-2zm-6.21 4.29l1.41 1.41L12 19.41l-2.2-2.71 1.41-1.41.79.97V13h2v3.26l.79-.97zM13 11V5h-2v6h2zm-2.91-1.29l-.79.97-1.41-1.41 2.71-2.2 2.71 2.2-1.41 1.41-.79-.97v-.92l-1.02.82z"/></svg> Draw`;
-        } else {
-            btn.classList.remove('active');
-             btn.innerHTML = `<svg style="width:16px; height:16px; fill:currentColor" viewBox="0 0 24 24"><path d="M18 9c-.95 0-1.81.51-2.27 1.29-.27-.08-.55-.12-.85-.12-.87 0-1.68.32-2.31.87-.29-.63-.94-1.04-1.67-1.04-.6 0-1.15.26-1.53.69-.15-.09-.32-.15-.51-.15-1.54 0-2.61 1.67-1.85 3.19l1.6 3.21c1.37 2.74 4.19 4.3 6.94 4.04 3.01-.28 5.37-3.04 5.37-6.08V11c0-1.1-.9-2-2-2z"/></svg> Move`;
-        }
-    }
-
-    function openDrawing() {  
-       history.pushState({page: 'drawing'}, null, '');  
-       dom.fabOptions.style.display = 'none'; dom.fab.classList.remove('rotate');  
-       document.getElementById('drawingModal').style.display = 'flex';  
-         
-       if(!drawingData) {  
-          paths = [];   
-          resizeCanvas();  
-       } else {  
-          paths = JSON.parse(drawingData);   
-          resizeCanvas();  
-       }  
-         
-       scale = 1; panX = 0; panY = 0;
-       updateZoomDisplay();
-       redrawCanvas();
-
-       ctx.strokeStyle = '#000'; ctx.lineWidth = penSize; ctx.lineCap = 'round';  
-       currentColorPage = 0;
-       renderColorPalette(); 
-       enableSizeGesture(document.getElementById('eraserBtn'), 'eraser');  
-    }  
-      
     function saveAndCloseDrawing() {  
-       if (paths.length === 0) {  
-          document.getElementById('drawingModal').style.display = 'none';  
-          return;  
-       }  
+       if (paths.length === 0) { document.getElementById('drawingModal').style.display = 'none'; return; }  
        const tempCanvas = document.createElement('canvas'); tempCanvas.width = canvas.width; tempCanvas.height = canvas.height;  
        const tCtx = tempCanvas.getContext('2d'); tCtx.fillStyle = "#ffffff"; tCtx.fillRect(0,0,tempCanvas.width, tempCanvas.height); 
-       
+       // Ensure we draw 1:1 on save without pan/zoom offset
        tCtx.lineCap = 'round';
-       paths.forEach(p => {  
-          tCtx.beginPath();  
-          tCtx.strokeStyle = p.color;  
-          tCtx.lineWidth = p.size;  
-          tCtx.globalCompositeOperation = p.mode;  
-          if(p.points.length > 0) {  
-             tCtx.moveTo(p.points[0].x, p.points[0].y);  
-             for(let i=1; i<p.points.length; i++) tCtx.lineTo(p.points[i].x, p.points[i].y);  
-             tCtx.stroke();  
-          }  
-       });  
-         
+       paths.forEach(p => { tCtx.beginPath(); tCtx.strokeStyle = p.color; tCtx.lineWidth = p.size; tCtx.globalCompositeOperation = p.mode; if(p.points.length > 0) { tCtx.moveTo(p.points[0].x, p.points[0].y); for(let i=1; i<p.points.length; i++) tCtx.lineTo(p.points[i].x, p.points[i].y); tCtx.stroke(); } });  
        const ts = new Date().getTime();  
-       let newItem = {   
-          id: dom.editId.value ? parseInt(dom.editId.value) : ts,  
-          type: 'drawing',   
-          title: 'Drawing',  
-          body: '',  
-          media: tempCanvas.toDataURL(),   
-          mediaType: 'image',  
-          drawingData: JSON.stringify(paths),  
-          timestamp: ts,  
-          category: 'General'  
-       };  
-  
-       if (dom.editId.value) {  
-         const index = entries.findIndex(x => x.id == dom.editId.value);  
-         if(index > -1) { newItem.id = parseInt(dom.editId.value); entries[index] = newItem; }  
-       } else { entries.push(newItem); }  
-         
-       saveToStorage(); renderList(entries, dom.searchInput.value);  
-       document.getElementById('drawingModal').style.display = 'none';  
-       showToast('Saved');  
+       let newItem = { id: dom.editId.value ? parseInt(dom.editId.value) : ts, type: 'drawing', title: 'Drawing', body: '', media: tempCanvas.toDataURL(), mediaType: 'image', drawingData: JSON.stringify(paths), timestamp: ts, category: 'General' };  
+       if (dom.editId.value) { const index = entries.findIndex(x => x.id == dom.editId.value); if(index > -1) { newItem.id = parseInt(dom.editId.value); entries[index] = newItem; } } else { entries.push(newItem); }  
+       saveToStorage(); renderList(entries, dom.searchInput.value); document.getElementById('drawingModal').style.display = 'none'; showToast('Saved');  
     }  
   
-    function setStrokeColor(color, btn) { 
-        if(isPanningMode) togglePanMode(); 
-        ctx.strokeStyle = color; ctx.globalCompositeOperation = 'source-over'; ctx.lineWidth = penSize; highlightTool(btn); 
-    }  
-    function setEraser() { 
-        if(isPanningMode) togglePanMode(); 
-        ctx.globalCompositeOperation = 'destination-out'; ctx.lineWidth = eraserSize; highlightTool(document.getElementById('eraserBtn')); 
-    }  
-      
-    function highlightTool(btn) {   
-       document.querySelectorAll('.color-btn, .tool-btn').forEach(b => b.classList.remove('active'));  
-       if(btn) btn.classList.add('active');  
-    }  
-
-    function enableSizeGesture(btn, type) {  
-       let startX = 0; let startSize = type === 'eraser' ? eraserSize : penSize; let isSliding = false;  
-       btn.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; startSize = type === 'eraser' ? eraserSize : penSize; isSliding = false; });  
-       btn.addEventListener('touchmove', (e) => {  
-           const diff = e.touches[0].clientX - startX;  
-           if (Math.abs(diff) > 10) {  
-               isSliding = true; e.preventDefault();   
-               let change = Math.floor(diff / 5);  
-               let newSize = Math.max(1, Math.min(50, startSize + change));  
-               if(type === 'eraser') { eraserSize = newSize; ctx.lineWidth = eraserSize; showToast('Eraser: ' + newSize); }   
-               else { penSize = newSize; if(ctx.globalCompositeOperation !== 'destination-out') ctx.lineWidth = penSize; showToast('Pen: ' + newSize); }  
-           }  
-       });  
-       btn.addEventListener('touchend', (e) => { if(!isSliding) { if(type === 'eraser') setEraser(); else { 
-           if(btn.hasAttribute('data-color')) setStrokeColor(btn.getAttribute('data-color'), btn);
-       } } });  
-    }  
+    function setStrokeColor(color, btn) { if(isPanningMode) togglePanMode(); ctx.strokeStyle = color; ctx.globalCompositeOperation = 'source-over'; ctx.lineWidth = penSize; highlightTool(btn); }  
+    function setEraser() { if(isPanningMode) togglePanMode(); ctx.globalCompositeOperation = 'destination-out'; ctx.lineWidth = eraserSize; highlightTool(document.getElementById('eraserBtn')); }  
+    function highlightTool(btn) { document.querySelectorAll('.color-btn, .tool-btn').forEach(b => b.classList.remove('active')); if(btn) btn.classList.add('active'); }  
+    function enableSizeGesture(btn, type) { let startX = 0; let startSize = type === 'eraser' ? eraserSize : penSize; let isSliding = false; btn.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; startSize = type === 'eraser' ? eraserSize : penSize; isSliding = false; }); btn.addEventListener('touchmove', (e) => { const diff = e.touches[0].clientX - startX; if (Math.abs(diff) > 10) { isSliding = true; e.preventDefault(); let change = Math.floor(diff / 5); let newSize = Math.max(1, Math.min(50, startSize + change)); if(type === 'eraser') { eraserSize = newSize; ctx.lineWidth = eraserSize; showToast('Eraser: ' + newSize); } else { penSize = newSize; if(ctx.globalCompositeOperation !== 'destination-out') ctx.lineWidth = penSize; showToast('Pen: ' + newSize); } } }); btn.addEventListener('touchend', (e) => { if(!isSliding) { if(type === 'eraser') setEraser(); else { if(btn.hasAttribute('data-color')) setStrokeColor(btn.getAttribute('data-color'), btn); } } }); }  
   
-    // --- UPDATED COORDINATE SYSTEM ---
-    function getXY(e) { 
-        const rect = canvas.getBoundingClientRect();
-        let clientX, clientY;
-        
-        if(e.touches && e.touches.length > 0) {
-            clientX = e.touches[0].clientX;
-            clientY = e.touches[0].clientY;
-        } else {
-            clientX = e.clientX;
-            clientY = e.clientY;
-        }
-
-        const xRel = clientX - rect.left;
-        const yRel = clientY - rect.top;
-
-        const x = (xRel - panX) / scale;
-        const y = (yRel - panY) / scale;
-        
-        return [x, y];
-    }  
-
-    // New: Calculate distance between two fingers
-    function getDistance(touches) {
-        return Math.hypot(
-            touches[0].clientX - touches[1].clientX,
-            touches[0].clientY - touches[1].clientY
-        );
-    }
-
-    // New: Update Display 0% to 100%
-    function updateZoomDisplay() {
-        // Map 1.0 -> 0%, MAX_SCALE -> 100%
-        let percentage = Math.round(((scale - 1) / (MAX_SCALE - 1)) * 100);
-        if(percentage < 0) percentage = 0;
-        if(percentage > 100) percentage = 100;
-        document.getElementById('zoomLevelDisplay').innerText = percentage + '%';
-    }
+    function getXY(e) { const rect = canvas.getBoundingClientRect(); let clientX, clientY; if(e.touches && e.touches.length > 0) { clientX = e.touches[0].clientX; clientY = e.touches[0].clientY; } else { clientX = e.clientX; clientY = e.clientY; } const xRel = clientX - rect.left; const yRel = clientY - rect.top; const x = (xRel - panX) / scale; const y = (yRel - panY) / scale; return [x, y]; }  
+    function getDistance(touches) { return Math.hypot(touches[0].clientX - touches[1].clientX, touches[0].clientY - touches[1].clientY); }
+    function updateZoomDisplay() { let percentage = Math.round(((scale - 1) / (MAX_SCALE - 1)) * 100); if(percentage < 0) percentage = 0; if(percentage > 100) percentage = 100; document.getElementById('zoomLevelDisplay').innerText = percentage + '%'; }
   
     function handleTouchStart(e) {
-        if(e.touches.length === 2) {
-            isPinching = true;
-            initialDistance = getDistance(e.touches);
-            initialScale = scale;
-            return;
-        }
-
+        if(e.touches.length === 2) { isPinching = true; initialDistance = getDistance(e.touches); initialScale = scale; return; }
         const [x, y] = getXY(e);
-        
-        if(isPanningMode) {
-            isPanning = true;
-            startPanX = e.touches ? e.touches[0].clientX : e.clientX;
-            startPanY = e.touches ? e.touches[0].clientY : e.clientY;
-            return;
-        }
-
-        isDrawing = true; lastX = x; lastY = y;   
-        currentPath = [{x: lastX, y: lastY}];
+        if(isPanningMode) { isPanning = true; startPanX = e.touches ? e.touches[0].clientX : e.clientX; startPanY = e.touches ? e.touches[0].clientY : e.clientY; return; }
+        undoStack.push(JSON.stringify(paths)); redoStack = []; isDrawing = true; lastX = x; lastY = y; currentPath = [{x: lastX, y: lastY}];
     }
-
     function handleTouchMove(e) {
-        e.preventDefault(); // Prevent scrolling
-
-        // PINCH ZOOM LOGIC
-        if(e.touches.length === 2 && isPinching) {
-            const currentDistance = getDistance(e.touches);
-            if(initialDistance > 0) {
-                const newScale = initialScale * (currentDistance / initialDistance);
-                
-                // Limit Scale (1.0 to MAX_SCALE)
-                scale = Math.max(1, Math.min(MAX_SCALE, newScale));
-                
-                updateZoomDisplay();
-                redrawCanvas();
-            }
-            return;
-        }
-
-        if(isPanningMode && isPanning) {
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            
-            const deltaX = clientX - startPanX;
-            const deltaY = clientY - startPanY;
-            
-            panX += deltaX;
-            panY += deltaY;
-            
-            startPanX = clientX;
-            startPanY = clientY;
-            
-            redrawCanvas();
-            return;
-        }
-
-        if(!isDrawing) return;  
-        const [x, y] = getXY(e);  
-        ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(x, y); ctx.stroke();  
-        [lastX, lastY] = [x, y];  
-        currentPath.push({x: x, y: y});  
+        e.preventDefault();
+        if(e.touches.length === 2 && isPinching) { const currentDistance = getDistance(e.touches); if(initialDistance > 0) { const newScale = initialScale * (currentDistance / initialDistance); scale = Math.max(1, Math.min(MAX_SCALE, newScale)); updateZoomDisplay(); redrawCanvas(); } return; }
+        if(isPanningMode && isPanning) { const clientX = e.touches ? e.touches[0].clientX : e.clientX; const clientY = e.touches ? e.touches[0].clientY : e.clientY; const deltaX = clientX - startPanX; const deltaY = clientY - startPanY; panX += deltaX; panY += deltaY; startPanX = clientX; startPanY = clientY; redrawCanvas(); return; }
+        if(!isDrawing) return; const [x, y] = getXY(e); ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(x, y); ctx.stroke(); [lastX, lastY] = [x, y]; currentPath.push({x: x, y: y});  
     }
-
-    function handleTouchEnd(e) {
-        if(e.touches.length < 2) {
-            isPinching = false;
-        }
-
-        if(isPanningMode) {
-            isPanning = false;
-            return;
-        }
-        
-        if(isDrawing) {  
-            isDrawing = false;   
-            paths.push({  
-                points: currentPath,  
-                color: ctx.strokeStyle,  
-                size: ctx.lineWidth,  
-                mode: ctx.globalCompositeOperation  
-            });  
-        }  
-    }
-  
-    // Event Listeners (Merged Mouse & Touch)
-    canvas.addEventListener('mousedown', handleTouchStart); 
-    canvas.addEventListener('mousemove', handleTouchMove); 
-    canvas.addEventListener('mouseup', handleTouchEnd); 
-    canvas.addEventListener('mouseout', handleTouchEnd);  
+    function handleTouchEnd(e) { if(e.touches.length < 2) { isPinching = false; } if(isPanningMode) { isPanning = false; return; } if(isDrawing) { isDrawing = false; paths.push({ points: currentPath, color: ctx.strokeStyle, size: ctx.lineWidth, mode: ctx.globalCompositeOperation }); } }
     
-    canvas.addEventListener('touchstart', handleTouchStart); 
-    canvas.addEventListener('touchmove', handleTouchMove); 
-    canvas.addEventListener('touchend', handleTouchEnd);  
+    canvas.addEventListener('mousedown', handleTouchStart); canvas.addEventListener('mousemove', handleTouchMove); canvas.addEventListener('mouseup', handleTouchEnd); canvas.addEventListener('mouseout', handleTouchEnd); canvas.addEventListener('touchstart', handleTouchStart); canvas.addEventListener('touchmove', handleTouchMove); canvas.addEventListener('touchend', handleTouchEnd);  
   
-  
-    // Media  
-    dom.mediaInput.addEventListener('change', function() {  
-      const file = this.files[0];  
-      if (file) {  
-        if (file.size > 2 * 1024 * 1024) { alert('File > 2MB'); this.value = ''; return; }  
-        const reader = new FileReader();  
-        reader.onload = function(e) {  
-          tempMedia = e.target.result; tempMediaType = file.type.startsWith('image/') ? 'image' : 'video';  
-          if(tempMediaType === 'image') { dom.previewImg.src = tempMedia; dom.previewImg.style.display = 'block'; dom.previewVid.style.display = 'none'; }  
-          else { dom.previewVid.src = tempMedia; dom.previewVid.style.display = 'block'; dom.previewImg.style.display = 'none'; }  
-          dom.removeMediaBtn.style.display = 'block';  
-        };  
-        reader.readAsDataURL(file);  
-      }  
-    });  
+    dom.mediaInput.addEventListener('change', function() { const file = this.files[0]; if (file) { if (file.size > 2 * 1024 * 1024) { alert('File > 2MB'); this.value = ''; return; } const reader = new FileReader(); reader.onload = function(e) { tempMedia = e.target.result; tempMediaType = file.type.startsWith('image/') ? 'image' : 'video'; if(tempMediaType === 'image') { dom.previewImg.src = tempMedia; dom.previewImg.style.display = 'block'; dom.previewVid.style.display = 'none'; } else { dom.previewVid.src = tempMedia; dom.previewVid.style.display = 'block'; dom.previewImg.style.display = 'none'; } dom.removeMediaBtn.style.display = 'block'; }; reader.readAsDataURL(file); } });  
     dom.removeMediaBtn.addEventListener('click', resetMedia);  
     function resetMedia() { dom.mediaInput.value = ''; dom.previewImg.style.display = 'none'; dom.previewVid.style.display = 'none'; dom.removeMediaBtn.style.display = 'none'; tempMedia = null; }  
-  
-    // Action Sheet Logic  
-    window.openMenu = function(id, isLongPress = false) {   
-        selectedId = id;   
-        dom.actionSheet.style.display = 'block';   
-    }  
+    window.openMenu = function(id) { selectedId = id; dom.actionSheet.style.display = 'block'; }  
     dom.actionSheet.addEventListener('click', (e) => { if(e.target === dom.actionSheet) dom.actionSheet.style.display = 'none'; });  
     dom.actionClose.addEventListener('click', () => dom.actionSheet.style.display = 'none');  
-    dom.actionDelete.addEventListener('click', () => {  
-      if(confirm('Delete this item?')) {  
-        entries = entries.filter(e => e.id !== selectedId); 
-        saveToStorage(); 
-        renderList(entries, dom.searchInput.value); 
-        showToast('Deleted');  
-      }  
-      dom.actionSheet.style.display = 'none';  
-    });  
-  
-    // COPY LOGIC ADDED  
-    dom.actionCopy.addEventListener('click', () => {  
-       dom.actionSheet.style.display = 'none';  
-       const item = entries.find(e => e.id === selectedId);  
-       if(item) {  
-          // Copies raw text content including original new lines  
-          const textToCopy = item.type === 'expense'   
-             ? `Amount: ${item.amount} ${item.currency}\nType: ${item.expType}\nReason: ${item.reason}`  
-             : `${item.title}\n\n${item.body}`;  
-            
-          navigator.clipboard.writeText(textToCopy).then(() => {  
-              showToast('Copied to Clipboard');  
-          }).catch(err => {  
-              showToast('Failed to Copy');  
-          });  
-       }  
-    });  
-      
-    dom.actionEdit.addEventListener('click', () => {  
-      dom.actionSheet.style.display = 'none';  
-      const item = entries.find(e => e.id === selectedId);  
-      if(!item) return;  
-      
-      // FIXED EDIT LOGIC  
-      openEntry(item.type); // Open modal FIRST  
-      dom.editId.value = item.id; // THEN set the ID  
-        
-      if(item.type === 'drawing') {  
-         drawingData = item.drawingData;   
-         openDrawing();  
-         return;   
-      }  
-        
-      if(item.type === 'note') {  
-        dom.noteTitle.value = item.title; dom.noteBody.value = item.body;  
-      } else {  
-        dom.expAmount.value = item.amount; dom.expCurrency.value = item.currency;  
-        dom.expReason.value = item.reason; dom.expType.value = item.expType;  
-      }
+    dom.actionDelete.addEventListener('click', () => { if(confirm('Delete this item?')) { entries = entries.filter(e => e.id !== selectedId); saveToStorage(); renderList(entries, dom.searchInput.value); showToast('Deleted'); } dom.actionSheet.style.display = 'none'; });  
+    dom.actionCopy.addEventListener('click', () => { dom.actionSheet.style.display = 'none'; const item = entries.find(e => e.id === selectedId); if(item) { const textToCopy = item.type === 'expense' ? `Amount: ${item.amount} ${item.currency}\nType: ${item.expType}\nReason: ${item.reason}` : `${item.title}\n\n${item.body}`; navigator.clipboard.writeText(textToCopy).then(() => { showToast('Copied to Clipboard'); }).catch(err => { showToast('Failed to Copy'); }); } });  
+    dom.actionEdit.addEventListener('click', () => { dom.actionSheet.style.display = 'none'; const item = entries.find(e => e.id === selectedId); if(!item) return; dom.editId.value = item.id; if(item.type === 'drawing') { drawingData = item.drawingData; openDrawing(); return; } openEntry(item.type); dom.editId.value = item.id; if(item.type === 'note') { dom.noteTitle.value = item.title; dom.noteBody.value = item.body; } else { dom.expAmount.value = item.amount; dom.expCurrency.value = item.currency; dom.expReason.value = item.reason; dom.expType.value = item.expType; } 
+    // RESTORE FORMATTING
+    // Fix Issue 1: Robust restore logic
+    if(item.fontFamily) currentFont = item.fontFamily; else currentFont = "'Poppins', sans-serif";
+    
+    // Highlight correct font chip (Simplified Logic)
+    document.querySelectorAll('.font-chip').forEach(c => c.classList.remove('active')); 
+    const fontNameSimple = currentFont.split(',')[0].replace(/['"]/g, '');
+    let activeChip = null;
+    document.querySelectorAll('.font-chip').forEach(c => {
+       if(c.innerText.includes('Bengali') && fontNameSimple.includes('Bengali')) activeChip = c;
+       else if(c.innerText.includes('Tiro') && fontNameSimple.includes('Tiro')) activeChip = c;
+       else if(c.innerText.includes('Dancing') && fontNameSimple.includes('Dancing')) activeChip = c;
+       else if(c.style.fontFamily.includes(fontNameSimple)) activeChip = c;
+    });
+    if(activeChip) activeChip.classList.add('active');
+    
+    // Size Restore
+    if(item.fontSize) { const sliderVal = (item.fontSize - 12) / 2; dom.sizeSlider.value = sliderVal; } else { dom.sizeSlider.value = 4; }
+    
+    // Color Restore
+    if(item.color) currentTextColor = item.color;
+    
+    applyFormat(); // Re-applies font-size
+    dom.noteBody.style.color = currentTextColor || 'var(--text-main)';
+    dom.expReason.style.color = currentTextColor || 'var(--text-main)';
+    dom.noteBody.style.fontFamily = currentFont;
+    dom.expReason.style.fontFamily = currentFont;
 
-      // LOAD FORMATTING
-      if(item.fontFamily) {
-          currentFont = item.fontFamily;
-      } else {
-          currentFont = "'Poppins', sans-serif";
-      }
-      
-      // Highlight correct chip
-      document.querySelectorAll('.font-chip').forEach(c => c.classList.remove('active'));
-      const activeChip = Array.from(document.querySelectorAll('.font-chip')).find(c => c.innerText.includes(currentFont.split(',')[0].replace("'","")));
-      if(activeChip) activeChip.classList.add('active');
-      else document.querySelectorAll('.font-chip')[0].classList.add('active');
-
-      if(item.fontSize) {
-          // MAP PX BACK TO SLIDER 0-10 (Formula: 12 + val*2)
-          // val = (fontSize - 12)/2
-          const sliderVal = (item.fontSize - 12) / 2;
-          dom.sizeSlider.value = sliderVal;
-          document.getElementById('btnTT').innerText = "Size " + sliderVal; // UPDATE TEXT ON EDIT
-      } else {
-          dom.sizeSlider.value = 3;
-          document.getElementById('btnTT').innerText = "Size 3";
-      }
-      applyFormat();
-
-      if(item.media) {  
-         tempMedia = item.media; tempMediaType = item.mediaType;  
-         if(item.mediaType === 'image') { dom.previewImg.src = item.media; dom.previewImg.style.display = 'block'; }  
-         else { dom.previewVid.src = item.media; dom.previewVid.style.display = 'block'; }  
-         dom.removeMediaBtn.style.display = 'block';  
-      }  
-    });  
+    if(item.media) { tempMedia = item.media; tempMediaType = item.mediaType; if(item.mediaType === 'image') { dom.previewImg.src = item.media; dom.previewImg.style.display = 'block'; } else { dom.previewVid.src = item.media; dom.previewVid.style.display = 'block'; } dom.removeMediaBtn.style.display = 'block'; } });  
   
     renderList(entries);  
-  
-    // --- HARDWARE BACK BUTTON LOGIC ---  
-    // 1. Initialize History State for Home Screen  
-    window.addEventListener('load', () => {  
-        history.replaceState({page: 'home'}, null, '');  
-        // Push a state so that the first back click doesn't exit immediately (allows double click logic)  
-        history.pushState({page: 'home'}, null, '');  
-    });  
-  
-    // 2. Handle Back Button Press (popstate)  
-    window.addEventListener('popstate', (e) => {  
-        // Check if Cloud Modal is Open (New logic for cloud modal)
-        if (document.getElementById('cloudModal').style.display === 'flex') {
-            document.getElementById('cloudModal').style.display = 'none';
-            // Push state back so we stay "in app"
-            history.pushState({page: 'home'}, null, '');
-            return;
-        }
-
-        // Check if Entry Modal is Open  
-        if (dom.modal.style.display === 'flex') {  
-            saveEntryAndClose(); // This handles saving if content exists, or just closing if empty  
-            // We are already 'back' in history stack, so we don't need to push/pop manually here  
-            return;  
-        }  
-  
-        // Check if Drawing Modal is Open  
-        if (document.getElementById('drawingModal').style.display === 'flex') {  
-            saveAndCloseDrawing(); // Handles saving or closing  
-            return;  
-        }  
-  
-        // Home Screen Logic (Double Click to Exit)  
-        const currentTime = new Date().getTime();  
-        // If pressed twice within 2 seconds  
-        if (currentTime - lastBackTime < 2000) {  
-            // Allow Exit: We do nothing, and since the history stack is empty/at start, WebView usually exits.  
-            // Or force it:  
-            history.back();   
-        } else {  
-            // First Click  
-            lastBackTime = currentTime;  
-            showToast('Press back again to exit');  
-            // Since the user pressed back, the browser popped the state.   
-            // We push it back immediately to stay on the "Home" state visually and logically.  
-            history.pushState({page: 'home'}, null, '');  
-        }  
-    });  
+    window.addEventListener('load', () => { history.replaceState({page: 'home'}, null, ''); history.pushState({page: 'home'}, null, ''); });  
+    window.addEventListener('popstate', (e) => { if (document.getElementById('cloudModal').style.display === 'flex') { document.getElementById('cloudModal').style.display = 'none'; history.pushState({page: 'home'}, null, ''); return; } if (dom.modal.style.display === 'flex') { saveEntryAndClose(); return; } if (document.getElementById('drawingModal').style.display === 'flex') { saveAndCloseDrawing(); return; } const currentTime = new Date().getTime(); if (currentTime - lastBackTime < 2000) { history.back(); } else { lastBackTime = currentTime; showToast('Press back again to exit'); history.pushState({page: 'home'}, null, ''); } });  
 </script>  
 
 </body>  
